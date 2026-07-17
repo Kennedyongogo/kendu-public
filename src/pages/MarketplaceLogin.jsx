@@ -229,6 +229,7 @@ export default function MarketplaceLogin() {
             <Link
               component={RouterLink}
               to="/admission/apply"
+              state={{ from: "/login", fromLabel: "Login" }}
               underline="hover"
               sx={{ color: HOME.green, fontWeight: 700 }}
             >
@@ -374,7 +375,9 @@ export default function MarketplaceLogin() {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => navigate("/admission/apply")}
+              onClick={() =>
+                navigate("/admission/apply", { state: { from: "/login", fromLabel: "Login" } })
+              }
               sx={{
                 ...outlineBtnSx,
                 "&:hover": {

@@ -537,7 +537,23 @@ export default function PublicHeader() {
               <Button
                 variant="outlined"
                 startIcon={<HowToRegOutlined sx={{ fontSize: "1.1rem !important" }} />}
-                onClick={() => navigate("/admission/apply")}
+                onClick={() =>
+                  navigate("/admission/apply", {
+                    state: {
+                      from: location.pathname,
+                      fromLabel:
+                        location.pathname === "/"
+                          ? "Home"
+                          : location.pathname === "/about-us"
+                            ? "About us"
+                            : location.pathname === "/meet-our-team"
+                              ? "Meet our team"
+                              : location.pathname === "/login"
+                                ? "Login"
+                                : "previous page",
+                    },
+                  })
+                }
                 sx={{
                   px: 2,
                   py: 1.05,
@@ -802,7 +818,21 @@ export default function PublicHeader() {
               startIcon={<HowToRegOutlined />}
               onClick={() => {
                 setMobileMenuOpen(false);
-                navigate("/admission/apply");
+                navigate("/admission/apply", {
+                  state: {
+                    from: location.pathname,
+                    fromLabel:
+                      location.pathname === "/"
+                        ? "Home"
+                        : location.pathname === "/about-us"
+                          ? "About us"
+                          : location.pathname === "/meet-our-team"
+                            ? "Meet our team"
+                            : location.pathname === "/login"
+                              ? "Login"
+                              : "previous page",
+                  },
+                });
               }}
               sx={{
                 px: 3,

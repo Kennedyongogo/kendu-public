@@ -13,6 +13,7 @@ import React, { useEffect, Suspense, lazy } from "react";
 import PublicHeader from "./components/Header/PublicHeader";
 import Footer from "./components/Footer/Footer";
 import BrandPageLoader from "./components/common/BrandPageLoader";
+import HomeBackgroundMusic from "./components/common/HomeBackgroundMusic";
 
 const Home = lazy(() => import("./pages/Home"));
 const Team = lazy(() => import("./pages/Team"));
@@ -37,6 +38,7 @@ function AppLayout() {
   return (
     <>
       <ScrollToTop />
+      <HomeBackgroundMusic />
       {!hideHeader && <PublicHeader />}
       <Box component="main" sx={{ flex: 1, width: "100%" }}>
         <Suspense fallback={<BrandPageLoader />}>

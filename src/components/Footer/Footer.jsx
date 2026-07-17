@@ -35,6 +35,7 @@ const TikTokIcon = ({ sx, ...props }) => (
 const FOOTER_LINKS = [
   { label: "Home", path: "/" },
   { label: "About Us", path: "/about-us" },
+  { label: "Student Portal", path: "/login" },
 ];
 
 const SOCIAL = [
@@ -209,9 +210,20 @@ export default function Footer() {
             </Stack>
           </Box>
 
-          <Box>
-            <Typography sx={sectionLabelSx}>Follow us</Typography>
-            <Stack direction="row" spacing={0.75}>
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: { xs: "flex-start", md: "flex-end" },
+              textAlign: { xs: "left", md: "right" },
+              justifySelf: { md: "end" },
+            }}
+          >
+            <Typography sx={{ ...sectionLabelSx, width: { md: "100%" }, textAlign: { md: "right" } }}>
+              Follow us
+            </Typography>
+            <Stack direction="row" spacing={0.75} justifyContent={{ xs: "flex-start", md: "flex-end" }}>
               {SOCIAL.map((social) => (
                 <IconButton
                   key={social.label}

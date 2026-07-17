@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Typography, Stack, CircularProgress, keyframes, IconButton, Tooltip } from "@mui/material";
+import { Box, Typography, Stack, keyframes, IconButton, Tooltip } from "@mui/material";
 import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { HOME, BRAND_LOGO_SRC } from "../components/Home/homeShared";
 import { HomeSectionShell } from "../components/Home/homeUi";
 import Footer from "../components/Footer/Footer";
+import BrandPageLoader from "../components/common/BrandPageLoader";
 
 const fadeUp = keyframes`
   from { opacity: 0; transform: translateY(18px); }
@@ -177,6 +178,10 @@ export default function MeetOurTeam() {
 
   const count = staff.length;
 
+  if (loading) {
+    return <BrandPageLoader message="Loading team…" />;
+  }
+
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: HOME.cream, display: "flex", flexDirection: "column" }}>
       <Box
@@ -318,24 +323,7 @@ export default function MeetOurTeam() {
             pb: { xs: 3, md: 4 },
           }}
         >
-          {loading ? (
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                py: 10,
-                gap: 2,
-                bgcolor: "#fff",
-                border: `1px solid ${HOME.border}`,
-              }}
-            >
-              <CircularProgress sx={{ color: HOME.green }} />
-              <Typography sx={{ color: HOME.inkSoft, fontSize: "0.9rem", fontWeight: 600 }}>
-                Loading team…
-              </Typography>
-            </Box>
-          ) : error ? (
+          {error ? (
             <Box sx={{ py: 8, px: 3, textAlign: "center", bgcolor: "#fff" }}>
               <Typography sx={{ color: HOME.navyDeep, fontWeight: 700, mb: 1 }}>
                 Unable to load staff

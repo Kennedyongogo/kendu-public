@@ -319,7 +319,9 @@ export default function Team() {
           slideIndex={slideIndex}
           onSelectSlide={setSlideIndex}
           imageUrls={imageUrls}
-          onApply={() => navigate("/admission/apply")}
+          onApply={() =>
+            navigate("/admission/apply", { state: { from: "/about-us", fromLabel: "About us" } })
+          }
           onMeetStaff={() => navigate("/meet-our-team")}
         />
       </HomeSectionShell>
@@ -521,7 +523,13 @@ export default function Team() {
                 justifyContent="center"
                 alignItems="center"
               >
-                <HomePrimaryButton onClick={() => navigate("/admission/apply")}>
+                <HomePrimaryButton
+                  onClick={() =>
+                    navigate("/admission/apply", {
+                      state: { from: "/about-us", fromLabel: "About us" },
+                    })
+                  }
+                >
                   Apply for admission
                 </HomePrimaryButton>
                 <HomeGhostButton light onClick={() => navigate("/")}>

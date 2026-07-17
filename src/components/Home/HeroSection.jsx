@@ -255,7 +255,9 @@ export default function HeroSection() {
                 <Button
                   variant="contained"
                   endIcon={<ArrowForwardIcon sx={{ fontSize: "1rem !important" }} />}
-                  onClick={() => navigate("/admission/apply")}
+                  onClick={() =>
+                    navigate("/admission/apply", { state: { from: "/", fromLabel: "Home" } })
+                  }
                   sx={heroGoldButtonSx}
                 >
                   Apply Admission
