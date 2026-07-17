@@ -8,8 +8,6 @@ import { HOME, BRAND_LOGO_SRC } from "../components/Home/homeShared";
 import { HomeSectionShell } from "../components/Home/homeUi";
 import Footer from "../components/Footer/Footer";
 
-const sectionPad = { px: { xs: 1.5, sm: 2.5, md: 3 } };
-
 const fadeUp = keyframes`
   from { opacity: 0; transform: translateY(18px); }
   to { opacity: 1; transform: translateY(0); }
@@ -186,62 +184,118 @@ export default function MeetOurTeam() {
           position: "relative",
           overflow: "hidden",
           background: `linear-gradient(135deg, ${HOME.green} 0%, #004840 100%)`,
-          pt: { xs: 2.5, md: 3 },
-          pb: { xs: 3, md: 3.5 },
+          pt: { xs: 2, md: 3 },
+          pb: { xs: 2.5, md: 3.5 },
         }}
       >
-        <Tooltip title="Back to About Us" arrow placement="right">
-          <IconButton
-            aria-label="Back to About Us"
-            onClick={() => navigate("/about-us")}
-            sx={{
-              position: "absolute",
-              left: { xs: 8, sm: 12, md: 16 },
-              top: "50%",
-              transform: "translateY(-50%)",
-              zIndex: 2,
-              color: "#fff",
-              bgcolor: "rgba(255,255,255,0.12)",
-              border: "1px solid rgba(255,255,255,0.28)",
-              "&:hover": {
-                bgcolor: "rgba(255,255,255,0.22)",
-              },
-            }}
-          >
-            <ArrowBackIcon />
-          </IconButton>
-        </Tooltip>
+        {/* Mobile: arrow in flow so text never overlaps */}
+        <Box
+          sx={{
+            display: { xs: "flex", md: "none" },
+            alignItems: "flex-start",
+            gap: 1,
+            px: 1.25,
+          }}
+        >
+          <Tooltip title="Back to About Us" arrow placement="right">
+            <IconButton
+              aria-label="Back to About Us"
+              onClick={() => navigate("/about-us")}
+              sx={{
+                flexShrink: 0,
+                mt: 0.15,
+                color: "#fff",
+                bgcolor: "rgba(255,255,255,0.12)",
+                border: "1px solid rgba(255,255,255,0.28)",
+                "&:hover": { bgcolor: "rgba(255,255,255,0.22)" },
+              }}
+            >
+              <ArrowBackIcon />
+            </IconButton>
+          </Tooltip>
+          <Box sx={{ flex: 1, minWidth: 0, textAlign: "center", pr: 5 }}>
+            <Typography
+              component="h1"
+              sx={{
+                fontFamily: HOME.fontDisplay,
+                fontWeight: 700,
+                fontSize: "1.5rem",
+                lineHeight: 1.15,
+                color: "#fff",
+                mb: 0.75,
+              }}
+            >
+              Meet our{" "}
+              <Box component="span" sx={{ color: HOME.goldMuted }}>
+                staff
+              </Box>
+            </Typography>
+            <Typography
+              sx={{
+                fontFamily: HOME.fontBody,
+                fontSize: "0.82rem",
+                lineHeight: 1.55,
+                color: "rgba(255,255,255,0.88)",
+              }}
+            >
+              Educators and clinicians dedicated to forming skilled, compassionate healthcare
+              professionals at KASMS.
+            </Typography>
+          </Box>
+        </Box>
 
-        <Box sx={{ ...sectionPad, position: "relative", zIndex: 1, maxWidth: 960, mx: "auto", textAlign: "center" }}>
-          <Typography
-            component="h1"
-            sx={{
-              fontFamily: HOME.fontDisplay,
-              fontWeight: 700,
-              fontSize: { xs: "1.65rem", sm: "1.9rem", md: "2.1rem" },
-              lineHeight: 1.15,
-              color: "#fff",
-              mb: 0.75,
-            }}
-          >
-            Meet our{" "}
-            <Box component="span" sx={{ color: HOME.goldMuted }}>
-              staff
-            </Box>
-          </Typography>
-          <Typography
-            sx={{
-              fontFamily: HOME.fontBody,
-              fontSize: { xs: "0.88rem", md: "0.95rem" },
-              lineHeight: 1.55,
-              color: "rgba(255,255,255,0.88)",
-              maxWidth: 480,
-              mx: "auto",
-            }}
-          >
-            Educators and clinicians dedicated to forming skilled, compassionate healthcare
-            professionals at KASMS.
-          </Typography>
+        {/* Desktop: arrow far left, title centered */}
+        <Box sx={{ display: { xs: "none", md: "block" }, position: "relative" }}>
+          <Tooltip title="Back to About Us" arrow placement="right">
+            <IconButton
+              aria-label="Back to About Us"
+              onClick={() => navigate("/about-us")}
+              sx={{
+                position: "absolute",
+                left: 16,
+                top: "50%",
+                transform: "translateY(-50%)",
+                zIndex: 2,
+                color: "#fff",
+                bgcolor: "rgba(255,255,255,0.12)",
+                border: "1px solid rgba(255,255,255,0.28)",
+                "&:hover": { bgcolor: "rgba(255,255,255,0.22)" },
+              }}
+            >
+              <ArrowBackIcon />
+            </IconButton>
+          </Tooltip>
+          <Box sx={{ px: 3, maxWidth: 960, mx: "auto", textAlign: "center" }}>
+            <Typography
+              component="h1"
+              sx={{
+                fontFamily: HOME.fontDisplay,
+                fontWeight: 700,
+                fontSize: { md: "2.1rem" },
+                lineHeight: 1.15,
+                color: "#fff",
+                mb: 0.75,
+              }}
+            >
+              Meet our{" "}
+              <Box component="span" sx={{ color: HOME.goldMuted }}>
+                staff
+              </Box>
+            </Typography>
+            <Typography
+              sx={{
+                fontFamily: HOME.fontBody,
+                fontSize: "0.95rem",
+                lineHeight: 1.55,
+                color: "rgba(255,255,255,0.88)",
+                maxWidth: 480,
+                mx: "auto",
+              }}
+            >
+              Educators and clinicians dedicated to forming skilled, compassionate healthcare
+              professionals at KASMS.
+            </Typography>
+          </Box>
         </Box>
       </Box>
 
