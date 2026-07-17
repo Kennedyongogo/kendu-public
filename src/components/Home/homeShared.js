@@ -21,8 +21,17 @@ export const HOME = {
   shadowMd: "0 16px 40px rgba(8, 22, 43, 0.12)",
   shadowLg: "0 24px 56px rgba(8, 22, 43, 0.16)",
   heroOverlay:
-    "linear-gradient(180deg, rgba(8,22,43,0.72) 0%, rgba(8,22,43,0.35) 38%, rgba(8,22,43,0.2) 58%, rgba(8,22,43,0.65) 100%)",
-  navyGradient: `linear-gradient(135deg, ${BRAND.navyDeep} 0%, ${BRAND.navy} 55%, #143a66 100%)`,
+    "linear-gradient(180deg, rgba(8,22,43,0.38) 0%, rgba(8,22,43,0.12) 42%, rgba(8,22,43,0.06) 62%, rgba(8,22,43,0.32) 100%)",
+  heroBackground: `linear-gradient(165deg, ${BRAND.navyDeep} 0%, ${BRAND.navy} 38%, ${BRAND.navyMid} 72%, ${BRAND.green} 100%)`,
+  heroBackgroundAccent: `
+    radial-gradient(ellipse 70% 55% at 88% 12%, rgba(200, 168, 64, 0.2) 0%, transparent 58%),
+    radial-gradient(ellipse 55% 45% at 8% 88%, rgba(0, 96, 80, 0.25) 0%, transparent 52%)
+  `,
+  heroSplitWhite: "#ffffff",
+  heroSplitGreen: BRAND.green,
+  heroSplitGreenDark: "#004840",
+  heroSplitGreenLight: "#3d9e78",
+  navyGradient: `linear-gradient(135deg, ${BRAND.navyDeep} 0%, ${BRAND.navy} 55%, ${BRAND.navyMid} 100%)`,
   goldGradient: `linear-gradient(135deg, ${BRAND.gold} 0%, ${BRAND.goldMuted} 100%)`,
   fontDisplay: '"Cormorant Garamond", Georgia, serif',
   fontBody: '"Plus Jakarta Sans", "Open Sans", system-ui, sans-serif',
@@ -36,12 +45,16 @@ export const homeSectionPadding = {
 /** Standard body / subtitle text on public home sections */
 export const homeBodyFontSize = { xs: "1rem", md: "1.15rem" };
 
-export function homeGlassSx({ radius = 3 } = {}) {
+export function homeGlassSx({ radius = 3, blur = true } = {}) {
   return {
     borderRadius: radius,
-    background: "rgba(255, 255, 255, 0.08)",
-    backdropFilter: "blur(18px)",
-    WebkitBackdropFilter: "blur(18px)",
+    background: blur ? "rgba(255, 255, 255, 0.08)" : "rgba(8, 22, 43, 0.62)",
+    ...(blur
+      ? {
+          backdropFilter: "blur(18px)",
+          WebkitBackdropFilter: "blur(18px)",
+        }
+      : {}),
     border: "1px solid rgba(255, 255, 255, 0.16)",
     boxShadow: "0 20px 50px rgba(0, 0, 0, 0.28)",
   };

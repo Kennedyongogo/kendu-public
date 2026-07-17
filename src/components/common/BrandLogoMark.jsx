@@ -21,7 +21,7 @@ export default function BrandLogoMark({ size = 46, sx, imgSx }) {
       <Box
         component="img"
         src={BRAND_LOGO_SRC}
-        alt="Elimu Plus"
+        alt="Kendu Adventist School of Medical Sciences"
         sx={{
           height: "100%",
           width: "auto",
@@ -29,6 +29,7 @@ export default function BrandLogoMark({ size = 46, sx, imgSx }) {
           objectFit: "contain",
           objectPosition: "left center",
           display: "block",
+          imageRendering: "auto",
           ...imgSx,
         }}
       />

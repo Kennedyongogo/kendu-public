@@ -183,8 +183,7 @@ export default function PublicHeader() {
           }
         }
       } else if (
-        location.pathname === "/about-us" ||
-        location.pathname === "/meet-our-team"
+        location.pathname === "/about-us"
       ) {
         const sy = window.scrollY;
         setIsHeaderVisible(sy <= 20);
@@ -200,12 +199,13 @@ export default function PublicHeader() {
 
   const isHomePage = location.pathname === "/";
   const isHeaderTransparent = isHomePage && isAtTop;
+  const isSplitHeroHeader = isHeaderTransparent && isHeaderVisible;
   const isActive = (path) => location.pathname === path;
   const onTransparentHeader = isHeaderTransparent;
-  const headerActionColor =
-    (isHeaderTransparent && isHeaderVisible) || (!scrolled && isHomePage)
-      ? "white"
-      : BRAND.navy;
+  const navOnGreenSide = isSplitHeroHeader;
+  const brandOnWhiteSide = isSplitHeroHeader;
+  const headerActionColor = navOnGreenSide ? "white" : BRAND.navy;
+  const navLinkColor = navOnGreenSide ? "white" : BRAND.navy;
 
   // Split nav items - on home page, show all on right when not in hero, otherwise all on right
   const leftNavItems = []; // No left nav items - all go to right
@@ -262,9 +262,14 @@ export default function PublicHeader() {
         elevation={0}
         sx={{
           backgroundColor:
-            (location.pathname === "/") && isAtTop
+            isSplitHeroHeader
               ? "transparent"
-              : BRAND.surface,
+              : (location.pathname === "/") && isAtTop
+                ? "transparent"
+                : BRAND.surface,
+          backgroundImage: isSplitHeroHeader
+            ? `linear-gradient(90deg, #ffffff 0%, #ffffff 44%, ${BRAND.green} 56%, ${BRAND.green} 100%)`
+            : "none",
           backdropFilter:
             (location.pathname === "/") && isAtTop ? "none" : "blur(12px)",
           boxShadow:
@@ -279,22 +284,19 @@ export default function PublicHeader() {
           // Hide header when scrolling past hero section on home page, team page
           transform:
             (location.pathname === "/" ||
-              location.pathname === "/about-us" ||
-              location.pathname === "/meet-our-team") &&
+              location.pathname === "/about-us") &&
             !isHeaderVisible
               ? "translateY(-100%)"
               : "translateY(0)",
           opacity:
             (location.pathname === "/" ||
-              location.pathname === "/about-us" ||
-              location.pathname === "/meet-our-team") &&
+              location.pathname === "/about-us") &&
             !isHeaderVisible
               ? 0
               : 1,
           pointerEvents:
             (location.pathname === "/" ||
-              location.pathname === "/about-us" ||
-              location.pathname === "/meet-our-team") &&
+              location.pathname === "/about-us") &&
             !isHeaderVisible
               ? "none"
               : "auto",
@@ -314,14 +316,14 @@ export default function PublicHeader() {
               gap: { md: 1, lg: 2 },
             }}
           >
-            {/* Left — Elimu Plus wordmark */}
+            {/* Left — logo + school name */}
             <Box
               sx={{
                 display: "flex",
                 alignItems: "center",
                 flex: "0 1 auto",
                 minWidth: 0,
-                maxWidth: { xs: "52%", sm: "46%", md: "38%", lg: "34%" },
+                maxWidth: { xs: "72%", sm: "58%", md: "50%", lg: "44%" },
               }}
             >
               <Fade in={true} timeout={1000}>
@@ -329,7 +331,7 @@ export default function PublicHeader() {
                   sx={{
                     display: "flex",
                     alignItems: "center",
-                    gap: { xs: 1, sm: 1.25 },
+                    gap: { xs: 1, sm: 1.25, md: 1.5 },
                     cursor: "pointer",
                     transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                     minWidth: 0,
@@ -339,19 +341,46 @@ export default function PublicHeader() {
                     },
                   }}
                   onClick={() => navigate("/")}
-                  aria-label="Elimu Plus home"
+                  aria-label={`${BRAND.name} home`}
                 >
                   <BrandLogoMark
                     size={52}
                     sx={{
                       height: { xs: 40, sm: 44, md: 48 },
-                      maxWidth: { xs: "min(200px, 46vw)", sm: 220, md: 240 },
-                      filter:
-                        isHeaderTransparent && isHeaderVisible
-                          ? "drop-shadow(0 2px 8px rgba(0,0,0,0.45))"
-                          : "none",
+                      width: { xs: 40, sm: 44, md: 48 },
+                      flexShrink: 0,
+                      filter: "none",
+                    }}
+                    imgSx={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      borderRadius: "50%",
                     }}
                   />
+                  <Typography
+                    component="span"
+                    sx={{
+                      fontFamily: '"Cormorant Garamond", Georgia, serif',
+                      fontSize: { xs: "0.68rem", sm: "0.78rem", md: "0.92rem", lg: "1rem" },
+                      fontWeight: 700,
+                      lineHeight: 1.15,
+                      letterSpacing: "0.01em",
+                      color: brandOnWhiteSide
+                        ? BRAND.navy
+                        : (isHeaderTransparent && isHeaderVisible) || (!scrolled && isHomePage)
+                          ? "#fff"
+                          : BRAND.navy,
+                      textShadow: "none",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                      minWidth: 0,
+                    }}
+                  >
+                    {BRAND.name}
+                  </Typography>
                 </Box>
               </Fade>
             </Box>
@@ -389,9 +418,7 @@ export default function PublicHeader() {
                           color:
                             isActiveItem && location.pathname !== "/"
                               ? item.color
-                              : (isHeaderTransparent && isHeaderVisible) || (!scrolled && (location.pathname === "/"))
-                                ? "white"
-                                : BRAND.navy,
+                              : navLinkColor,
                         fontSize: "clamp(0.7rem, 0.9vw + 0.5rem, 0.975rem)",
                         fontWeight:
                           isActiveItem && location.pathname !== "/" ? 700 : 600,
@@ -486,9 +513,7 @@ export default function PublicHeader() {
                           color:
                             isActiveItem && location.pathname !== "/"
                               ? item.color
-                              : (isHeaderTransparent && isHeaderVisible) || (!scrolled && location.pathname === "/")
-                                ? "white"
-                                : item.color,
+                              : navLinkColor,
                         },
                       }}
                     >
@@ -583,11 +608,7 @@ export default function PublicHeader() {
                 sx={{
                   display: { xs: "flex", md: "none" },
                   marginLeft: "auto",
-                  color: mobileMenuOpen
-                    ? BRAND.navy
-                    : (isHeaderTransparent && isHeaderVisible) || (!scrolled && (location.pathname === "/"))
-                      ? "white"
-                      : BRAND.navy,
+                  color: mobileMenuOpen ? BRAND.navy : navLinkColor,
                   transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                   borderRadius: "12px",
                   backgroundColor: mobileMenuOpen
@@ -820,13 +841,6 @@ export default function PublicHeader() {
                 border: `1px solid rgba(255,255,255,0.35)`,
                 boxShadow: "0 4px 14px rgba(12, 35, 64, 0.2)",
                 transition: "all 0.3s ease",
-                "&:focus": {
-                  outline: "none",
-                  boxShadow: "0 4px 14px rgba(12, 35, 64, 0.2)",
-                },
-                "&:focus-visible": {
-                  outline: "none",
-                },
                 "&:hover": {
                   background: BRAND.goldMuted,
                   transform: "translateY(-2px)",

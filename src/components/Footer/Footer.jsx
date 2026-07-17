@@ -4,21 +4,28 @@ import {
   Box,
   Typography,
   IconButton,
-  Chip,
   Divider,
   Stack,
   Link,
 } from "@mui/material";
-import { Facebook, LinkedIn, ArrowForwardRounded } from "@mui/icons-material";
+import {
+  Facebook,
+  LinkedIn,
+  ArrowForwardRounded,
+  PhoneRounded,
+  PlaceOutlined,
+  AccessTimeOutlined,
+  EmailOutlined,
+} from "@mui/icons-material";
 import BrandLogoMark from "../common/BrandLogoMark";
-import { HOME, homeBodyFontSize } from "../Home/homeShared";
+import { HOME } from "../Home/homeShared";
 
 const TikTokIcon = ({ sx, ...props }) => (
   <Box
     component="svg"
     viewBox="0 0 24 24"
     fill="currentColor"
-    sx={{ width: 22, height: 22, ...sx }}
+    sx={{ width: 18, height: 18, ...sx }}
     {...props}
   >
     <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
@@ -26,10 +33,8 @@ const TikTokIcon = ({ sx, ...props }) => (
 );
 
 const FOOTER_LINKS = [
-  { label: "Apply for admission", path: "/admission/apply" },
-  { label: "Parent portal", path: "/login" },
-  { label: "About our school", path: "/about-us" },
-  { label: "Meet our team", path: "/meet-our-team" },
+  { label: "Home", path: "/" },
+  { label: "About Us", path: "/about-us" },
 ];
 
 const SOCIAL = [
@@ -37,6 +42,22 @@ const SOCIAL = [
   { icon: <LinkedIn fontSize="small" />, color: "#0077b5", label: "LinkedIn" },
   { icon: <TikTokIcon />, color: "#fff", label: "TikTok" },
 ];
+
+const sectionLabelSx = {
+  fontWeight: 800,
+  fontSize: "0.68rem",
+  letterSpacing: "0.12em",
+  textTransform: "uppercase",
+  color: HOME.goldMuted,
+  mb: 1,
+};
+
+const bodySx = {
+  color: "rgba(255,255,255,0.85)",
+  fontWeight: 500,
+  fontSize: "0.85rem",
+  lineHeight: 1.55,
+};
 
 export default function Footer() {
   const navigate = useNavigate();
@@ -47,7 +68,7 @@ export default function Footer() {
       component="footer"
       sx={{
         mt: "auto",
-        background: HOME.navyGradient,
+        background: `linear-gradient(145deg, #004840 0%, ${HOME.green} 48%, #007a66 100%)`,
         color: "rgba(255,255,255,0.88)",
         fontFamily: HOME.fontBody,
         position: "relative",
@@ -56,107 +77,67 @@ export default function Footer() {
     >
       <Box
         sx={{
-          position: "absolute",
-          top: -120,
-          right: -80,
-          width: 360,
-          height: 360,
-          borderRadius: "50%",
-          background: `radial-gradient(circle, ${HOME.gold}18 0%, transparent 70%)`,
-          pointerEvents: "none",
-        }}
-      />
-      <Box
-        sx={{
           position: "relative",
           zIndex: 1,
           width: "100%",
-          px: { xs: 1.25, sm: 1.5, md: 2 },
-          py: { xs: 5, md: 6 },
+          px: { xs: 1.5, sm: 2 },
+          py: { xs: 2.75, md: 3.25 },
         }}
       >
         <Box
           sx={{
-            display: { xs: "flex", md: "grid" },
-            flexDirection: { xs: "column" },
-            gridTemplateColumns: { md: "1fr auto 1fr" },
-            alignItems: { xs: "stretch", md: "start" },
-            gap: { xs: 4, md: 3 },
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "1fr 1fr",
+              md: "1.3fr 0.7fr 1fr 1.1fr 0.8fr",
+            },
+            gap: { xs: 2.5, md: 2.25 },
             width: "100%",
+            alignItems: "start",
           }}
         >
-          <Box sx={{ minWidth: 0, justifySelf: { md: "start" } }}>
-            <BrandLogoMark
-              size={56}
-              sx={{
-                height: 52,
-                maxWidth: 260,
-                mb: 2,
-                filter: "brightness(1.05)",
-              }}
-            />
-            <Typography
-              sx={{
-                fontFamily: HOME.fontDisplay,
-                fontWeight: 700,
-                fontSize: { xs: "1.35rem", md: "1.55rem" },
-                color: HOME.goldMuted,
-                mb: 1.5,
-                lineHeight: 1.25,
-              }}
-            >
-              Excellence in education. Global outlook.
-            </Typography>
-            <Typography
-              sx={{
-                lineHeight: 1.75,
-                color: "rgba(255,255,255,0.75)",
-                mb: 2,
-                maxWidth: { xs: "100%", md: 480 },
-                fontSize: homeBodyFontSize,
-              }}
-            >
-              Where young minds discover their potential and families stay connected to every step of
-              the learning journey.
-            </Typography>
-            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-              {["Learn", "Grow", "Excel"].map((word) => (
-                <Chip
-                  key={word}
-                  label={word}
-                  size="small"
-                  sx={{
-                    fontWeight: 700,
-                    bgcolor: "rgba(201, 162, 39, 0.15)",
-                    color: HOME.goldMuted,
-                    border: `1px solid ${HOME.borderGold}`,
-                  }}
-                />
-              ))}
+          <Box sx={{ minWidth: 0 }}>
+            <Stack direction="row" spacing={1.25} alignItems="center" sx={{ minWidth: 0, mb: 1 }}>
+              <BrandLogoMark
+                size={40}
+                sx={{ height: 40, width: 40, flexShrink: 0 }}
+                imgSx={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  borderRadius: "50%",
+                }}
+              />
+              <Typography
+                sx={{
+                  fontFamily: HOME.fontDisplay,
+                  fontWeight: 700,
+                  fontSize: { xs: "0.88rem", sm: "0.95rem", md: "1.02rem" },
+                  color: "#fff",
+                  lineHeight: 1.2,
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                {HOME.name}
+              </Typography>
             </Stack>
+            <Typography
+              sx={{
+                fontFamily: HOME.fontBody,
+                fontWeight: 600,
+                fontSize: "0.78rem",
+                color: HOME.goldMuted,
+                lineHeight: 1.4,
+              }}
+            >
+              Shaping skilled, compassionate healthcare professionals
+            </Typography>
           </Box>
 
-          <Box
-            sx={{
-              minWidth: 0,
-              width: { xs: "100%", md: "auto" },
-              justifySelf: { md: "center" },
-              textAlign: { md: "center" },
-            }}
-          >
-            <Typography
-              sx={{
-                fontWeight: 800,
-                fontSize: "0.75rem",
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                color: HOME.goldMuted,
-                mb: 2,
-              }}
-            >
-              Quick links
-            </Typography>
-            <Stack spacing={1.25} alignItems={{ xs: "flex-start", md: "center" }}>
+          <Box>
+            <Typography sx={sectionLabelSx}>Quick links</Typography>
+            <Stack spacing={0.75}>
               {FOOTER_LINKS.map((link) => (
                 <Link
                   key={link.path}
@@ -166,56 +147,79 @@ export default function Footer() {
                   sx={{
                     display: "inline-flex",
                     alignItems: "center",
-                    gap: 0.5,
-                    color: "rgba(255,255,255,0.82)",
+                    gap: 0.35,
+                    color: "rgba(255,255,255,0.85)",
                     fontWeight: 600,
-                    fontSize: "0.95rem",
-                    textAlign: { xs: "left", md: "center" },
+                    fontSize: "0.88rem",
                     transition: "color 0.2s ease",
                     "&:hover": { color: HOME.goldMuted },
                   }}
                 >
                   {link.label}
-                  <ArrowForwardRounded sx={{ fontSize: 16, opacity: 0.6 }} />
+                  <ArrowForwardRounded sx={{ fontSize: 14, opacity: 0.6 }} />
                 </Link>
               ))}
             </Stack>
           </Box>
 
-          <Box
-            sx={{
-              minWidth: 0,
-              width: { xs: "100%", md: "auto" },
-              justifySelf: { md: "end" },
-              textAlign: { md: "right" },
-            }}
-          >
-            <Typography
+          <Box>
+            <Typography sx={sectionLabelSx}>Got questions? Call us</Typography>
+            <Link
+              href="tel:+2540711954609"
+              underline="none"
               sx={{
-                fontWeight: 800,
-                fontSize: "0.75rem",
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                color: HOME.goldMuted,
-                mb: 2,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 0.75,
+                color: "#fff",
+                fontWeight: 700,
+                fontSize: "0.95rem",
+                "&:hover": { color: HOME.goldMuted },
               }}
             >
-              Follow us
-            </Typography>
-            <Stack
-              direction="row"
-              spacing={1}
-              flexWrap="wrap"
-              useFlexGap
-              justifyContent={{ xs: "flex-start", md: "flex-end" }}
-            >
+              <PhoneRounded sx={{ fontSize: 18, color: HOME.goldMuted }} />
+              +254 0711 954609
+            </Link>
+          </Box>
+
+          <Box>
+            <Typography sx={sectionLabelSx}>Contact info</Typography>
+            <Stack spacing={1}>
+              <Stack direction="row" spacing={1} alignItems="flex-start">
+                <PlaceOutlined sx={{ fontSize: 18, color: HOME.goldMuted, mt: 0.15 }} />
+                <Typography sx={bodySx}>Kendu, Kenya, 20-40301</Typography>
+              </Stack>
+              <Stack direction="row" spacing={1} alignItems="flex-start">
+                <AccessTimeOutlined sx={{ fontSize: 18, color: HOME.goldMuted, mt: 0.15 }} />
+                <Box>
+                  <Typography sx={bodySx}>Monday – Friday: 9:00–20:00</Typography>
+                  <Typography sx={bodySx}>Saturday: 11:00–15:00</Typography>
+                </Box>
+              </Stack>
+              <Stack direction="row" spacing={1} alignItems="flex-start">
+                <EmailOutlined sx={{ fontSize: 18, color: HOME.goldMuted, mt: 0.15 }} />
+                <Link
+                  href="mailto:kendunursing@yahoo.com"
+                  underline="hover"
+                  sx={{ ...bodySx, color: "#fff", fontWeight: 600 }}
+                >
+                  kendunursing@yahoo.com
+                </Link>
+              </Stack>
+            </Stack>
+          </Box>
+
+          <Box>
+            <Typography sx={sectionLabelSx}>Follow us</Typography>
+            <Stack direction="row" spacing={0.75}>
               {SOCIAL.map((social) => (
                 <IconButton
                   key={social.label}
                   aria-label={social.label}
+                  size="small"
                   sx={{
-                    width: 42,
-                    height: 42,
+                    width: 34,
+                    height: 34,
                     bgcolor: "rgba(255,255,255,0.08)",
                     border: "1px solid rgba(255,255,255,0.14)",
                     color: "rgba(255,255,255,0.9)",
@@ -223,7 +227,6 @@ export default function Footer() {
                     "&:hover": {
                       bgcolor: social.color,
                       borderColor: social.color,
-                      transform: "translateY(-2px)",
                     },
                   }}
                 >
@@ -234,25 +237,25 @@ export default function Footer() {
           </Box>
         </Box>
 
-        <Divider sx={{ my: 4, borderColor: "rgba(255,255,255,0.12)" }} />
+        <Divider sx={{ my: 2, borderColor: "rgba(255,255,255,0.12)" }} />
 
         <Stack
-          direction={{ xs: "column", sm: "row" }}
-          spacing={2}
-          alignItems={{ xs: "center", sm: "center" }}
-          justifyContent="space-between"
+          direction="column"
+          spacing={0.35}
+          alignItems="center"
+          justifyContent="center"
           sx={{ width: "100%" }}
         >
-          <Typography sx={{ color: "rgba(255,255,255,0.65)", fontSize: "0.9rem", textAlign: { xs: "center", sm: "left" } }}>
+          <Typography sx={{ color: "rgba(255,255,255,0.65)", fontSize: "0.8rem", textAlign: "center" }}>
             © {year} {HOME.name}. All rights reserved.
           </Typography>
           <Typography
             sx={{
               color: HOME.goldMuted,
               fontWeight: 700,
-              fontSize: "0.82rem",
+              fontSize: "0.75rem",
               letterSpacing: "0.02em",
-              textAlign: { xs: "center", sm: "right" },
+              textAlign: "center",
             }}
           >
             Developed by Carlvyne Technologies Ltd
