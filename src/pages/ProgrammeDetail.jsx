@@ -497,15 +497,15 @@ export default function ProgrammeDetail() {
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: { xs: "1fr", md: "minmax(280px, 42%) 1fr" },
-            minHeight: { md: 380 },
+            gridTemplateColumns: { xs: "1fr", md: "minmax(220px, 36%) 1fr" },
+            minHeight: { md: 240 },
             width: "100%",
           }}
         >
           <Box
             sx={{
               position: "relative",
-              minHeight: { xs: 220, sm: 280, md: "100%" },
+              minHeight: { xs: 160, sm: 180, md: "100%" },
               bgcolor: usingLogo ? "#fff" : "rgba(0,0,0,0.2)",
               borderRight: { md: "1px solid rgba(255,255,255,0.12)" },
             }}
@@ -520,7 +520,7 @@ export default function ProgrammeDetail() {
                 height: "100%",
                 objectFit: usingLogo ? "contain" : "cover",
                 objectPosition: "center",
-                p: usingLogo ? { xs: 4, md: 6 } : 0,
+                p: usingLogo ? { xs: 3, md: 4 } : 0,
                 display: "block",
                 bgcolor: usingLogo ? "rgba(255,255,255,0.96)" : "transparent",
               }}
@@ -531,11 +531,11 @@ export default function ProgrammeDetail() {
                 aria-label={`Back to ${fromLabel}`}
                 sx={{
                   position: "absolute",
-                  top: { xs: 12, sm: 16 },
-                  left: { xs: 12, sm: 16 },
+                  top: { xs: 10, sm: 12 },
+                  left: { xs: 10, sm: 12 },
                   zIndex: 2,
-                  width: 44,
-                  height: 44,
+                  width: 40,
+                  height: 40,
                   color: HOME.navyDeep,
                   bgcolor: "rgba(255,255,255,0.92)",
                   border: `1px solid ${HOME.border}`,
@@ -556,14 +556,14 @@ export default function ProgrammeDetail() {
           <Box
             sx={{
               ...edgePad,
-              py: { xs: 2.5, md: 4 },
+              py: { xs: 2, md: 2.25 },
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
               position: "relative",
             }}
           >
-            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap sx={{ mb: 1.25 }}>
+            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap sx={{ mb: 0.85 }}>
               {programme.category ? (
                 <Chip
                   label={formatLabel(programme.category)}
@@ -585,20 +585,36 @@ export default function ProgrammeDetail() {
               sx={{
                 fontFamily: HOME.fontDisplay,
                 fontWeight: 700,
-                fontSize: { xs: "2.1rem", sm: "2.6rem", md: "3rem" },
-                lineHeight: 1.08,
-                mb: 0.75,
+                fontSize: { xs: "1.75rem", sm: "2rem", md: "2.25rem" },
+                lineHeight: 1.1,
+                mb: 0.4,
                 letterSpacing: "-0.02em",
               }}
             >
               {programme.name}
             </Typography>
             {programme.award ? (
-              <Typography sx={{ fontFamily: HOME.fontBody, fontWeight: 600, opacity: 0.92, mb: 1, fontSize: "1.05rem" }}>
+              <Typography
+                sx={{
+                  fontFamily: HOME.fontBody,
+                  fontWeight: 600,
+                  opacity: 0.92,
+                  mb: 0.5,
+                  fontSize: { xs: "0.95rem", md: "1rem" },
+                }}
+              >
                 {programme.award}
               </Typography>
             ) : null}
-            <Typography sx={{ fontFamily: HOME.fontBody, fontWeight: 800, color: HOME.goldMuted, mb: 2.5 }}>
+            <Typography
+              sx={{
+                fontFamily: HOME.fontBody,
+                fontWeight: 800,
+                color: HOME.goldMuted,
+                mb: 1.5,
+                fontSize: { xs: "0.88rem", md: "0.95rem" },
+              }}
+            >
               Duration · {formatDuration(programme)}
             </Typography>
 
