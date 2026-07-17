@@ -47,7 +47,36 @@ const emptyFiles = () => ({
   kcse_certificate: null,
   result_slip: null,
   birth_certificate: null,
+  id_document: null,
 });
+
+const STEP_LABELS = [
+  "Personal",
+  "Contact",
+  "Academic",
+  "Programme",
+  "Documents",
+];
+
+function isEmailOk(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || "").trim());
+}
+
+/** Which of the 5 form steps are complete (for the progress bar). */
+function getStepCompletion(form, files) {
+  return [
+    Boolean(form.full_name.trim() && form.national_id.trim()),
+    Boolean(form.phone.trim() && isEmailOk(form.email)),
+    Boolean(form.kcse_grade.trim()),
+    Boolean(form.programme_id),
+    Boolean(
+      files.kcse_certificate ||
+        files.result_slip ||
+        files.birth_certificate ||
+        files.id_document
+    ),
+  ];
+}
 
 const fieldSx = {
   width: "100%",
@@ -366,7 +395,11 @@ export default function AdmissionApplication() {
   const location = useLocation();
   const fromPath = location.state?.from || "/";
   const fromLabel = location.state?.fromLabel || pathLabel(fromPath);
-  const [form, setForm] = useState(emptyForm);
+  const preselectedProgrammeId = location.state?.programme_id || "";
+  const [form, setForm] = useState(() => ({
+    ...emptyForm(),
+    programme_id: preselectedProgrammeId,
+  }));
   const [files, setFiles] = useState(emptyFiles);
   const [programmes, setProgrammes] = useState([]);
   const [loadingProgrammes, setLoadingProgrammes] = useState(true);
@@ -379,6 +412,15 @@ export default function AdmissionApplication() {
     () => programmes.find((p) => p.id === form.programme_id) || null,
     [programmes, form.programme_id]
   );
+
+  const stepDone = useMemo(() => getStepCompletion(form, files), [form, files]);
+  const completedCount = stepDone.filter(Boolean).length;
+  const firstIncomplete = stepDone.findIndex((done) => !done);
+  const currentStepIndex = firstIncomplete === -1 ? STEP_LABELS.length - 1 : firstIncomplete;
+  const progressLabel =
+    completedCount >= STEP_LABELS.length
+      ? "All steps complete · ready to submit"
+      : `Step ${currentStepIndex + 1} of ${STEP_LABELS.length} · ${STEP_LABELS[currentStepIndex]}`;
 
   const loadProgrammes = useCallback(async () => {
     setLoadingProgrammes(true);
@@ -401,6 +443,13 @@ export default function AdmissionApplication() {
   useEffect(() => {
     loadProgrammes();
   }, [loadProgrammes]);
+
+  useEffect(() => {
+    const pid = location.state?.programme_id;
+    if (pid) {
+      setForm((prev) => (prev.programme_id === pid ? prev : { ...prev, programme_id: pid }));
+    }
+  }, [location.state?.programme_id]);
 
   const setField = (key) => (e) => {
     const value = e.target.value;
@@ -478,6 +527,7 @@ export default function AdmissionApplication() {
       if (files.kcse_certificate) body.append("kcse_certificate", files.kcse_certificate);
       if (files.result_slip) body.append("result_slip", files.result_slip);
       if (files.birth_certificate) body.append("birth_certificate", files.birth_certificate);
+      if (files.id_document) body.append("id_document", files.id_document);
 
       const res = await fetch("/api/admissions", {
         method: "POST",
@@ -636,29 +686,40 @@ export default function AdmissionApplication() {
       >
         <Box
           sx={{
+            position: "sticky",
+            top: { xs: 64, sm: 72 },
+            zIndex: 8,
             width: "100%",
             px: { xs: 2.25, sm: 3.5, md: 5 },
             py: { xs: 2, md: 2.25 },
-            bgcolor: "#fff",
+            bgcolor: "rgba(255,255,255,0.96)",
+            backdropFilter: "blur(10px)",
             borderBottom: `1px solid ${HOME.border}`,
           }}
         >
           <Stack direction="row" spacing={1} alignItems="center" sx={{ width: "100%" }}>
-            {["01", "02", "03", "04", "05"].map((s, i) => (
-              <Box
-                key={s}
-                sx={{
-                  flex: 1,
-                  height: 6,
-                  borderRadius: 999,
-                  bgcolor: i === 0 ? HOME.green : "rgba(0,96,80,0.12)",
-                  background:
-                    i === 0
+            {STEP_LABELS.map((label, i) => {
+              const done = stepDone[i];
+              const active = !done && i === currentStepIndex;
+              return (
+                <Box
+                  key={label}
+                  title={label}
+                  sx={{
+                    flex: 1,
+                    height: 6,
+                    borderRadius: 999,
+                    transition: "background 0.35s ease, opacity 0.35s ease",
+                    bgcolor: done || active ? undefined : "rgba(0,96,80,0.12)",
+                    background: done
                       ? `linear-gradient(90deg, ${HOME.green}, ${HOME.gold})`
-                      : "rgba(0,96,80,0.12)",
-                }}
-              />
-            ))}
+                      : active
+                        ? `linear-gradient(90deg, rgba(0,96,80,0.45), rgba(200,168,64,0.55))`
+                        : "rgba(0,96,80,0.12)",
+                  }}
+                />
+              );
+            })}
           </Stack>
           <Typography
             sx={{
@@ -671,7 +732,11 @@ export default function AdmissionApplication() {
               textTransform: "uppercase",
             }}
           >
-            5 steps · about 3 minutes
+            {progressLabel}
+            <Box component="span" sx={{ color: "rgba(12,35,64,0.35)", mx: 0.75 }}>
+              ·
+            </Box>
+            about 3 minutes
           </Typography>
         </Box>
 
@@ -894,6 +959,13 @@ export default function AdmissionApplication() {
               accept="image/*,application/pdf"
               onSelect={(file) => setFiles((prev) => ({ ...prev, birth_certificate: file }))}
               onClear={() => setFiles((prev) => ({ ...prev, birth_certificate: null }))}
+            />
+            <FileUploadField
+              label="Copy of ID document"
+              file={files.id_document}
+              accept="image/*,application/pdf"
+              onSelect={(file) => setFiles((prev) => ({ ...prev, id_document: file }))}
+              onClear={() => setFiles((prev) => ({ ...prev, id_document: null }))}
             />
           </Stack>
         </FormSection>

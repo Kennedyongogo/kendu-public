@@ -10,7 +10,7 @@ import {
   Stack,
   Button,
   Link,
-  Divider,
+  keyframes,
 } from "@mui/material";
 import {
   EmailOutlined,
@@ -18,6 +18,7 @@ import {
   Visibility,
   VisibilityOff,
   Clear,
+  ArrowBack,
   SchoolOutlined,
   DescriptionOutlined,
   MarkEmailReadOutlined,
@@ -26,48 +27,67 @@ import {
 import Swal from "sweetalert2";
 import { HOME, BRAND_LOGO_SRC } from "../components/Home/homeShared";
 
-const LOGIN_PANEL_IMG = "/images/login-panel.png";
+const LOGIN_CIRCLE_LEFT = "/images/kendu%202.jpg";
+const LOGIN_CIRCLE_RIGHT = "/images/kendu%201.jpg";
+const LOGIN_PANEL_BG = "/images/kendu%203.jpg";
+
+const fadeUp = keyframes`
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
+const floatA = keyframes`
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+`;
+
+const floatB = keyframes`
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+`;
+
+const breathe = keyframes`
+  0%, 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 0 0 rgba(200,168,64,0.35); }
+  50% { transform: translate(-50%, -50%) scale(1.06); box-shadow: 0 0 0 10px rgba(200,168,64,0); }
+`;
 
 const fieldSx = {
   "& .MuiOutlinedInput-root": {
-    borderRadius: "10px",
-    bgcolor: "#fff",
+    borderRadius: "12px",
+    bgcolor: "rgba(255,255,255,0.92)",
     fontFamily: HOME.fontBody,
-    fontSize: "0.9rem",
-    "& fieldset": { borderColor: "rgba(12, 35, 64, 0.14)" },
-    "&:hover fieldset": { borderColor: HOME.green },
-    "&.Mui-focused fieldset": { borderColor: HOME.green, borderWidth: 1.5 },
+    fontSize: "0.95rem",
+    minHeight: 52,
+    transition: "box-shadow 0.25s ease, border-color 0.25s ease",
+    "& fieldset": { borderColor: "rgba(12, 35, 64, 0.12)" },
+    "&:hover": {
+      boxShadow: "0 10px 28px rgba(8,22,43,0.07)",
+      "& fieldset": { borderColor: HOME.green },
+    },
+    "&.Mui-focused": {
+      boxShadow: "0 0 0 4px rgba(0,96,80,0.12)",
+      "& fieldset": { borderColor: HOME.green, borderWidth: 1.5 },
+    },
   },
-  "& .MuiInputLabel-root": { display: "none" },
 };
 
 const labelSx = {
   fontFamily: HOME.fontBody,
-  fontSize: "0.78rem",
-  fontWeight: 600,
-  color: "rgba(8, 22, 43, 0.62)",
-  mb: 0.5,
+  fontSize: "0.72rem",
+  fontWeight: 800,
+  letterSpacing: "0.08em",
+  textTransform: "uppercase",
+  color: HOME.ink,
+  mb: 0.85,
   display: "block",
 };
 
 const STEPS = [
-  { label: "Ready to Apply", icon: <SchoolOutlined sx={{ fontSize: 16 }} /> },
-  { label: "Submitted", icon: <DescriptionOutlined sx={{ fontSize: 16 }} /> },
-  { label: "Offer Letter", icon: <MarkEmailReadOutlined sx={{ fontSize: 16 }} /> },
-  { label: "Enrollment", icon: <CheckCircleOutline sx={{ fontSize: 16 }} /> },
+  { label: "Apply", icon: <SchoolOutlined sx={{ fontSize: 15 }} /> },
+  { label: "Submit", icon: <DescriptionOutlined sx={{ fontSize: 15 }} /> },
+  { label: "Offer", icon: <MarkEmailReadOutlined sx={{ fontSize: 15 }} /> },
+  { label: "Enroll", icon: <CheckCircleOutline sx={{ fontSize: 15 }} /> },
 ];
-
-const outlineBtnSx = {
-  textTransform: "none",
-  fontWeight: 600,
-  fontFamily: HOME.fontBody,
-  borderRadius: "999px",
-  py: { xs: 1, md: 0.85 },
-  fontSize: "0.88rem",
-  borderColor: "rgba(12,35,64,0.18)",
-  color: HOME.navyDeep,
-  bgcolor: "#fff",
-};
 
 export default function MarketplaceLogin() {
   const navigate = useNavigate();
@@ -171,98 +191,154 @@ export default function MarketplaceLogin() {
         maxHeight: { md: "100vh" },
         overflow: { xs: "auto", md: "hidden" },
         display: "grid",
-        gridTemplateColumns: { xs: "1fr", md: "minmax(320px, 40%) 1fr" },
-        bgcolor: "#fff",
+        gridTemplateColumns: { xs: "1fr", md: "minmax(360px, 42%) 1fr" },
+        bgcolor: HOME.cream,
         fontFamily: HOME.fontBody,
       }}
     >
-      {/* ── Left: form ── */}
+      {/* ── Form column ── */}
       <Box
         sx={{
+          position: "relative",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          px: { xs: 2.5, sm: 4, md: 4, lg: 5.5 },
-          py: { xs: 3, md: 2 },
-          bgcolor: "#fff",
+          px: { xs: 2.5, sm: 4, md: 4.5, lg: 6 },
+          py: { xs: 3.5, md: 3 },
           order: { xs: 1, md: 1 },
           minHeight: 0,
-          overflow: { md: "hidden" },
+          overflow: { md: "auto" },
+          background: `
+            linear-gradient(165deg, #ffffff 0%, ${HOME.cream} 55%, rgba(232,238,246,0.65) 100%)
+          `,
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            inset: 0,
+            backgroundImage:
+              "radial-gradient(ellipse 80% 50% at 0% 0%, rgba(0,96,80,0.07) 0%, transparent 55%), radial-gradient(ellipse 60% 40% at 100% 100%, rgba(200,168,64,0.1) 0%, transparent 50%)",
+            pointerEvents: "none",
+          },
         }}
       >
-        <Box sx={{ width: "100%", maxWidth: 400, mx: { xs: "auto", md: 0 } }}>
+        <Box
+          sx={{
+            position: "relative",
+            width: "100%",
+            maxWidth: 420,
+            mx: { xs: "auto", md: 0 },
+            animation: `${fadeUp} 0.7s cubic-bezier(0.22, 1, 0.36, 1) both`,
+          }}
+        >
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={1.25}
+            sx={{ mb: { xs: 2.5, md: 2 }, display: { xs: "none", md: "flex" } }}
+          >
+            <IconButton
+              onClick={() => navigate("/")}
+              aria-label="Back to home"
+              sx={{
+                width: 40,
+                height: 40,
+                color: HOME.navy,
+                border: `1px solid ${HOME.border}`,
+                bgcolor: "rgba(255,255,255,0.8)",
+                "&:hover": { bgcolor: "rgba(0,96,80,0.08)", borderColor: HOME.green },
+              }}
+            >
+              <ArrowBack fontSize="small" />
+            </IconButton>
+            <Box
+              component="img"
+              src={BRAND_LOGO_SRC}
+              alt="KASMS"
+              sx={{
+                height: { xs: 42, md: 46 },
+                width: "auto",
+                objectFit: "contain",
+                objectPosition: "left center",
+                display: "block",
+              }}
+            />
+          </Stack>
+
           <Box
             component="img"
             src={BRAND_LOGO_SRC}
             alt="KASMS"
             sx={{
-              height: { xs: 44, md: 40, lg: 48 },
+              display: { xs: "block", md: "none" },
+              height: 42,
               width: "auto",
               objectFit: "contain",
               objectPosition: "left center",
-              mb: { xs: 2, md: 1.5 },
-              display: "block",
+              mb: 2.5,
             }}
           />
+
+          <Typography
+            sx={{
+              fontFamily: HOME.fontBody,
+              fontSize: "0.7rem",
+              fontWeight: 800,
+              letterSpacing: "0.16em",
+              textTransform: "uppercase",
+              color: HOME.green,
+              mb: 1,
+            }}
+          >
+            Student portal
+          </Typography>
 
           <Typography
             component="h1"
             sx={{
               fontFamily: HOME.fontDisplay,
               fontWeight: 700,
-              fontSize: { xs: "1.6rem", sm: "1.75rem", md: "1.7rem", lg: "1.95rem" },
+              fontSize: { xs: "2.35rem", sm: "2.6rem", md: "2.75rem" },
               color: HOME.navyDeep,
-              lineHeight: 1.15,
-              mb: 0.5,
+              lineHeight: 1.05,
+              letterSpacing: "-0.02em",
+              mb: 1.1,
             }}
           >
-            Get started with KASMS
+            KASMS
           </Typography>
+
           <Typography
             sx={{
               color: HOME.inkMuted,
-              fontSize: { xs: "0.88rem", md: "0.84rem" },
-              mb: { xs: 2.5, md: 1.75 },
+              fontSize: { xs: "0.95rem", md: "1rem" },
+              lineHeight: 1.55,
+              maxWidth: 360,
+              mb: { xs: 3, md: 2.75 },
             }}
           >
-            New student?{" "}
-            <Link
-              component={RouterLink}
-              to="/admission/apply"
-              state={{ from: "/login", fromLabel: "Login" }}
-              underline="hover"
-              sx={{ color: HOME.green, fontWeight: 700 }}
-            >
-              Apply for admission
-            </Link>
+            Sign in with your email or admission number to continue your studies.
           </Typography>
 
           <Box component="form" onSubmit={handleLogin} noValidate>
-            <Box sx={{ mb: { xs: 1.75, md: 1.35 } }}>
+            <Box sx={{ mb: 2 }}>
               <Typography component="label" htmlFor="login-identifier" sx={labelSx}>
-                Enter your email or admission number
+                Email or admission number
               </Typography>
               <TextField
                 id="login-identifier"
                 fullWidth
-                size="small"
-                placeholder="email or admission number"
+                placeholder="you@example.com or ADM-2026-001"
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <EmailOutlined sx={{ color: HOME.green, fontSize: 18 }} />
+                      <EmailOutlined sx={{ color: HOME.green, fontSize: 20 }} />
                     </InputAdornment>
                   ),
                   endAdornment: identifier ? (
                     <InputAdornment position="end">
-                      <IconButton
-                        size="small"
-                        aria-label="Clear"
-                        onClick={() => setIdentifier("")}
-                        edge="end"
-                      >
+                      <IconButton size="small" aria-label="Clear" onClick={() => setIdentifier("")} edge="end">
                         <Clear sx={{ fontSize: 16, color: HOME.inkSoft }} />
                       </IconButton>
                     </InputAdornment>
@@ -272,22 +348,21 @@ export default function MarketplaceLogin() {
               />
             </Box>
 
-            <Box sx={{ mb: 0.5 }}>
+            <Box sx={{ mb: 0.75 }}>
               <Typography component="label" htmlFor="login-password" sx={labelSx}>
-                Enter password
+                Password
               </Typography>
               <TextField
                 id="login-password"
                 fullWidth
-                size="small"
                 type={showPassword ? "text" : "password"}
-                placeholder="enter password"
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <LockOutlined sx={{ color: HOME.green, fontSize: 18 }} />
+                      <LockOutlined sx={{ color: HOME.green, fontSize: 20 }} />
                     </InputAdornment>
                   ),
                   endAdornment: (
@@ -311,16 +386,16 @@ export default function MarketplaceLogin() {
               />
             </Box>
 
-            <Box sx={{ display: "flex", justifyContent: "flex-end", mb: { xs: 2, md: 1.5 } }}>
+            <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2.25 }}>
               <Link
                 component="button"
                 type="button"
                 onClick={handleForgot}
                 underline="hover"
                 sx={{
-                  fontSize: "0.78rem",
-                  fontWeight: 600,
-                  color: HOME.inkMuted,
+                  fontSize: "0.82rem",
+                  fontWeight: 700,
+                  color: HOME.green,
                   border: "none",
                   bgcolor: "transparent",
                   cursor: "pointer",
@@ -337,98 +412,90 @@ export default function MarketplaceLogin() {
               disabled={loading}
               sx={{
                 textTransform: "none",
-                fontWeight: 700,
+                fontWeight: 800,
                 fontFamily: HOME.fontBody,
-                fontSize: "0.95rem",
-                borderRadius: "999px",
-                py: { xs: 1.2, md: 1 },
+                fontSize: "0.98rem",
+                borderRadius: "12px",
+                py: 1.45,
                 color: "#fff",
-                bgcolor: HOME.green,
-                boxShadow: "0 6px 18px rgba(0, 96, 80, 0.25)",
-                "&:hover": { bgcolor: "#004840" },
+                background: `linear-gradient(135deg, ${HOME.green} 0%, #004840 100%)`,
+                boxShadow: "0 14px 32px rgba(0,96,80,0.28)",
+                transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                "&:hover": {
+                  background: `linear-gradient(135deg, #004840 0%, ${HOME.green} 100%)`,
+                  transform: "translateY(-1px)",
+                  boxShadow: "0 18px 36px rgba(0,96,80,0.34)",
+                },
                 "&.Mui-disabled": { bgcolor: "rgba(0,96,80,0.45)", color: "#fff" },
               }}
             >
-              {loading ? <CircularProgress size={20} color="inherit" /> : "Login"}
+              {loading ? <CircularProgress size={22} color="inherit" /> : "Sign in"}
             </Button>
           </Box>
 
-          <Divider
+          <Box
             sx={{
-              my: { xs: 2.25, md: 1.5 },
-              "&::before, &::after": { borderColor: "rgba(12,35,64,0.12)" },
-              "& .MuiDivider-wrapper": {
-                px: 1.25,
-                color: HOME.inkSoft,
-                fontSize: "0.8rem",
-                fontWeight: 600,
-              },
+              mt: 2.75,
+              pt: 2.5,
+              borderTop: `1px solid ${HOME.border}`,
             }}
           >
-            or
-          </Divider>
+            <Typography sx={{ fontSize: "0.88rem", color: HOME.inkMuted, mb: 1.5, lineHeight: 1.5 }}>
+              New here?{" "}
+              <Link
+                component={RouterLink}
+                to="/admission/apply"
+                state={{ from: "/login", fromLabel: "Login" }}
+                underline="hover"
+                sx={{ color: HOME.green, fontWeight: 800 }}
+              >
+                Apply for admission
+              </Link>
+            </Typography>
 
-          <Stack
-            direction={{ xs: "column", md: "row" }}
-            spacing={1}
-          >
             <Button
               fullWidth
               variant="outlined"
-              onClick={() =>
-                navigate("/admission/apply", { state: { from: "/login", fromLabel: "Login" } })
-              }
+              onClick={() => navigate("/admission/apply", { state: { from: "/login", fromLabel: "Login" } })}
               sx={{
-                ...outlineBtnSx,
-                "&:hover": {
-                  borderColor: HOME.green,
-                  bgcolor: "rgba(0,96,80,0.04)",
-                },
-              }}
-            >
-              Apply for admission
-            </Button>
-            <Button
-              fullWidth
-              variant="outlined"
-              onClick={() => navigate("/")}
-              sx={{
-                ...outlineBtnSx,
+                textTransform: "none",
+                fontWeight: 700,
+                fontFamily: HOME.fontBody,
+                borderRadius: "12px",
+                py: 1.15,
+                borderColor: "rgba(12,35,64,0.16)",
+                color: HOME.navyDeep,
+                bgcolor: "rgba(255,255,255,0.65)",
                 "&:hover": {
                   borderColor: HOME.gold,
                   bgcolor: "rgba(200,168,64,0.08)",
                 },
               }}
             >
-              Back to home
+              Start your application
             </Button>
-          </Stack>
+          </Box>
 
           <Typography
             sx={{
-              mt: { xs: 2.5, md: 1.5 },
-              fontSize: "0.7rem",
+              mt: 2.5,
+              fontSize: "0.72rem",
               color: HOME.inkSoft,
-              textAlign: "center",
-              lineHeight: 1.4,
+              textAlign: { xs: "center", md: "left" },
+              lineHeight: 1.45,
             }}
           >
-            By signing in you agree to the school{" "}
-            <Box component="span" sx={{ color: HOME.green, fontWeight: 700 }}>
-              terms & conditions
-            </Box>
-            .
+            Kendu Adventist School of Medical Sciences
           </Typography>
         </Box>
       </Box>
 
-      {/* ── Right: panel image (desktop) ── */}
+      {/* ── Visual column ── */}
       <Box
         sx={{
           display: { xs: "none", md: "flex" },
           position: "relative",
           overflow: "hidden",
-          bgcolor: "#f3f5f8",
           height: "100%",
           minHeight: 0,
           flexDirection: "column",
@@ -437,61 +504,200 @@ export default function MarketplaceLogin() {
       >
         <Box
           component="img"
-          src={LOGIN_PANEL_IMG}
+          src={LOGIN_PANEL_BG}
           alt=""
           sx={{
             position: "absolute",
-            top: 0,
-            right: 0,
+            inset: 0,
+            width: "100%",
             height: "100%",
-            width: "175%",
-            maxWidth: "none",
             objectFit: "cover",
-            objectPosition: "right center",
+            objectPosition: "center",
+            transform: "scale(1.06)",
+            filter: "saturate(0.9) contrast(1.02)",
           }}
         />
         <Box
           sx={{
             position: "absolute",
             inset: 0,
-            background:
-              "linear-gradient(180deg, rgba(30,40,88,0.08) 0%, transparent 35%, rgba(0,96,80,0.18) 100%)",
+            background: `
+              linear-gradient(155deg, rgba(20,26,58,0.55) 0%, rgba(0,96,80,0.42) 48%, rgba(20,26,58,0.62) 100%),
+              radial-gradient(ellipse 70% 55% at 80% 15%, rgba(200,168,64,0.28) 0%, transparent 55%)
+            `,
             pointerEvents: "none",
           }}
         />
         <Box
           sx={{
+            position: "absolute",
+            inset: 0,
+            opacity: 0.22,
+            backgroundImage:
+              "radial-gradient(circle, rgba(255,255,255,0.55) 1px, transparent 1px)",
+            backgroundSize: "22px 22px",
+            pointerEvents: "none",
+          }}
+        />
+
+        <Box
+          sx={{
             position: "relative",
             zIndex: 1,
-            mt: "auto",
-            mx: 2.5,
-            mb: 2,
-            px: 1.75,
-            py: 1.25,
-            borderRadius: 2.5,
-            bgcolor: "rgba(255,255,255,0.92)",
-            border: "1px solid rgba(255,255,255,0.8)",
-            boxShadow: "0 10px 28px rgba(8,22,43,0.1)",
-            backdropFilter: "blur(10px)",
+            px: { md: 4, lg: 6 },
+            pt: { md: 4, lg: 5 },
+            animation: `${fadeUp} 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both`,
           }}
         >
-          <Stack
-            direction="row"
-            spacing={1}
-            alignItems="center"
-            justifyContent="space-between"
-            flexWrap="nowrap"
+          <Typography
+            sx={{
+              fontFamily: HOME.fontDisplay,
+              fontWeight: 700,
+              fontSize: { md: "2.4rem", lg: "2.85rem" },
+              color: "#fff",
+              lineHeight: 1.12,
+              letterSpacing: "-0.02em",
+              maxWidth: 420,
+              textShadow: "0 12px 40px rgba(0,0,0,0.25)",
+            }}
           >
+            Train where care meets calling.
+          </Typography>
+          <Typography
+            sx={{
+              mt: 1.25,
+              color: "rgba(255,255,255,0.86)",
+              fontSize: "1rem",
+              lineHeight: 1.55,
+              maxWidth: 380,
+            }}
+          >
+            Clinical excellence. Adventist values. Your pathway into medical sciences.
+          </Typography>
+        </Box>
+
+        <Box
+          sx={{
+            position: "relative",
+            zIndex: 1,
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            px: { md: 3, lg: 5 },
+            py: 2,
+          }}
+        >
+          <Box
+            sx={{
+              position: "relative",
+              width: "100%",
+              maxWidth: 540,
+              height: { md: 300, lg: 360 },
+            }}
+          >
+            <Box
+              sx={{
+                position: "absolute",
+                left: { md: "0%", lg: "2%" },
+                top: { md: "4%", lg: "2%" },
+                width: { md: "54%", lg: "52%" },
+                aspectRatio: "1 / 1.12",
+                borderRadius: "50%",
+                overflow: "hidden",
+                border: "5px solid rgba(255,255,255,0.92)",
+                boxShadow: "0 28px 60px rgba(0,0,0,0.28)",
+                animation: `${floatA} 7s ease-in-out infinite`,
+              }}
+            >
+              <Box
+                component="img"
+                src={LOGIN_CIRCLE_LEFT}
+                alt="KASMS learning"
+                sx={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}
+              />
+            </Box>
+
+            <Box
+              sx={{
+                position: "absolute",
+                right: { md: "-2%", lg: "0%" },
+                bottom: { md: "0%", lg: "-2%" },
+                width: { md: "54%", lg: "52%" },
+                aspectRatio: "1 / 1.12",
+                borderRadius: "50%",
+                overflow: "hidden",
+                border: "5px solid rgba(255,255,255,0.92)",
+                boxShadow: "0 28px 60px rgba(0,0,0,0.28)",
+                zIndex: 2,
+                animation: `${floatB} 8s ease-in-out infinite`,
+              }}
+            >
+              <Box
+                component="img"
+                src={LOGIN_CIRCLE_RIGHT}
+                alt="KASMS graduates"
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  objectPosition: "center top",
+                }}
+              />
+            </Box>
+
+            <Box
+              sx={{
+                position: "absolute",
+                left: "50%",
+                top: "48%",
+                width: 48,
+                height: 48,
+                borderRadius: "50%",
+                bgcolor: HOME.gold,
+                color: HOME.navyDeep,
+                display: "grid",
+                placeItems: "center",
+                border: "3px solid #fff",
+                zIndex: 3,
+                fontWeight: 800,
+                fontSize: "1rem",
+                fontFamily: HOME.fontBody,
+                animation: `${breathe} 3.2s ease-in-out infinite`,
+              }}
+            >
+              +
+            </Box>
+          </Box>
+        </Box>
+
+        <Box
+          sx={{
+            position: "relative",
+            zIndex: 1,
+            mx: { md: 3, lg: 4 },
+            mb: { md: 2.5, lg: 3 },
+            px: 2,
+            py: 1.5,
+            borderRadius: "16px",
+            bgcolor: "rgba(255,255,255,0.14)",
+            border: "1px solid rgba(255,255,255,0.22)",
+            backdropFilter: "blur(14px)",
+            WebkitBackdropFilter: "blur(14px)",
+            animation: `${fadeUp} 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.22s both`,
+          }}
+        >
+          <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
             {STEPS.map((step, i) => (
               <React.Fragment key={step.label}>
-                <Stack direction="row" spacing={0.6} alignItems="center" sx={{ minWidth: 0 }}>
+                <Stack direction="row" spacing={0.7} alignItems="center" sx={{ minWidth: 0 }}>
                   <Box
                     sx={{
-                      width: 28,
-                      height: 28,
-                      borderRadius: "50%",
-                      bgcolor: "rgba(0,96,80,0.1)",
-                      color: HOME.green,
+                      width: 30,
+                      height: 30,
+                      borderRadius: "10px",
+                      bgcolor: "rgba(255,255,255,0.18)",
+                      color: "#fff",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -502,10 +708,9 @@ export default function MarketplaceLogin() {
                   </Box>
                   <Typography
                     sx={{
-                      fontSize: { md: "0.65rem", lg: "0.72rem" },
+                      fontSize: { md: "0.7rem", lg: "0.78rem" },
                       fontWeight: 700,
-                      color: HOME.navyDeep,
-                      lineHeight: 1.15,
+                      color: "#fff",
                       whiteSpace: "nowrap",
                     }}
                   >
@@ -515,11 +720,11 @@ export default function MarketplaceLogin() {
                 {i < STEPS.length - 1 ? (
                   <Box
                     sx={{
-                      width: 10,
+                      flex: 1,
                       height: 2,
+                      maxWidth: 28,
                       borderRadius: 1,
-                      bgcolor: "rgba(12,35,64,0.15)",
-                      flexShrink: 0,
+                      bgcolor: "rgba(255,255,255,0.28)",
                     }}
                   />
                 ) : null}
@@ -529,31 +734,27 @@ export default function MarketplaceLogin() {
         </Box>
       </Box>
 
-      {/* ── Mobile: compact visual strip ── */}
+      {/* ── Mobile hero strip ── */}
       <Box
         sx={{
           display: { xs: "block", md: "none" },
           order: 0,
           position: "relative",
-          height: { xs: 140, sm: 170 },
+          height: { xs: 168, sm: 200 },
           overflow: "hidden",
-          bgcolor: HOME.green,
         }}
       >
         <Box
           component="img"
-          src={LOGIN_PANEL_IMG}
+          src={LOGIN_CIRCLE_LEFT}
           alt=""
           sx={{
             position: "absolute",
-            top: 0,
-            right: 0,
+            inset: 0,
+            width: "100%",
             height: "100%",
-            width: "175%",
-            maxWidth: "none",
             objectFit: "cover",
-            objectPosition: "right center",
-            opacity: 0.95,
+            objectPosition: "center",
           }}
         />
         <Box
@@ -561,24 +762,57 @@ export default function MarketplaceLogin() {
             position: "absolute",
             inset: 0,
             background:
-              "linear-gradient(180deg, rgba(0,96,80,0.25) 0%, rgba(20,26,58,0.55) 100%)",
+              "linear-gradient(180deg, rgba(20,26,58,0.35) 0%, rgba(0,96,80,0.55) 55%, rgba(20,26,58,0.72) 100%)",
           }}
         />
-        <Typography
+        <IconButton
+          onClick={() => navigate("/")}
+          aria-label="Back to home"
           sx={{
             position: "absolute",
-            left: 20,
-            bottom: 16,
-            right: 20,
-            fontFamily: HOME.fontDisplay,
-            fontWeight: 700,
-            fontSize: "1.25rem",
+            top: 12,
+            left: 12,
+            zIndex: 2,
+            width: 40,
+            height: 40,
             color: "#fff",
-            lineHeight: 1.2,
+            border: "1px solid rgba(255,255,255,0.35)",
+            bgcolor: "rgba(255,255,255,0.12)",
+            backdropFilter: "blur(8px)",
+            "&:hover": {
+              bgcolor: "rgba(200,168,64,0.28)",
+              borderColor: "rgba(200,168,64,0.55)",
+            },
           }}
         >
-          Student portal
-        </Typography>
+          <ArrowBack fontSize="small" />
+        </IconButton>
+        <Box sx={{ position: "absolute", left: 20, right: 20, bottom: 18 }}>
+          <Typography
+            sx={{
+              fontFamily: HOME.fontBody,
+              fontSize: "0.68rem",
+              fontWeight: 800,
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: HOME.goldMuted,
+              mb: 0.5,
+            }}
+          >
+            Student portal
+          </Typography>
+          <Typography
+            sx={{
+              fontFamily: HOME.fontDisplay,
+              fontWeight: 700,
+              fontSize: "1.65rem",
+              color: "#fff",
+              lineHeight: 1.15,
+            }}
+          >
+            KASMS
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );

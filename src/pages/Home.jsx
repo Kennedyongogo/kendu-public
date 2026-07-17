@@ -1,6 +1,7 @@
 import React from "react";
 import { Box } from "@mui/material";
 import HeroSection from "../components/Home/HeroSection";
+import ProgrammesSection from "../components/Home/ProgrammesSection";
 import Footer from "../components/Footer/Footer";
 import { HOME } from "../components/Home/homeShared";
 
@@ -16,6 +17,7 @@ export default function Home() {
       }}
     >
       <HeroSection />
+      <ProgrammesSection />
       <Footer />
     </Box>
   );
