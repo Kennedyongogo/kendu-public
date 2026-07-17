@@ -186,12 +186,12 @@ export default function MarketplaceLogin() {
   return (
     <Box
       sx={{
-        height: { xs: "auto", md: "100vh" },
-        minHeight: "100vh",
-        maxHeight: { md: "100vh" },
+        height: { xs: "auto", md: "100dvh" },
+        minHeight: { xs: "100dvh", md: "100dvh" },
+        maxHeight: { md: "100dvh" },
         overflow: { xs: "auto", md: "hidden" },
         display: "grid",
-        gridTemplateColumns: { xs: "1fr", md: "minmax(360px, 42%) 1fr" },
+        gridTemplateColumns: { xs: "1fr", md: "minmax(340px, 40%) 1fr" },
         bgcolor: HOME.cream,
         fontFamily: HOME.fontBody,
       }}
@@ -203,11 +203,11 @@ export default function MarketplaceLogin() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          px: { xs: 2.5, sm: 4, md: 4.5, lg: 6 },
-          py: { xs: 3.5, md: 3 },
+          px: { xs: 2.5, sm: 4, md: 3.5, lg: 5, xl: 6 },
+          py: { xs: 3.5, md: 2, lg: 2.5 },
           order: { xs: 1, md: 1 },
           minHeight: 0,
-          overflow: { md: "auto" },
+          overflow: "hidden",
           background: `
             linear-gradient(165deg, #ffffff 0%, ${HOME.cream} 55%, rgba(232,238,246,0.65) 100%)
           `,
@@ -234,14 +234,14 @@ export default function MarketplaceLogin() {
             direction="row"
             alignItems="center"
             spacing={1.25}
-            sx={{ mb: { xs: 2.5, md: 2 }, display: { xs: "none", md: "flex" } }}
+            sx={{ mb: { xs: 2.5, md: 1.25, lg: 1.5 }, display: { xs: "none", md: "flex" } }}
           >
             <IconButton
               onClick={() => navigate("/")}
               aria-label="Back to home"
               sx={{
-                width: 40,
-                height: 40,
+                width: { md: 36, lg: 40 },
+                height: { md: 36, lg: 40 },
                 color: HOME.navy,
                 border: `1px solid ${HOME.border}`,
                 bgcolor: "rgba(255,255,255,0.8)",
@@ -255,7 +255,7 @@ export default function MarketplaceLogin() {
               src={BRAND_LOGO_SRC}
               alt="KASMS"
               sx={{
-                height: { xs: 42, md: 46 },
+                height: { md: 38, lg: 44 },
                 width: "auto",
                 objectFit: "contain",
                 objectPosition: "left center",
@@ -281,12 +281,12 @@ export default function MarketplaceLogin() {
           <Typography
             sx={{
               fontFamily: HOME.fontBody,
-              fontSize: "0.7rem",
+              fontSize: { xs: "0.7rem", md: "0.65rem", lg: "0.7rem" },
               fontWeight: 800,
               letterSpacing: "0.16em",
               textTransform: "uppercase",
               color: HOME.green,
-              mb: 1,
+              mb: { xs: 1, md: 0.6 },
             }}
           >
             Student portal
@@ -297,11 +297,11 @@ export default function MarketplaceLogin() {
             sx={{
               fontFamily: HOME.fontDisplay,
               fontWeight: 700,
-              fontSize: { xs: "2.35rem", sm: "2.6rem", md: "2.75rem" },
+              fontSize: { xs: "2.35rem", sm: "2.6rem", md: "2.15rem", lg: "2.45rem", xl: "2.65rem" },
               color: HOME.navyDeep,
               lineHeight: 1.05,
               letterSpacing: "-0.02em",
-              mb: 1.1,
+              mb: { xs: 1.1, md: 0.65 },
             }}
           >
             KASMS
@@ -310,18 +310,18 @@ export default function MarketplaceLogin() {
           <Typography
             sx={{
               color: HOME.inkMuted,
-              fontSize: { xs: "0.95rem", md: "1rem" },
-              lineHeight: 1.55,
+              fontSize: { xs: "0.95rem", md: "0.88rem", lg: "0.95rem" },
+              lineHeight: 1.45,
               maxWidth: 360,
-              mb: { xs: 3, md: 2.75 },
+              mb: { xs: 3, md: 1.75, lg: 2.25 },
             }}
           >
             Sign in with your email or admission number to continue your studies.
           </Typography>
 
           <Box component="form" onSubmit={handleLogin} noValidate>
-            <Box sx={{ mb: 2 }}>
-              <Typography component="label" htmlFor="login-identifier" sx={labelSx}>
+            <Box sx={{ mb: { xs: 2, md: 1.35, lg: 1.6 } }}>
+              <Typography component="label" htmlFor="login-identifier" sx={{ ...labelSx, mb: { md: 0.55, lg: 0.75 } }}>
                 Email or admission number
               </Typography>
               <TextField
@@ -344,12 +344,18 @@ export default function MarketplaceLogin() {
                     </InputAdornment>
                   ) : null,
                 }}
-                sx={fieldSx}
+                sx={{
+                  ...fieldSx,
+                  "& .MuiOutlinedInput-root": {
+                    ...fieldSx["& .MuiOutlinedInput-root"],
+                    minHeight: { xs: 52, md: 46, lg: 50 },
+                  },
+                }}
               />
             </Box>
 
-            <Box sx={{ mb: 0.75 }}>
-              <Typography component="label" htmlFor="login-password" sx={labelSx}>
+            <Box sx={{ mb: { xs: 0.75, md: 0.4 } }}>
+              <Typography component="label" htmlFor="login-password" sx={{ ...labelSx, mb: { md: 0.55, lg: 0.75 } }}>
                 Password
               </Typography>
               <TextField
@@ -382,11 +388,17 @@ export default function MarketplaceLogin() {
                     </InputAdornment>
                   ),
                 }}
-                sx={fieldSx}
+                sx={{
+                  ...fieldSx,
+                  "& .MuiOutlinedInput-root": {
+                    ...fieldSx["& .MuiOutlinedInput-root"],
+                    minHeight: { xs: 52, md: 46, lg: 50 },
+                  },
+                }}
               />
             </Box>
 
-            <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2.25 }}>
+            <Box sx={{ display: "flex", justifyContent: "flex-end", mb: { xs: 2.25, md: 1.5, lg: 1.85 } }}>
               <Link
                 component="button"
                 type="button"
@@ -416,7 +428,7 @@ export default function MarketplaceLogin() {
                 fontFamily: HOME.fontBody,
                 fontSize: "0.98rem",
                 borderRadius: "12px",
-                py: 1.45,
+                py: { xs: 1.45, md: 1.15, lg: 1.3 },
                 color: "#fff",
                 background: `linear-gradient(135deg, ${HOME.green} 0%, #004840 100%)`,
                 boxShadow: "0 14px 32px rgba(0,96,80,0.28)",
@@ -435,12 +447,19 @@ export default function MarketplaceLogin() {
 
           <Box
             sx={{
-              mt: 2.75,
-              pt: 2.5,
+              mt: { xs: 2.75, md: 1.75, lg: 2.15 },
+              pt: { xs: 2.5, md: 1.5, lg: 1.85 },
               borderTop: `1px solid ${HOME.border}`,
             }}
           >
-            <Typography sx={{ fontSize: "0.88rem", color: HOME.inkMuted, mb: 1.5, lineHeight: 1.5 }}>
+            <Typography
+              sx={{
+                fontSize: { xs: "0.88rem", md: "0.84rem" },
+                color: HOME.inkMuted,
+                mb: { xs: 1.5, md: 1 },
+                lineHeight: 1.45,
+              }}
+            >
               New here?{" "}
               <Link
                 component={RouterLink}
@@ -462,7 +481,7 @@ export default function MarketplaceLogin() {
                 fontWeight: 700,
                 fontFamily: HOME.fontBody,
                 borderRadius: "12px",
-                py: 1.15,
+                py: { xs: 1.15, md: 0.9, lg: 1.05 },
                 borderColor: "rgba(12,35,64,0.16)",
                 color: HOME.navyDeep,
                 bgcolor: "rgba(255,255,255,0.65)",
@@ -478,11 +497,14 @@ export default function MarketplaceLogin() {
 
           <Typography
             sx={{
-              mt: 2.5,
+              mt: { xs: 2.5, md: 1.35, lg: 1.75 },
               fontSize: "0.72rem",
               color: HOME.inkSoft,
               textAlign: { xs: "center", md: "left" },
               lineHeight: 1.45,
+              whiteSpace: { md: "nowrap" },
+              overflow: "hidden",
+              textOverflow: "ellipsis",
             }}
           >
             Kendu Adventist School of Medical Sciences
@@ -544,8 +566,9 @@ export default function MarketplaceLogin() {
           sx={{
             position: "relative",
             zIndex: 1,
-            px: { md: 4, lg: 6 },
-            pt: { md: 4, lg: 5 },
+            flexShrink: 0,
+            px: { md: 3.5, lg: 5, xl: 6 },
+            pt: { md: 2.5, lg: 3.5, xl: 4.5 },
             animation: `${fadeUp} 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both`,
           }}
         >
@@ -553,11 +576,11 @@ export default function MarketplaceLogin() {
             sx={{
               fontFamily: HOME.fontDisplay,
               fontWeight: 700,
-              fontSize: { md: "2.4rem", lg: "2.85rem" },
+              fontSize: { md: "1.85rem", lg: "2.35rem", xl: "2.7rem" },
               color: "#fff",
               lineHeight: 1.12,
               letterSpacing: "-0.02em",
-              maxWidth: 420,
+              maxWidth: 440,
               textShadow: "0 12px 40px rgba(0,0,0,0.25)",
             }}
           >
@@ -565,11 +588,11 @@ export default function MarketplaceLogin() {
           </Typography>
           <Typography
             sx={{
-              mt: 1.25,
+              mt: { md: 0.85, lg: 1.15 },
               color: "rgba(255,255,255,0.86)",
-              fontSize: "1rem",
-              lineHeight: 1.55,
-              maxWidth: 380,
+              fontSize: { md: "0.88rem", lg: "0.98rem" },
+              lineHeight: 1.45,
+              maxWidth: 400,
             }}
           >
             Clinical excellence. Adventist values. Your pathway into medical sciences.
@@ -581,19 +604,20 @@ export default function MarketplaceLogin() {
             position: "relative",
             zIndex: 1,
             flex: 1,
+            minHeight: 0,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            px: { md: 3, lg: 5 },
-            py: 2,
+            px: { md: 2.5, lg: 4, xl: 5 },
+            py: { md: 1, lg: 1.5 },
           }}
         >
           <Box
             sx={{
               position: "relative",
               width: "100%",
-              maxWidth: 540,
-              height: { md: 300, lg: 360 },
+              maxWidth: { md: 420, lg: 500, xl: 540 },
+              height: { md: "min(240px, 34vh)", lg: "min(300px, 38vh)", xl: "min(340px, 40vh)" },
             }}
           >
             <Box
@@ -603,6 +627,7 @@ export default function MarketplaceLogin() {
                 top: { md: "4%", lg: "2%" },
                 width: { md: "54%", lg: "52%" },
                 aspectRatio: "1 / 1.12",
+                maxHeight: "100%",
                 borderRadius: "50%",
                 overflow: "hidden",
                 border: "5px solid rgba(255,255,255,0.92)",
@@ -625,6 +650,7 @@ export default function MarketplaceLogin() {
                 bottom: { md: "0%", lg: "-2%" },
                 width: { md: "54%", lg: "52%" },
                 aspectRatio: "1 / 1.12",
+                maxHeight: "100%",
                 borderRadius: "50%",
                 overflow: "hidden",
                 border: "5px solid rgba(255,255,255,0.92)",
@@ -651,8 +677,8 @@ export default function MarketplaceLogin() {
                 position: "absolute",
                 left: "50%",
                 top: "48%",
-                width: 48,
-                height: 48,
+                width: { md: 40, lg: 48 },
+                height: { md: 40, lg: 48 },
                 borderRadius: "50%",
                 bgcolor: HOME.gold,
                 color: HOME.navyDeep,
@@ -661,7 +687,7 @@ export default function MarketplaceLogin() {
                 border: "3px solid #fff",
                 zIndex: 3,
                 fontWeight: 800,
-                fontSize: "1rem",
+                fontSize: { md: "0.9rem", lg: "1rem" },
                 fontFamily: HOME.fontBody,
                 animation: `${breathe} 3.2s ease-in-out infinite`,
               }}
@@ -675,10 +701,11 @@ export default function MarketplaceLogin() {
           sx={{
             position: "relative",
             zIndex: 1,
-            mx: { md: 3, lg: 4 },
-            mb: { md: 2.5, lg: 3 },
-            px: 2,
-            py: 1.5,
+            flexShrink: 0,
+            mx: { md: 2.5, lg: 3.5, xl: 4 },
+            mb: { md: 1.75, lg: 2.5, xl: 3 },
+            px: { md: 1.5, lg: 2 },
+            py: { md: 1.1, lg: 1.35 },
             borderRadius: "16px",
             bgcolor: "rgba(255,255,255,0.14)",
             border: "1px solid rgba(255,255,255,0.22)",
@@ -693,8 +720,8 @@ export default function MarketplaceLogin() {
                 <Stack direction="row" spacing={0.7} alignItems="center" sx={{ minWidth: 0 }}>
                   <Box
                     sx={{
-                      width: 30,
-                      height: 30,
+                      width: { md: 26, lg: 30 },
+                      height: { md: 26, lg: 30 },
                       borderRadius: "10px",
                       bgcolor: "rgba(255,255,255,0.18)",
                       color: "#fff",
@@ -708,7 +735,7 @@ export default function MarketplaceLogin() {
                   </Box>
                   <Typography
                     sx={{
-                      fontSize: { md: "0.7rem", lg: "0.78rem" },
+                      fontSize: { md: "0.68rem", lg: "0.78rem" },
                       fontWeight: 700,
                       color: "#fff",
                       whiteSpace: "nowrap",
