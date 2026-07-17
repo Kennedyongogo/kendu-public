@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { Box, Typography, Stack, keyframes, CircularProgress, IconButton, Chip } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { HOME, BRAND_LOGO_SRC } from "./homeShared";
+import { HOME } from "./homeShared";
 import { HomeSectionShell, HomePrimaryButton } from "./homeUi";
+import useBrandImageSrc from "../../hooks/useBrandImageSrc";
 
 const fadeUp = keyframes`
   from { opacity: 0; transform: translateY(18px); }
@@ -27,8 +28,7 @@ function formatDuration(programme) {
 }
 
 function ProgrammeCard({ programme, index, onView }) {
-  const img = programmeImageSrc(programme);
-  const usingLogo = !img;
+  const { src: imgSrc, usingLogo, onError } = useBrandImageSrc(programmeImageSrc(programme));
 
   return (
     <Box
@@ -65,8 +65,9 @@ function ProgrammeCard({ programme, index, onView }) {
         <Box
           className="programme-photo"
           component="img"
-          src={img || BRAND_LOGO_SRC}
+          src={imgSrc}
           alt={programme.name}
+          onError={onError}
           sx={{
             position: "absolute",
             inset: 0,

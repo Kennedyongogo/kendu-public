@@ -22,10 +22,11 @@ import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
 import PaymentsOutlinedIcon from "@mui/icons-material/PaymentsOutlined";
 import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
 import GradeOutlinedIcon from "@mui/icons-material/GradeOutlined";
-import { HOME, BRAND_LOGO_SRC } from "../components/Home/homeShared";
+import { HOME } from "../components/Home/homeShared";
 import { HomePrimaryButton, HomeGhostButton } from "../components/Home/homeUi";
 import Footer from "../components/Footer/Footer";
 import BrandPageLoader from "../components/common/BrandPageLoader";
+import useBrandImageSrc from "../hooks/useBrandImageSrc";
 
 const SECTIONS = [
   { id: "overview", label: "Overview" },
@@ -427,8 +428,9 @@ export default function ProgrammeDetail() {
     };
   }, [id]);
 
-  const img = programme?.image_url || null;
-  const usingLogo = !img;
+  const { src: imgSrc, usingLogo, onError: onImageError } = useBrandImageSrc(
+    programme?.image_url || null
+  );
 
   const fees = useMemo(() => {
     const list = Array.isArray(programme?.fee_structure) ? [...programme.fee_structure] : [];
@@ -510,8 +512,9 @@ export default function ProgrammeDetail() {
           >
             <Box
               component="img"
-              src={img || BRAND_LOGO_SRC}
+              src={imgSrc}
               alt={programme.name}
+              onError={onImageError}
               sx={{
                 width: "100%",
                 height: "100%",

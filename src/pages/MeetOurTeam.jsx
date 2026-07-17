@@ -4,10 +4,11 @@ import { Box, Typography, Stack, keyframes, IconButton, Tooltip } from "@mui/mat
 import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { HOME, BRAND_LOGO_SRC } from "../components/Home/homeShared";
+import { HOME } from "../components/Home/homeShared";
 import { HomeSectionShell } from "../components/Home/homeUi";
 import Footer from "../components/Footer/Footer";
 import BrandPageLoader from "../components/common/BrandPageLoader";
+import useBrandImageSrc from "../hooks/useBrandImageSrc";
 
 const fadeUp = keyframes`
   from { opacity: 0; transform: translateY(18px); }
@@ -24,8 +25,7 @@ function staffGridColumns() {
 }
 
 function StaffCard({ person, index }) {
-  const photoSrc = person.profile_image_url || BRAND_LOGO_SRC;
-  const usingLogo = !person.profile_image_url;
+  const { src: photoSrc, usingLogo, onError } = useBrandImageSrc(person.profile_image_url);
 
   return (
     <Box
@@ -53,6 +53,7 @@ function StaffCard({ person, index }) {
         component="img"
         src={photoSrc}
         alt={person.full_name}
+        onError={onError}
         sx={{
           position: "absolute",
           inset: 0,
