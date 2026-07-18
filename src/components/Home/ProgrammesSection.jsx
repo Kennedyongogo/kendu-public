@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { Box, Typography, Stack, keyframes, CircularProgress, IconButton, Chip } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
+import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import { HOME } from "./homeShared";
 import { HomeSectionShell, HomePrimaryButton } from "./homeUi";
 import useBrandImageSrc from "../../hooks/useBrandImageSrc";
@@ -12,7 +15,9 @@ const fadeUp = keyframes`
   to { opacity: 1; transform: translateY(0); }
 `;
 
-const GAP_PX = { xs: 12, sm: 16, md: 20 };
+// On xs the gap must equal the scroller's side padding so the neighbouring
+// cards sit fully off-screen and only one card is visible at a time.
+const GAP_PX = { xs: 16, sm: 16, md: 20 };
 
 function programmeImageSrc(programme) {
   return programme?.image_url || null;
@@ -38,18 +43,23 @@ function ProgrammeCard({ programme, index, onView }) {
         height: "100%",
         display: "flex",
         flexDirection: "column",
+        borderRadius: "22px",
         border: `1px solid ${HOME.border}`,
         bgcolor: "#fff",
         overflow: "hidden",
-        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+        boxShadow: "0 10px 30px -18px rgba(8,22,43,0.18)",
+        transition: "transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease",
         "@media (prefers-reduced-motion: no-preference)": {
           animation: `${fadeUp} 0.55s ease both`,
           animationDelay: `${Math.min(index, 8) * 0.06}s`,
         },
         "&:hover": {
-          transform: "translateY(-3px)",
-          boxShadow: HOME.shadowSm,
-          "& .programme-photo": { transform: "scale(1.04)" },
+          transform: "translateY(-5px)",
+          boxShadow: HOME.shadowMd,
+          borderColor: HOME.borderGold,
+          "& .programme-photo": { transform: "scale(1.06)" },
+          "& .programme-accent": { transform: "scaleX(1)" },
+          "& .programme-name": { color: HOME.gold },
         },
       }}
     >
@@ -77,7 +87,7 @@ function ProgrammeCard({ programme, index, onView }) {
             objectPosition: "center",
             p: usingLogo ? { xs: 3, sm: 4 } : 0,
             display: "block",
-            transition: "transform 0.45s ease",
+            transition: "transform 0.5s ease",
             bgcolor: usingLogo ? "rgba(0,96,80,0.06)" : "transparent",
           }}
         />
@@ -86,21 +96,71 @@ function ProgrammeCard({ programme, index, onView }) {
             position: "absolute",
             inset: 0,
             background: usingLogo
-              ? "linear-gradient(180deg, transparent 40%, rgba(8,22,43,0.55) 78%, rgba(8,22,43,0.88) 100%)"
-              : "linear-gradient(180deg, transparent 42%, rgba(8,22,43,0.5) 72%, rgba(8,22,43,0.88) 100%)",
+              ? "linear-gradient(180deg, rgba(8,22,43,0.06) 0%, transparent 32%, rgba(8,22,43,0.55) 76%, rgba(8,22,43,0.9) 100%)"
+              : "linear-gradient(180deg, rgba(8,22,43,0.08) 0%, transparent 34%, rgba(8,22,43,0.5) 70%, rgba(8,22,43,0.9) 100%)",
             pointerEvents: "none",
           }}
         />
+
+        {/* Glass duration badge */}
+        <Stack
+          direction="row"
+          spacing={0.6}
+          alignItems="center"
+          sx={{
+            position: "absolute",
+            top: 12,
+            left: 12,
+            zIndex: 1,
+            px: 1.25,
+            py: 0.5,
+            borderRadius: "999px",
+            bgcolor: "rgba(8,22,43,0.45)",
+            backdropFilter: "blur(6px)",
+            border: "1px solid rgba(255,255,255,0.25)",
+          }}
+        >
+          <AccessTimeRoundedIcon sx={{ fontSize: 14, color: HOME.gold }} />
+          <Typography
+            sx={{
+              fontFamily: HOME.fontBody,
+              fontWeight: 700,
+              fontSize: "0.7rem",
+              color: "#fff",
+              letterSpacing: "0.04em",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {formatDuration(programme)}
+          </Typography>
+        </Stack>
+
         <Box sx={{ position: "absolute", left: 0, right: 0, bottom: 0, px: 2, pb: 1.75, zIndex: 1 }}>
+          <Box
+            className="programme-accent"
+            sx={{
+              width: 44,
+              height: 3,
+              borderRadius: 2,
+              mb: 1,
+              background: HOME.goldGradient,
+              transform: "scaleX(0.55)",
+              transformOrigin: "left",
+              transition: "transform 0.35s ease",
+            }}
+          />
           <Typography
             component="h3"
+            className="programme-name"
             sx={{
               fontFamily: HOME.fontDisplay,
               fontWeight: 700,
-              fontSize: { xs: "1.2rem", sm: "1.35rem" },
+              fontSize: { xs: "1.25rem", sm: "1.4rem" },
               color: "#fff",
               lineHeight: 1.2,
+              letterSpacing: "-0.01em",
               textShadow: "0 1px 8px rgba(0,0,0,0.35)",
+              transition: "color 0.3s ease",
             }}
           >
             {programme.name}
@@ -113,22 +173,40 @@ function ProgrammeCard({ programme, index, onView }) {
         alignItems="center"
         justifyContent="space-between"
         spacing={1.5}
-        sx={{ px: 2, py: 1.75, gap: 1.5, mt: "auto" }}
+        sx={{ px: 2, py: 1.6, gap: 1.5, mt: "auto" }}
       >
-        <Typography
-          sx={{
-            fontFamily: HOME.fontBody,
-            fontWeight: 700,
-            fontSize: "0.88rem",
-            color: HOME.inkSoft,
-            minWidth: 0,
-          }}
-        >
-          {formatDuration(programme)}
-        </Typography>
+        <Stack direction="row" spacing={0.7} alignItems="center" sx={{ minWidth: 0 }}>
+          <Box
+            sx={{
+              width: 30,
+              height: 30,
+              borderRadius: "10px",
+              display: "grid",
+              placeItems: "center",
+              bgcolor: "rgba(0,96,80,0.08)",
+              color: HOME.green,
+              flexShrink: 0,
+            }}
+          >
+            <SchoolRoundedIcon sx={{ fontSize: 17 }} />
+          </Box>
+          <Typography
+            noWrap
+            sx={{
+              fontFamily: HOME.fontBody,
+              fontWeight: 700,
+              fontSize: "0.78rem",
+              color: HOME.inkSoft,
+              minWidth: 0,
+            }}
+          >
+            Medical sciences
+          </Typography>
+        </Stack>
         <HomePrimaryButton
           onClick={() => onView(programme.id)}
-          sx={{ py: 1, px: 2, fontSize: "0.82rem", flexShrink: 0 }}
+          endIcon={<ArrowForwardRoundedIcon sx={{ fontSize: "1rem !important" }} />}
+          sx={{ py: 0.9, px: 1.9, fontSize: "0.8rem", flexShrink: 0 }}
         >
           View details
         </HomePrimaryButton>
@@ -144,8 +222,9 @@ function NavArrow({ direction, onClick, disabled }) {
       disabled={disabled}
       aria-label={direction === "prev" ? "Previous programmes" : "Next programmes"}
       sx={{
-        width: { xs: 42, md: 48 },
-        height: { xs: 42, md: 48 },
+        width: { xs: 40, md: 48 },
+        height: { xs: 40, md: 48 },
+        flexShrink: 0,
         bgcolor: HOME.green,
         color: "#fff",
         border: "1px solid rgba(255,255,255,0.2)",
@@ -174,26 +253,29 @@ export default function ProgrammesSection() {
   const [error, setError] = useState(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(false);
-
-  /** Arrows enabled only when there are 4 or more programmes. */
-  const carouselEnabled = programmes.length >= 4;
+  // Arrows activate whenever the cards overflow the visible area:
+  // one card per view on phones, two on tablets, three on desktop.
+  const [carouselEnabled, setCarouselEnabled] = useState(false);
 
   const updateArrowState = useCallback(() => {
     const el = scrollerRef.current;
-    if (!el || programmes.length < 4) {
+    if (!el) {
+      setCarouselEnabled(false);
       setCanPrev(false);
       setCanNext(false);
       return;
     }
     const maxScroll = el.scrollWidth - el.clientWidth;
     if (maxScroll <= 4) {
+      setCarouselEnabled(false);
       setCanPrev(false);
       setCanNext(false);
       return;
     }
+    setCarouselEnabled(true);
     setCanPrev(el.scrollLeft > 4);
     setCanNext(el.scrollLeft < maxScroll - 4);
-  }, [programmes.length]);
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -249,7 +331,7 @@ export default function ProgrammesSection() {
       sx={{
         width: "100%",
         pt: { xs: 2.5, md: 3.5 },
-        pb: { xs: 5, md: 7 },
+        pb: { xs: 2.5, md: 3.5 },
         px: 0,
       }}
     >
@@ -330,44 +412,26 @@ export default function ProgrammesSection() {
           Programmes will appear here once they are published.
         </Typography>
       ) : (
-        <Box sx={{ position: "relative", width: "100%" }}>
-          {/* Always on far left / far right edges */}
-          <Box
-            sx={{
-              display: "flex",
-              position: "absolute",
-              left: { xs: 6, sm: 10, md: 12 },
-              top: "50%",
-              transform: "translateY(-50%)",
-              zIndex: 2,
-            }}
-          >
-            <NavArrow
-              direction="prev"
-              disabled={!carouselEnabled || !canPrev}
-              onClick={() => scrollByPage(-1)}
-            />
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              position: "absolute",
-              right: { xs: 6, sm: 10, md: 12 },
-              top: "50%",
-              transform: "translateY(-50%)",
-              zIndex: 2,
-            }}
-          >
-            <NavArrow
-              direction="next"
-              disabled={!carouselEnabled || !canNext}
-              onClick={() => scrollByPage(1)}
-            />
-          </Box>
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            gap: { xs: 1, sm: 1.5, md: 2 },
+            px: { xs: 1.5, sm: 2.5, md: 3.5 },
+          }}
+        >
+          <NavArrow
+            direction="prev"
+            disabled={!carouselEnabled || !canPrev}
+            onClick={() => scrollByPage(-1)}
+          />
 
           <Box
             ref={scrollerRef}
             sx={{
+              flex: 1,
+              minWidth: 0,
               display: "flex",
               gap: { xs: `${GAP_PX.xs}px`, sm: `${GAP_PX.sm}px`, md: `${GAP_PX.md}px` },
               overflowX: carouselEnabled ? "auto" : "hidden",
@@ -375,7 +439,6 @@ export default function ProgrammesSection() {
               scrollSnapType: carouselEnabled ? "x mandatory" : "none",
               scrollBehavior: "smooth",
               WebkitOverflowScrolling: "touch",
-              px: { xs: 7, sm: 8, md: 9 },
               pb: 1,
               scrollbarWidth: "none",
               msOverflowStyle: "none",
@@ -414,6 +477,12 @@ export default function ProgrammesSection() {
               </Box>
             ))}
           </Box>
+
+          <NavArrow
+            direction="next"
+            disabled={!carouselEnabled || !canNext}
+            onClick={() => scrollByPage(1)}
+          />
         </Box>
       )}
     </HomeSectionShell>
