@@ -135,7 +135,7 @@ export default function MarketplaceLogin() {
         timer: 1600,
         showConfirmButton: false,
       });
-      navigate("/");
+      navigate("/student");
     } catch (err) {
       Swal.fire({
         icon: "error",

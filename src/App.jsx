@@ -21,6 +21,7 @@ const MarketplaceLogin = lazy(() => import("./pages/MarketplaceLogin"));
 const AdmissionApplication = lazy(() => import("./pages/AdmissionApplication"));
 const MeetOurTeam = lazy(() => import("./pages/MeetOurTeam"));
 const ProgrammeDetail = lazy(() => import("./pages/ProgrammeDetail"));
+const StudentPortal = lazy(() => import("./pages/StudentPortal"));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -34,7 +35,8 @@ function ScrollToTop() {
 
 function AppLayout() {
   const location = useLocation();
-  const hideHeader = location.pathname === "/login";
+  const hideHeader =
+    location.pathname === "/login" || location.pathname.startsWith("/student");
 
   return (
     <>
@@ -64,6 +66,9 @@ function AppLayout() {
               }
             />
             <Route path="/login" element={<MarketplaceLogin />} />
+            <Route path="/student" element={<StudentPortal />} />
+            <Route path="/student/fees" element={<StudentPortal />} />
+            <Route path="/student/settings" element={<StudentPortal />} />
             <Route path="/admission/apply" element={<AdmissionApplication />} />
             <Route path="/programmes/:id" element={<ProgrammeDetail />} />
             <Route path="*" element={<Navigate to="/" replace />} />

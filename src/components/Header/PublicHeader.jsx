@@ -536,7 +536,7 @@ export default function PublicHeader() {
               })}
             </Box>
 
-            {/* Login — far right */}
+            {/* Student portal — far right */}
             <Box
               sx={{
                 display: { xs: "none", md: "flex" },
@@ -575,7 +575,7 @@ export default function PublicHeader() {
                   },
                 }}
               >
-                Login
+                Student Portal
               </Button>
             </Box>
 
@@ -800,7 +800,7 @@ export default function PublicHeader() {
                 },
               }}
             >
-              Login
+              Student Portal
             </Button>
           </Stack>
         </Box>
