@@ -176,7 +176,9 @@ export default function HeroSection() {
               display: "flex",
               alignItems: "center",
               pl: { xs: 2, sm: 2.5, md: "clamp(28px, 4vw, 56px)", lg: "clamp(36px, 4.5vw, 72px)" },
-              pr: { xs: 2, sm: 2.5, md: "clamp(48px, 14%, 120px)", lg: "clamp(48px, 12%, 108px)" },
+              // Right padding must clear the diagonal clip (78% at the bottom edge),
+              // otherwise lower lines of text spill onto the green panel.
+              pr: { xs: 2, sm: 2.5, md: "clamp(64px, 21%, 190px)", lg: "clamp(72px, 20%, 200px)" },
               py: { xs: 2, md: 4, lg: 5, xl: 6 },
               boxSizing: "border-box",
               overflow: "hidden",
