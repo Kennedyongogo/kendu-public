@@ -5,7 +5,7 @@ import { BRAND } from "../../brand";
 
 export default function BrandPageLoader({
   message = "Preparing your experience...",
-  submessage = "Loading pages and resources for students, families, and staff.",
+  submessage = "Loading pages and resources for students.",
 }) {
   return (
     <Box

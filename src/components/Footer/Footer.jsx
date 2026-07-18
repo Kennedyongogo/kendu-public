@@ -34,6 +34,7 @@ const TikTokIcon = ({ sx, ...props }) => (
 
 const FOOTER_LINKS = [
   { label: "Home", path: "/" },
+  { label: "Programmes", path: "/", sectionId: "programmes" },
   { label: "About Us", path: "/about-us" },
   { label: "Student Portal", path: "/login" },
 ];
@@ -59,6 +60,24 @@ const bodySx = {
   fontSize: "0.85rem",
   lineHeight: 1.55,
 };
+
+function goToLink(navigate, link) {
+  if (link.sectionId) {
+    if (window.location.pathname === "/") {
+      const section = document.getElementById(link.sectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+    }
+    navigate("/");
+    window.setTimeout(() => {
+      document.getElementById(link.sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 120);
+    return;
+  }
+  navigate(link.path);
+}
 
 export default function Footer() {
   const navigate = useNavigate();
@@ -141,9 +160,9 @@ export default function Footer() {
             <Stack spacing={0.75}>
               {FOOTER_LINKS.map((link) => (
                 <Link
-                  key={link.path}
+                  key={`${link.label}-${link.sectionId || link.path}`}
                   component="button"
-                  onClick={() => navigate(link.path)}
+                  onClick={() => goToLink(navigate, link)}
                   underline="none"
                   sx={{
                     display: "inline-flex",

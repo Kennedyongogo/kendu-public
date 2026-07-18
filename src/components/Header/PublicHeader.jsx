@@ -17,7 +17,13 @@ import {
   Slide,
   Stack,
 } from "@mui/material";
-import { Home, Menu as MenuIcon, Close, Groups, HowToRegOutlined } from "@mui/icons-material";
+import {
+  Home,
+  Menu as MenuIcon,
+  Close,
+  Groups,
+  MenuBookOutlined,
+} from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import BrandLogoMark from "../common/BrandLogoMark";
 import { BRAND as BRAND_SHARED } from "../../brand";
@@ -47,6 +53,12 @@ export default function PublicHeader() {
         label: "Home",
         icon: <Home />,
         sectionId: "hero-section",
+        color: BRAND.gold,
+      },
+      {
+        label: "Programmes",
+        icon: <MenuBookOutlined />,
+        sectionId: "programmes",
         color: BRAND.gold,
       },
       {
@@ -204,8 +216,8 @@ export default function PublicHeader() {
   const onTransparentHeader = isHeaderTransparent;
   const navOnGreenSide = isSplitHeroHeader;
   const brandOnWhiteSide = isSplitHeroHeader;
-  const headerActionColor = navOnGreenSide ? "white" : BRAND.navy;
-  const navLinkColor = navOnGreenSide ? "white" : BRAND.navy;
+  const headerActionColor = "#000";
+  const navLinkColor = "#000";
 
   // Split nav items - on home page, show all on right when not in hero, otherwise all on right
   const leftNavItems = []; // No left nav items - all go to right
@@ -524,7 +536,7 @@ export default function PublicHeader() {
               })}
             </Box>
 
-            {/* Apply admission + Login — far right */}
+            {/* Login — far right */}
             <Box
               sx={{
                 display: { xs: "none", md: "flex" },
@@ -534,56 +546,6 @@ export default function PublicHeader() {
                 gap: 1,
               }}
             >
-              <Button
-                variant="outlined"
-                startIcon={<HowToRegOutlined sx={{ fontSize: "1.1rem !important" }} />}
-                onClick={() =>
-                  navigate("/admission/apply", {
-                    state: {
-                      from: location.pathname,
-                      fromLabel:
-                        location.pathname === "/"
-                          ? "Home"
-                          : location.pathname === "/about-us"
-                            ? "About us"
-                            : location.pathname === "/meet-our-team"
-                              ? "Meet our team"
-                              : location.pathname === "/login"
-                                ? "Login"
-                                : "previous page",
-                    },
-                  })
-                }
-                sx={{
-                  px: 2,
-                  py: 1.05,
-                  fontSize: "0.875rem",
-                  fontWeight: 700,
-                  borderRadius: 2,
-                  color: headerActionColor,
-                  borderColor: onTransparentHeader ? "rgba(255,255,255,0.55)" : BRAND.surfaceBorder,
-                  textTransform: "none",
-                  whiteSpace: "nowrap",
-                  transition: "all 0.3s ease",
-                  backgroundColor: location.pathname.startsWith("/admission")
-                    ? onTransparentHeader
-                      ? "rgba(255,255,255,0.12)"
-                      : "rgba(12, 35, 64, 0.06)"
-                    : "transparent",
-                  "&:focus": { outline: "none" },
-                  "&:focus-visible": { outline: "none" },
-                  "&:hover": {
-                    borderColor: onTransparentHeader ? "#fff" : BRAND.gold,
-                    color: onTransparentHeader ? "#fff" : BRAND.navyDeep,
-                    backgroundColor: onTransparentHeader
-                      ? "rgba(255,255,255,0.14)"
-                      : "rgba(201, 162, 39, 0.12)",
-                    transform: "translateY(-2px)",
-                  },
-                }}
-              >
-                Apply admission
-              </Button>
               <Button
                 variant="contained"
                 onClick={() => navigate("/login")}
@@ -812,46 +774,6 @@ export default function PublicHeader() {
           </List>
           <Divider sx={{ my: 1.5, borderColor: BRAND.surfaceBorder }} />
           <Stack spacing={1}>
-            <Button
-              variant="outlined"
-              fullWidth
-              startIcon={<HowToRegOutlined />}
-              onClick={() => {
-                setMobileMenuOpen(false);
-                navigate("/admission/apply", {
-                  state: {
-                    from: location.pathname,
-                    fromLabel:
-                      location.pathname === "/"
-                        ? "Home"
-                        : location.pathname === "/about-us"
-                          ? "About us"
-                          : location.pathname === "/meet-our-team"
-                            ? "Meet our team"
-                            : location.pathname === "/login"
-                              ? "Login"
-                              : "previous page",
-                  },
-                });
-              }}
-              sx={{
-                px: 3,
-                py: 1.35,
-                fontSize: "0.875rem",
-                fontWeight: 700,
-                borderRadius: 2,
-                color: BRAND.navy,
-                borderColor: BRAND.surfaceBorder,
-                textTransform: "none",
-                transition: "all 0.3s ease",
-                "&:hover": {
-                  borderColor: BRAND.gold,
-                  backgroundColor: "rgba(201, 162, 39, 0.1)",
-                },
-              }}
-            >
-              Apply admission
-            </Button>
             <Button
               variant="contained"
               fullWidth
