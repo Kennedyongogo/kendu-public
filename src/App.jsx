@@ -67,6 +67,8 @@ function AppLayout() {
             />
             <Route path="/login" element={<MarketplaceLogin />} />
             <Route path="/student" element={<StudentPortal />} />
+            <Route path="/student/timetable" element={<StudentPortal />} />
+            <Route path="/student/timetable/day/:dateKey" element={<StudentPortal />} />
             <Route path="/student/fees" element={<StudentPortal />} />
             <Route path="/student/settings" element={<StudentPortal />} />
             <Route path="/admission/apply" element={<AdmissionApplication />} />

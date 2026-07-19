@@ -5,17 +5,22 @@ import StudentNavbar from "../components/StudentPortal/StudentNavbar";
 import StudentHome from "../components/StudentPortal/StudentHome";
 import StudentSettings from "../components/StudentPortal/StudentSettings";
 import StudentFees from "../components/StudentPortal/StudentFees";
+import StudentTimetable from "../components/StudentPortal/StudentTimetable";
+import StudentTimetableDay from "../components/StudentPortal/StudentTimetableDay";
 import { HOME, readStoredStudent } from "../components/StudentPortal/studentPortalShared";
 
 export default function StudentPortal() {
   const navigate = useNavigate();
   const location = useLocation();
   const [student, setStudent] = useState(() => readStoredStudent());
+  const isTimetableDay = location.pathname.includes("/timetable/day/");
   const activePage = location.pathname.endsWith("/settings")
     ? "settings"
     : location.pathname.endsWith("/fees")
       ? "fees"
-      : "home";
+      : location.pathname.endsWith("/timetable") || isTimetableDay
+        ? "timetable"
+        : "home";
 
   useEffect(() => {
     if (!student) navigate("/login", { replace: true });
@@ -55,6 +60,8 @@ export default function StudentPortal() {
         />
       ) : activePage === "fees" ? (
         <StudentFees student={student} />
+      ) : activePage === "timetable" ? (
+        isTimetableDay ? <StudentTimetableDay /> : <StudentTimetable />
       ) : (
         <StudentHome student={student} />
       )}

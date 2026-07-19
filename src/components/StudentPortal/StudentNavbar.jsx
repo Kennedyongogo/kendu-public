@@ -16,6 +16,7 @@ import {
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceWalletRounded";
+import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import BrandLogoMark from "../common/BrandLogoMark";
 import { HOME, firstName } from "./studentPortalShared";
@@ -92,6 +93,7 @@ export default function StudentNavbar({ student, activePage, onNavigate, onLogou
           sx={{ flex: 1, minWidth: 0, display: { xs: "none", sm: "flex" } }}
         >
           {navButtonSx("home", HomeRoundedIcon, "Home")}
+          {navButtonSx("timetable", CalendarMonthRoundedIcon, "Timetable")}
           {navButtonSx("fees", AccountBalanceWalletRoundedIcon, "Fees")}
           {navButtonSx("settings", SettingsRoundedIcon, "Settings")}
         </Stack>
@@ -237,6 +239,18 @@ export default function StudentNavbar({ student, activePage, onNavigate, onLogou
               <HomeRoundedIcon fontSize="small" sx={{ color: HOME.green }} />
             </ListItemIcon>
             Home
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              setMobileAnchorEl(null);
+              onNavigate("timetable");
+            }}
+            sx={{ fontFamily: HOME.fontBody, fontWeight: 600, fontSize: "0.88rem", py: 1.15 }}
+          >
+            <ListItemIcon>
+              <CalendarMonthRoundedIcon fontSize="small" sx={{ color: HOME.green }} />
+            </ListItemIcon>
+            Timetable
           </MenuItem>
           <MenuItem
             onClick={() => {
