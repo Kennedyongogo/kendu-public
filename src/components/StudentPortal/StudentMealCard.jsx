@@ -121,6 +121,9 @@ function MealCardFace({ card }) {
         boxShadow: "0 18px 40px -18px rgba(0,96,80,0.45)",
         fontFamily: HOME.fontBody,
         userSelect: "none",
+        display: "flex",
+        flexDirection: "column",
+        pl: "13px",
       }}
     >
       <Box sx={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 10, bgcolor: HOME.green }} />
@@ -137,8 +140,8 @@ function MealCardFace({ card }) {
 
       <Box
         sx={{
-          ml: "13px",
-          height: "18%",
+          flexShrink: 0,
+          height: { xs: 34, sm: 40 },
           bgcolor: HOME.green,
           display: "flex",
           alignItems: "center",
@@ -151,21 +154,34 @@ function MealCardFace({ card }) {
           sx={{
             fontFamily: HOME.fontBody,
             fontWeight: 800,
-            fontSize: "0.68rem",
+            fontSize: { xs: "0.6rem", sm: "0.68rem" },
             letterSpacing: "0.12em",
           }}
         >
           MEAL CARD
         </Typography>
-        <Typography sx={{ fontSize: "0.62rem", fontWeight: 700, opacity: 0.9 }}>KASMS</Typography>
+        <Typography sx={{ fontSize: { xs: "0.55rem", sm: "0.62rem" }, fontWeight: 700, opacity: 0.9 }}>
+          KASMS
+        </Typography>
       </Box>
 
-      <Stack direction="row" spacing={1.25} sx={{ ml: "13px", px: 1.25, pt: 1.1, pb: 0.5, height: "58%" }}>
+      <Stack
+        direction="row"
+        spacing={{ xs: 1, sm: 1.25 }}
+        sx={{
+          flex: 1,
+          minHeight: 0,
+          px: 1.25,
+          pt: { xs: 0.85, sm: 1.1 },
+          pb: { xs: 0.85, sm: 1 },
+          alignItems: "stretch",
+        }}
+      >
         <Box
           sx={{
-            width: "28%",
+            width: { xs: "26%", sm: "28%" },
             maxWidth: 92,
-            aspectRatio: "3 / 3.7",
+            alignSelf: "stretch",
             borderRadius: "8px",
             border: `1.5px solid ${HOME.green}`,
             overflow: "hidden",
@@ -187,7 +203,7 @@ function MealCardFace({ card }) {
               sx={{
                 fontFamily: HOME.fontDisplay,
                 fontWeight: 700,
-                fontSize: "1.35rem",
+                fontSize: { xs: "1.1rem", sm: "1.35rem" },
                 color: HOME.green,
               }}
             >
@@ -196,7 +212,17 @@ function MealCardFace({ card }) {
           )}
         </Box>
 
-        <Box sx={{ minWidth: 0, flex: 1, pt: 0.25 }}>
+        <Box
+          sx={{
+            minWidth: 0,
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            gap: { xs: 0.35, sm: 0.15 },
+            overflow: "hidden",
+          }}
+        >
           <Typography
             sx={{
               fontSize: "0.55rem",
@@ -204,6 +230,7 @@ function MealCardFace({ card }) {
               letterSpacing: "0.08em",
               color: "rgba(8,22,43,0.45)",
               textTransform: "uppercase",
+              lineHeight: 1.2,
             }}
           >
             Full name
@@ -212,10 +239,10 @@ function MealCardFace({ card }) {
             sx={{
               fontFamily: HOME.fontDisplay,
               fontWeight: 700,
-              fontSize: { xs: "0.92rem", sm: "1.05rem" },
+              fontSize: { xs: "0.82rem", sm: "1.05rem" },
               color: HOME.navyDeep || "#1e2858",
               lineHeight: 1.15,
-              mb: 0.85,
+              mb: { xs: 0.35, sm: 0.65 },
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
@@ -231,6 +258,7 @@ function MealCardFace({ card }) {
               letterSpacing: "0.08em",
               color: "rgba(8,22,43,0.45)",
               textTransform: "uppercase",
+              lineHeight: 1.2,
             }}
           >
             Admission no.
@@ -239,9 +267,13 @@ function MealCardFace({ card }) {
             sx={{
               fontFamily: HOME.fontBody,
               fontWeight: 800,
-              fontSize: "0.95rem",
+              fontSize: { xs: "0.82rem", sm: "0.95rem" },
               color: HOME.green,
-              mb: 0.85,
+              lineHeight: 1.2,
+              mb: { xs: 0.35, sm: 0.65 },
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
             }}
           >
             {card.admission_number || "—"}
@@ -254,6 +286,7 @@ function MealCardFace({ card }) {
               letterSpacing: "0.08em",
               color: "rgba(8,22,43,0.45)",
               textTransform: "uppercase",
+              lineHeight: 1.2,
             }}
           >
             Programme
@@ -262,11 +295,11 @@ function MealCardFace({ card }) {
             sx={{
               fontFamily: HOME.fontBody,
               fontWeight: 700,
-              fontSize: "0.72rem",
+              fontSize: { xs: "0.65rem", sm: "0.72rem" },
               color: "rgba(8,22,43,0.78)",
               lineHeight: 1.25,
               display: "-webkit-box",
-              WebkitLineClamp: 2,
+              WebkitLineClamp: { xs: 1, sm: 2 },
               WebkitBoxOrient: "vertical",
               overflow: "hidden",
             }}
@@ -278,14 +311,12 @@ function MealCardFace({ card }) {
 
       <Box
         sx={{
-          position: "absolute",
-          left: "13px",
-          right: 0,
-          bottom: 0,
-          height: "22%",
+          flexShrink: 0,
+          minHeight: { xs: 40, sm: 46 },
           bgcolor: "#004840",
           color: "#fff",
           px: 1.25,
+          py: 0.65,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -293,7 +324,7 @@ function MealCardFace({ card }) {
         }}
       >
         <Box sx={{ minWidth: 0 }}>
-          <Typography sx={{ fontSize: "0.62rem", fontWeight: 700, opacity: 0.9 }} noWrap>
+          <Typography sx={{ fontSize: { xs: "0.55rem", sm: "0.62rem" }, fontWeight: 700, opacity: 0.9 }} noWrap>
             {yearLine || "Student meal access"}
           </Typography>
           <Typography sx={{ fontSize: "0.55rem", color: HOME.gold, fontWeight: 700 }}>
