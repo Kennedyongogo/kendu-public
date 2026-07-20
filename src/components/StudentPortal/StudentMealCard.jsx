@@ -28,6 +28,65 @@ function formatMoney(amount, currency = "KES") {
   }).format(Number(amount) || 0);
 }
 
+function showMealFeeGateDialog({ access, onGoToFees }) {
+  const required = access?.min_fee_percent ?? 0;
+  const paidPct = access?.percent_paid ?? 0;
+  const shortfall = access?.shortfall_percent ?? Math.max(0, required - paidPct);
+  const currency = access?.currency || "KES";
+  const totalCharged = formatMoney(access?.total_charged, currency);
+  const totalPaid = formatMoney(access?.total_paid, currency);
+
+  return Swal.fire({
+    icon: false,
+    title: "Fee requirement not met",
+    html: `
+      <div style="text-align:left;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#1a2638;">
+        <p style="margin:0 0 10px;font-size:0.86rem;line-height:1.45;color:rgba(8,22,43,0.72);">
+          You need to clear more of your school fees before downloading your
+          <strong style="color:#006050;">meal card</strong>.
+        </p>
+        <div style="display:grid;gap:6px;padding:10px 12px;border-radius:12px;background:rgba(0,96,80,0.05);border:1px solid rgba(0,96,80,0.12);">
+          <div style="display:flex;justify-content:space-between;gap:12px;">
+            <span style="font-size:0.74rem;font-weight:700;color:rgba(8,22,43,0.55);">Required</span>
+            <span style="font-size:0.84rem;font-weight:800;color:#006050;">${required}% of fees paid</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:12px;">
+            <span style="font-size:0.74rem;font-weight:700;color:rgba(8,22,43,0.55);">You have paid</span>
+            <span style="font-size:0.84rem;font-weight:800;">${paidPct}%</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:12px;">
+            <span style="font-size:0.74rem;font-weight:700;color:rgba(8,22,43,0.55);">Still needed</span>
+            <span style="font-size:0.84rem;font-weight:800;color:#9a6700;">${shortfall}%</span>
+          </div>
+          <hr style="border:none;border-top:1px solid rgba(0,96,80,0.12);margin:2px 0;" />
+          <div style="display:flex;justify-content:space-between;gap:12px;">
+            <span style="font-size:0.74rem;font-weight:700;color:rgba(8,22,43,0.55);">Total charged</span>
+            <span style="font-size:0.8rem;font-weight:700;">${totalCharged}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:12px;">
+            <span style="font-size:0.74rem;font-weight:700;color:rgba(8,22,43,0.55);">Confirmed paid</span>
+            <span style="font-size:0.8rem;font-weight:700;">${totalPaid}</span>
+          </div>
+        </div>
+        <p style="margin:10px 0 0;font-size:0.74rem;line-height:1.4;color:rgba(8,22,43,0.55);">
+          Make a payment under Fees, then come back and download your meal card when you reach the required share.
+        </p>
+      </div>
+    `,
+    showCancelButton: true,
+    confirmButtonText: "Go to Fees",
+    cancelButtonText: "Not now",
+    confirmButtonColor: HOME.green,
+    cancelButtonColor: "#94a3b8",
+    reverseButtons: true,
+    focusConfirm: true,
+    width: 420,
+    padding: "1.1em 1.15em 1em",
+  }).then((result) => {
+    if (result.isConfirmed && typeof onGoToFees === "function") onGoToFees();
+  });
+}
+
 function initials(name) {
   return String(name || "S")
     .split(/\s+/)
@@ -288,7 +347,13 @@ export default function StudentMealCard() {
   }, [load]);
 
   const downloadPdf = async () => {
-    if (!access?.eligible) return;
+    if (!access?.eligible) {
+      await showMealFeeGateDialog({
+        access,
+        onGoToFees: () => navigate("/student/fees"),
+      });
+      return;
+    }
     setDownloading(true);
     try {
       const res = await fetch("/api/meals/card/pdf", { headers: studentAuthHeaders() });
@@ -297,6 +362,11 @@ export default function StudentMealCard() {
         if (res.status === 403 && data.data?.access) {
           setAccess(data.data.access);
           setCard(null);
+          await showMealFeeGateDialog({
+            access: data.data.access,
+            onGoToFees: () => navigate("/student/fees"),
+          });
+          return;
         }
         throw new Error(data.message || "Could not download meal card");
       }
@@ -507,7 +577,7 @@ export default function StudentMealCard() {
                       onClick={downloadPdf}
                       disabled={downloading}
                       sx={{
-                        alignSelf: "flex-start",
+                        alignSelf: { xs: "center", sm: "flex-start" },
                         textTransform: "none",
                         fontFamily: HOME.fontBody,
                         fontWeight: 800,
