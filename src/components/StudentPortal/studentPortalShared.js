@@ -24,6 +24,16 @@ export function firstName(fullName) {
   return s ? s.split(/\s+/)[0] : "Student";
 }
 
+export function studentAuthHeaders(json = false) {
+  const token = localStorage.getItem("token");
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    Accept: "application/json",
+  };
+  if (json) headers["Content-Type"] = "application/json";
+  return headers;
+}
+
 export const settingsInputSx = {
   "& .MuiOutlinedInput-root": {
     borderRadius: "12px",

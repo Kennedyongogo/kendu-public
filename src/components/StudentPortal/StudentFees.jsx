@@ -11,20 +11,28 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
+  IconButton,
   InputAdornment,
   LinearProgress,
   Stack,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceWalletRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import PaymentsRoundedIcon from "@mui/icons-material/PaymentsRounded";
 import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
 import PhoneIphoneRoundedIcon from "@mui/icons-material/PhoneIphoneRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
+import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
+import { BRAND_LOGO_SRC } from "../../brand";
 import { HOME, fadeUp } from "./studentPortalShared";
 
 const formatMoney = (amount, currency = "KES") =>
@@ -45,6 +53,263 @@ const formatDate = (value) =>
         minute: "2-digit",
       })
     : "—";
+
+const formatMethod = (method) => {
+  const labels = {
+    mpesa: "M-Pesa",
+    bank: "Bank transfer",
+    cash: "Cash",
+    card: "Card",
+    other: "Other",
+  };
+  return labels[method] || method || "—";
+};
+
+function ReceiptDetailRow({ label, value }) {
+  return (
+    <Stack
+      direction="row"
+      justifyContent="space-between"
+      alignItems="flex-start"
+      spacing={1.5}
+      sx={{
+        py: 0.85,
+        px: 1.25,
+        borderRadius: "10px",
+        bgcolor: "rgba(0,96,80,0.03)",
+      }}
+    >
+      <Typography
+        sx={{
+          fontFamily: HOME.fontBody,
+          color: HOME.inkSoft,
+          fontSize: "0.72rem",
+          fontWeight: 600,
+          flexShrink: 0,
+        }}
+      >
+        {label}
+      </Typography>
+      <Typography
+        sx={{
+          fontFamily: HOME.fontBody,
+          color: HOME.navyDeep,
+          fontSize: "0.78rem",
+          fontWeight: 700,
+          textAlign: "right",
+          overflowWrap: "anywhere",
+        }}
+      >
+        {value || "—"}
+      </Typography>
+    </Stack>
+  );
+}
+
+function ReceiptPreviewCard({ payment, student, summary }) {
+  const receiptNo = payment?.provider_receipt || payment?.reference || "—";
+
+  return (
+    <Box
+      sx={{
+        width: "100%",
+        maxWidth: 560,
+        mx: "auto",
+        my: { xs: 1.5, sm: 2 },
+        px: { xs: 1.5, sm: 2 },
+      }}
+    >
+      <Box
+        sx={{
+          bgcolor: "#fff",
+          border: `1px solid ${HOME.border}`,
+          borderRadius: "18px",
+          overflow: "hidden",
+          boxShadow: HOME.shadowSm,
+        }}
+      >
+        <Box sx={{ px: 2, pt: 2, pb: 1.5 }}>
+          <Stack direction="row" spacing={1.25} alignItems="center">
+            <Box
+              component="img"
+              src={BRAND_LOGO_SRC}
+              alt="Kendu"
+              sx={{ height: 42, width: "auto", objectFit: "contain", flexShrink: 0 }}
+            />
+            <Box sx={{ minWidth: 0, flex: 1 }}>
+              <Typography
+                sx={{
+                  fontFamily: HOME.fontDisplay,
+                  fontWeight: 700,
+                  color: HOME.navyDeep,
+                  fontSize: { xs: "0.82rem", sm: "0.92rem" },
+                  lineHeight: 1.25,
+                }}
+              >
+                Kendu Adventist School of Medical Sciences
+              </Typography>
+              <Typography sx={{ fontFamily: HOME.fontBody, color: HOME.inkSoft, fontSize: "0.68rem" }}>
+                Train where care meets calling
+              </Typography>
+            </Box>
+          </Stack>
+        </Box>
+
+        <Box
+          sx={{
+            mx: 2,
+            mb: 1.5,
+            py: 1,
+            px: 1.5,
+            borderRadius: "12px",
+            background: `linear-gradient(135deg, ${HOME.green} 0%, ${HOME.navyDeep} 140%)`,
+            textAlign: "center",
+          }}
+        >
+          <Typography sx={{ fontFamily: HOME.fontBody, color: "rgba(255,255,255,0.85)", fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.08em" }}>
+            OFFICIAL FEE PAYMENT RECEIPT
+          </Typography>
+          <Typography sx={{ fontFamily: HOME.fontDisplay, color: "#fff", fontWeight: 700, fontSize: "0.95rem", mt: 0.25, overflowWrap: "anywhere" }}>
+            {receiptNo}
+          </Typography>
+        </Box>
+
+        <Box
+          sx={{
+            mx: 2,
+            mb: 1.75,
+            p: 1.5,
+            borderRadius: "14px",
+            border: `1.5px solid ${HOME.gold}`,
+            bgcolor: "#fffdf5",
+            textAlign: "center",
+          }}
+        >
+          <Typography sx={{ fontFamily: HOME.fontBody, color: HOME.inkSoft, fontSize: "0.7rem", fontWeight: 600 }}>
+            Amount received
+          </Typography>
+          <Typography
+            sx={{
+              fontFamily: HOME.fontDisplay,
+              color: HOME.green,
+              fontWeight: 800,
+              fontSize: { xs: "1.55rem", sm: "1.75rem" },
+              letterSpacing: "-0.02em",
+              mt: 0.2,
+            }}
+          >
+            {formatMoney(payment?.amount, payment?.currency)}
+          </Typography>
+        </Box>
+
+        <Box sx={{ px: 2, pb: 2 }}>
+          <Typography
+            sx={{
+              fontFamily: HOME.fontBody,
+              color: HOME.green,
+              fontSize: "0.68rem",
+              fontWeight: 800,
+              letterSpacing: "0.08em",
+              mb: 0.75,
+            }}
+          >
+            STUDENT DETAILS
+          </Typography>
+          <Stack spacing={0.65} sx={{ mb: 1.75 }}>
+            <ReceiptDetailRow label="Name" value={student?.full_name} />
+            <ReceiptDetailRow label="Admission" value={student?.admission_number} />
+            <ReceiptDetailRow label="Programme" value={student?.programme?.name} />
+            <ReceiptDetailRow
+              label="Period"
+              value={
+                student?.year_of_study
+                  ? `Year ${student.year_of_study} · Semester ${student.semester || 1}`
+                  : "—"
+              }
+            />
+          </Stack>
+
+          <Typography
+            sx={{
+              fontFamily: HOME.fontBody,
+              color: HOME.green,
+              fontSize: "0.68rem",
+              fontWeight: 800,
+              letterSpacing: "0.08em",
+              mb: 0.75,
+            }}
+          >
+            PAYMENT DETAILS
+          </Typography>
+          <Stack spacing={0.65} sx={{ mb: summary ? 1.75 : 0 }}>
+            <ReceiptDetailRow label="Status" value={String(payment?.status || "").toUpperCase()} />
+            <ReceiptDetailRow label="Method" value={formatMethod(payment?.method)} />
+            <ReceiptDetailRow label="Date" value={formatDate(payment?.paid_at || payment?.createdAt)} />
+            <ReceiptDetailRow label="Reference" value={payment?.reference} />
+            <ReceiptDetailRow label="Receipt" value={payment?.provider_receipt} />
+            {payment?.phone ? <ReceiptDetailRow label="Phone" value={payment.phone} /> : null}
+          </Stack>
+
+          {summary ? (
+            <>
+              <Typography
+                sx={{
+                  fontFamily: HOME.fontBody,
+                  color: HOME.green,
+                  fontSize: "0.68rem",
+                  fontWeight: 800,
+                  letterSpacing: "0.08em",
+                  mb: 0.75,
+                }}
+              >
+                ACCOUNT SUMMARY
+              </Typography>
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(3, 1fr)",
+                  gap: 0.75,
+                  p: 1.1,
+                  borderRadius: "12px",
+                  bgcolor: "rgba(0,96,80,0.04)",
+                }}
+              >
+                {[
+                  ["Billed", formatMoney(summary.total_charged, summary.currency)],
+                  ["Paid", formatMoney(summary.total_paid, summary.currency)],
+                  ["Balance", formatMoney(summary.balance, summary.currency)],
+                ].map(([label, value]) => (
+                  <Box key={label} sx={{ textAlign: "center", minWidth: 0 }}>
+                    <Typography sx={{ fontFamily: HOME.fontBody, color: HOME.inkSoft, fontSize: "0.62rem", fontWeight: 600 }}>
+                      {label}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontFamily: HOME.fontBody,
+                        color: HOME.navyDeep,
+                        fontSize: { xs: "0.68rem", sm: "0.74rem" },
+                        fontWeight: 800,
+                        overflowWrap: "anywhere",
+                      }}
+                    >
+                      {value}
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
+            </>
+          ) : null}
+        </Box>
+
+        <Box sx={{ px: 2, py: 1.25, borderTop: `1px solid ${HOME.border}`, bgcolor: "rgba(0,96,80,0.02)" }}>
+          <Typography sx={{ fontFamily: HOME.fontBody, color: HOME.inkSoft, fontSize: "0.65rem", textAlign: "center", lineHeight: 1.4 }}>
+            Computer-generated receipt from the Kendu student portal. Present with your admission number for verification.
+          </Typography>
+        </Box>
+      </Box>
+    </Box>
+  );
+}
 
 function SummaryCard({ label, value, hint, icon, accent = HOME.green, delay = 0 }) {
   return (
@@ -171,6 +436,10 @@ export default function StudentFees({ student }) {
   const [paying, setPaying] = useState(false);
   const [amount, setAmount] = useState("");
   const [phone, setPhone] = useState(student.phone || "");
+  const [downloadingReceiptId, setDownloadingReceiptId] = useState(null);
+  const [receiptPreview, setReceiptPreview] = useState(null);
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const loadLedger = useCallback(async ({ silent = false } = {}) => {
     if (!silent) setLoading(true);
@@ -193,6 +462,76 @@ export default function StudentFees({ student }) {
   useEffect(() => {
     loadLedger();
   }, [loadLedger]);
+
+  const closeReceiptPreview = useCallback(() => {
+    setReceiptPreview(null);
+  }, []);
+
+  const viewReceipt = useCallback((payment) => {
+    if (payment.status !== "confirmed") {
+      Swal.fire({
+        icon: "info",
+        title: "Receipt not ready",
+        text: "You can open a receipt once the payment is confirmed.",
+        confirmButtonColor: HOME.green,
+      });
+      return;
+    }
+
+    const receiptNo = payment.provider_receipt || payment.reference || payment.id;
+    setReceiptPreview({
+      receiptNo,
+      filename: `KASMS-Receipt-${receiptNo}.pdf`,
+      payment,
+    });
+  }, []);
+
+  const downloadReceipt = useCallback(async (payment) => {
+    if (payment.status !== "confirmed") {
+      Swal.fire({
+        icon: "info",
+        title: "Receipt not ready",
+        text: "You can download a receipt once the payment is confirmed.",
+        confirmButtonColor: HOME.green,
+      });
+      return;
+    }
+
+    setDownloadingReceiptId(payment.id);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`/api/accounting/me/payments/${payment.id}/receipt`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.message || "Could not download receipt");
+      }
+
+      const blob = await response.blob();
+      const receiptNo = payment.provider_receipt || payment.reference || payment.id;
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `KASMS-Receipt-${receiptNo}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch (requestError) {
+      Swal.fire({
+        icon: "error",
+        title: "Download failed",
+        text: requestError.message,
+        confirmButtonColor: HOME.green,
+      });
+    } finally {
+      setDownloadingReceiptId(null);
+    }
+  }, []);
+
+  const actionBusy = (paymentId) => downloadingReceiptId === paymentId;
 
   const paymentProgress = useMemo(() => {
     if (!ledger?.summary?.total_charged) return 0;
@@ -550,7 +889,7 @@ export default function StudentFees({ student }) {
               <Box component="table" sx={{ width: "100%", borderCollapse: "collapse", minWidth: 650 }}>
                 <Box component="thead">
                   <Box component="tr" sx={{ bgcolor: "rgba(0,96,80,0.04)" }}>
-                    {["Date", "Reference", "Method", "Amount", "Status"].map((heading) => (
+                    {["Date", "Reference", "Method", "Amount", "Status", "Action"].map((heading) => (
                       <Box
                         component="th"
                         key={heading}
@@ -597,6 +936,58 @@ export default function StudentFees({ student }) {
                       </Box>
                       <Box component="td" sx={{ px: 2, py: 1.2 }}>
                         <StatusChip status={payment.status} />
+                      </Box>
+                      <Box component="td" sx={{ px: 2, py: 1.2 }}>
+                        <Stack direction="row" spacing={0.5} alignItems="center">
+                          <Tooltip
+                            title={
+                              payment.status === "confirmed"
+                                ? "View receipt"
+                                : "Available after payment is confirmed"
+                            }
+                          >
+                            <span>
+                              <IconButton
+                                size="small"
+                                disabled={actionBusy(payment.id)}
+                                onClick={() => viewReceipt(payment)}
+                                sx={{
+                                  color: payment.status === "confirmed" ? HOME.green : "rgba(0,96,80,0.35)",
+                                  bgcolor: "rgba(0,96,80,0.06)",
+                                  "&:hover": { bgcolor: "rgba(0,96,80,0.12)" },
+                                }}
+                              >
+                                <VisibilityRoundedIcon sx={{ fontSize: 18 }} />
+                              </IconButton>
+                            </span>
+                          </Tooltip>
+                          <Tooltip
+                            title={
+                              payment.status === "confirmed"
+                                ? "Download receipt PDF"
+                                : "Available after payment is confirmed"
+                            }
+                          >
+                            <span>
+                              <IconButton
+                                size="small"
+                                disabled={actionBusy(payment.id)}
+                                onClick={() => downloadReceipt(payment)}
+                                sx={{
+                                  color: payment.status === "confirmed" ? HOME.navyDeep : "rgba(0,96,80,0.35)",
+                                  bgcolor: "rgba(30,40,88,0.05)",
+                                  "&:hover": { bgcolor: "rgba(30,40,88,0.1)" },
+                                }}
+                              >
+                                {downloadingReceiptId === payment.id ? (
+                                  <CircularProgress size={16} sx={{ color: HOME.navyDeep }} />
+                                ) : (
+                                  <DownloadRoundedIcon sx={{ fontSize: 18 }} />
+                                )}
+                              </IconButton>
+                            </span>
+                          </Tooltip>
+                        </Stack>
                       </Box>
                     </Box>
                   ))}
@@ -645,6 +1036,50 @@ export default function StudentFees({ student }) {
                     <Typography sx={{ fontFamily: HOME.fontBody, color: HOME.inkSoft, fontSize: "0.72rem" }}>
                       {formatDate(payment.paid_at || payment.createdAt)}
                     </Typography>
+                  </Stack>
+                  <Stack direction="row" spacing={1} sx={{ mt: 1.1 }}>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      fullWidth
+                      startIcon={<VisibilityRoundedIcon />}
+                      disabled={actionBusy(payment.id)}
+                      onClick={() => viewReceipt(payment)}
+                      sx={{
+                        textTransform: "none",
+                        fontFamily: HOME.fontBody,
+                        fontWeight: 700,
+                        borderRadius: "10px",
+                        borderColor: "rgba(0,96,80,0.25)",
+                        color: HOME.green,
+                      }}
+                    >
+                      View
+                    </Button>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      fullWidth
+                      startIcon={
+                        downloadingReceiptId === payment.id ? (
+                          <CircularProgress size={14} sx={{ color: HOME.navyDeep }} />
+                        ) : (
+                          <DownloadRoundedIcon />
+                        )
+                      }
+                      disabled={actionBusy(payment.id)}
+                      onClick={() => downloadReceipt(payment)}
+                      sx={{
+                        textTransform: "none",
+                        fontFamily: HOME.fontBody,
+                        fontWeight: 700,
+                        borderRadius: "10px",
+                        borderColor: "rgba(30,40,88,0.2)",
+                        color: HOME.navyDeep,
+                      }}
+                    >
+                      Download
+                    </Button>
                   </Stack>
                 </Box>
               ))}
@@ -701,6 +1136,115 @@ export default function StudentFees({ student }) {
             sx={{ textTransform: "none", bgcolor: HOME.green, fontWeight: 800, boxShadow: "none", "&:hover": { bgcolor: "#004840", boxShadow: "none" } }}
           >
             {paying ? "Sending prompt…" : "Send M-Pesa prompt"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={Boolean(receiptPreview)}
+        onClose={closeReceiptPreview}
+        fullScreen={isSmallScreen}
+        fullWidth
+        maxWidth="md"
+        PaperProps={{
+          sx: {
+            borderRadius: isSmallScreen ? 0 : "18px",
+            overflow: "hidden",
+            maxHeight: isSmallScreen ? "100%" : "92vh",
+            display: "flex",
+            flexDirection: "column",
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            fontFamily: HOME.fontDisplay,
+            fontWeight: 700,
+            color: HOME.navyDeep,
+            pr: 1,
+            py: { xs: 1.25, sm: 1.5 },
+            borderBottom: `1px solid ${HOME.border}`,
+          }}
+        >
+          <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
+            <Box sx={{ minWidth: 0 }}>
+              <Typography
+                noWrap
+                sx={{ fontFamily: HOME.fontDisplay, fontWeight: 700, color: HOME.navyDeep, fontSize: { xs: "1rem", sm: "1.15rem" } }}
+              >
+                Fee payment receipt
+              </Typography>
+              <Typography
+                noWrap
+                sx={{ fontFamily: HOME.fontBody, color: HOME.inkSoft, fontSize: "0.72rem" }}
+              >
+                {receiptPreview?.receiptNo || "—"}
+              </Typography>
+            </Box>
+            <IconButton
+              aria-label="Close receipt"
+              onClick={closeReceiptPreview}
+              sx={{ color: HOME.inkMuted, flexShrink: 0 }}
+            >
+              <CloseRoundedIcon />
+            </IconButton>
+          </Stack>
+        </DialogTitle>
+        <DialogContent
+          sx={{
+            p: 0,
+            flex: 1,
+            minHeight: 0,
+            bgcolor: "rgba(0,96,80,0.04)",
+            overflowY: "auto",
+            WebkitOverflowScrolling: "touch",
+          }}
+        >
+          {receiptPreview?.payment ? (
+            <ReceiptPreviewCard
+              payment={receiptPreview.payment}
+              student={ledger?.student || student}
+              summary={summary}
+            />
+          ) : null}
+        </DialogContent>
+        <DialogActions
+          sx={{
+            px: { xs: 1.5, sm: 2.5 },
+            py: { xs: 1.25, sm: 1.75 },
+            gap: 1,
+            borderTop: `1px solid ${HOME.border}`,
+            flexDirection: { xs: "column-reverse", sm: "row" },
+            alignItems: { xs: "stretch", sm: "center" },
+            justifyContent: { sm: "flex-end" },
+          }}
+        >
+          <Button
+            onClick={closeReceiptPreview}
+            sx={{ textTransform: "none", fontWeight: 700 }}
+          >
+            Close
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={
+              downloadingReceiptId === receiptPreview?.payment?.id ? (
+                <CircularProgress size={16} color="inherit" />
+              ) : (
+                <DownloadRoundedIcon />
+              )
+            }
+            onClick={() => receiptPreview?.payment && downloadReceipt(receiptPreview.payment)}
+            disabled={!receiptPreview?.payment || downloadingReceiptId === receiptPreview?.payment?.id}
+            sx={{
+              textTransform: "none",
+              bgcolor: HOME.green,
+              fontWeight: 800,
+              boxShadow: "none",
+              "&:hover": { bgcolor: "#004840", boxShadow: "none" },
+            }}
+          >
+            Download PDF
           </Button>
         </DialogActions>
       </Dialog>
