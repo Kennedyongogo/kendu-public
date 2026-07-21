@@ -5,6 +5,7 @@ import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined
 import { HOME, fadeUp, firstName } from "./studentPortalShared";
 import StudentUnitsCard from "./StudentUnitsCard";
 import StudentMealCard from "./StudentMealCard";
+import StudentNoticesCard from "./StudentNoticesCard";
 
 export default function StudentHome({ student }) {
   const [programmeName, setProgrammeName] = useState(student?.programme?.name || "");
@@ -170,6 +171,7 @@ export default function StudentHome({ student }) {
 
       <StudentUnitsCard student={student} />
       <StudentMealCard />
+      <StudentNoticesCard />
     </Box>
   );
 }
