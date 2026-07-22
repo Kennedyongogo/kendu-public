@@ -1,7 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import { Box, Button, CircularProgress, Stack, Typography } from "@mui/material";
 import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
+import BadgeRoundedIcon from "@mui/icons-material/BadgeRounded";
 import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
 import FactCheckRoundedIcon from "@mui/icons-material/FactCheckRounded";
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
@@ -15,6 +18,70 @@ const cardSx = {
   boxShadow: HOME.shadowMd,
   overflow: "hidden",
 };
+
+function formatMoney(amount, currency = "KES") {
+  return new Intl.NumberFormat("en-KE", {
+    style: "currency",
+    currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(Number(amount) || 0);
+}
+
+function showExamFeeGateDialog({ access, onGoToFees }) {
+  const required = access?.min_fee_percent ?? 0;
+  const paidPct = access?.percent_paid ?? 0;
+  const shortfall = access?.shortfall_percent ?? Math.max(0, required - paidPct);
+  const currency = access?.currency || "KES";
+  const totalCharged = formatMoney(access?.total_charged, currency);
+  const totalPaid = formatMoney(access?.total_paid, currency);
+
+  return Swal.fire({
+    icon: false,
+    title: "Fee requirement not met",
+    html: `
+      <div style="text-align:left;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#1a2638;">
+        <p style="margin:0 0 10px;font-size:0.86rem;line-height:1.45;color:rgba(8,22,43,0.72);">
+          You need to clear more of your school fees before downloading your
+          <strong style="color:#006050;">exam card</strong>.
+        </p>
+        <div style="display:grid;gap:6px;padding:10px 12px;border-radius:12px;background:rgba(0,96,80,0.05);border:1px solid rgba(0,96,80,0.12);">
+          <div style="display:flex;justify-content:space-between;gap:12px;">
+            <span style="font-size:0.74rem;font-weight:700;color:rgba(8,22,43,0.55);">Required</span>
+            <span style="font-size:0.84rem;font-weight:800;color:#006050;">${required}% of fees paid</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:12px;">
+            <span style="font-size:0.74rem;font-weight:700;color:rgba(8,22,43,0.55);">You have paid</span>
+            <span style="font-size:0.84rem;font-weight:800;">${paidPct}%</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:12px;">
+            <span style="font-size:0.74rem;font-weight:700;color:rgba(8,22,43,0.55);">Still needed</span>
+            <span style="font-size:0.84rem;font-weight:800;color:#9a6700;">${shortfall}%</span>
+          </div>
+          <hr style="border:none;border-top:1px solid rgba(0,96,80,0.12);margin:2px 0;" />
+          <div style="display:flex;justify-content:space-between;gap:12px;">
+            <span style="font-size:0.74rem;font-weight:700;color:rgba(8,22,43,0.55);">Total charged</span>
+            <span style="font-size:0.8rem;font-weight:700;">${totalCharged}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:12px;">
+            <span style="font-size:0.74rem;font-weight:700;color:rgba(8,22,43,0.55);">Confirmed paid</span>
+            <span style="font-size:0.8rem;font-weight:700;">${totalPaid}</span>
+          </div>
+        </div>
+        <p style="margin:10px 0 0;font-size:0.74rem;line-height:1.4;color:rgba(8,22,43,0.55);">
+          Make a payment under Fees, then come back and download your exam card when you reach the required share.
+        </p>
+      </div>
+    `,
+    showCancelButton: true,
+    confirmButtonText: "Go to Fees",
+    cancelButtonText: "Not now",
+    confirmButtonColor: HOME.green,
+    cancelButtonColor: "#94a3b8",
+  }).then((result) => {
+    if (result.isConfirmed && typeof onGoToFees === "function") onGoToFees();
+  });
+}
 
 function slotDateParts(iso) {
   if (!iso) return null;
@@ -76,6 +143,39 @@ async function downloadMyExamTimetablePdf(title) {
   const link = document.createElement("a");
   link.href = url;
   link.download = `KASMS-Exam-Timetable-${safeSlug}.pdf`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function downloadMyExamCardPdf() {
+  const res = await fetch("/api/exam-timetables/me/card/pdf", {
+    headers: {
+      ...studentAuthHeaders(),
+      Accept: "application/pdf",
+    },
+  });
+  if (!res.ok) {
+    let message = "Could not download exam card";
+    let access = null;
+    try {
+      const data = await res.json();
+      if (data?.message) message = data.message;
+      if (data?.data?.access) access = data.data.access;
+    } catch {
+      /* binary or empty */
+    }
+    const err = new Error(message);
+    err.status = res.status;
+    err.access = access;
+    throw err;
+  }
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "KASMS-ExamCard.pdf";
   document.body.appendChild(link);
   link.click();
   link.remove();
@@ -250,11 +350,13 @@ function EmptyState({ icon, title, message }) {
 }
 
 export default function StudentExamTimetable() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState(null);
   const [emptyMessage, setEmptyMessage] = useState(null);
   const [error, setError] = useState(null);
   const [downloading, setDownloading] = useState(false);
+  const [downloadingCard, setDownloadingCard] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -295,6 +397,25 @@ export default function StudentExamTimetable() {
       setError(err.message || "Could not download PDF");
     } finally {
       setDownloading(false);
+    }
+  };
+
+  const handleDownloadCard = async () => {
+    if (!period) return;
+    setDownloadingCard(true);
+    try {
+      await downloadMyExamCardPdf();
+    } catch (err) {
+      if (err.status === 403 && err.access) {
+        await showExamFeeGateDialog({
+          access: err.access,
+          onGoToFees: () => navigate("/student/fees"),
+        });
+      } else {
+        setError(err.message || "Could not download exam card");
+      }
+    } finally {
+      setDownloadingCard(false);
     }
   };
 
@@ -430,32 +551,62 @@ export default function StudentExamTimetable() {
               </Typography>
             ) : null}
           </Box>
-          <Button
-            variant="outlined"
-            startIcon={downloading ? <CircularProgress size={14} color="inherit" /> : <DownloadRoundedIcon />}
-            onClick={() => void handleDownloadPdf()}
-            disabled={downloading}
-            sx={{
-              flexShrink: 0,
-              alignSelf: { xs: "stretch", sm: "flex-start" },
-              textTransform: "none",
-              fontFamily: HOME.fontBody,
-              fontWeight: 700,
-              fontSize: "0.8rem",
-              color: "#fff",
-              borderColor: "rgba(255,255,255,0.45)",
-              borderRadius: "12px",
-              px: 1.75,
-              py: 0.85,
-              bgcolor: "rgba(255,255,255,0.1)",
-              "&:hover": {
-                bgcolor: "rgba(255,255,255,0.18)",
-                borderColor: "rgba(255,255,255,0.65)",
-              },
-            }}
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            spacing={1}
+            sx={{ flexShrink: 0, alignSelf: { xs: "stretch", sm: "flex-start" } }}
           >
-            {downloading ? "Preparing PDF…" : "Download PDF"}
-          </Button>
+            <Button
+              variant="outlined"
+              startIcon={downloading ? <CircularProgress size={14} color="inherit" /> : <DownloadRoundedIcon />}
+              onClick={() => void handleDownloadPdf()}
+              disabled={downloading || downloadingCard}
+              sx={{
+                textTransform: "none",
+                fontFamily: HOME.fontBody,
+                fontWeight: 700,
+                fontSize: "0.8rem",
+                color: "#fff",
+                borderColor: "rgba(255,255,255,0.45)",
+                borderRadius: "12px",
+                px: 1.75,
+                py: 0.85,
+                bgcolor: "rgba(255,255,255,0.1)",
+                "&:hover": {
+                  bgcolor: "rgba(255,255,255,0.18)",
+                  borderColor: "rgba(255,255,255,0.65)",
+                },
+              }}
+            >
+              {downloading ? "Preparing PDF…" : "Download PDF"}
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={
+                downloadingCard ? <CircularProgress size={14} color="inherit" /> : <BadgeRoundedIcon />
+              }
+              onClick={() => void handleDownloadCard()}
+              disabled={downloading || downloadingCard}
+              sx={{
+                textTransform: "none",
+                fontFamily: HOME.fontBody,
+                fontWeight: 700,
+                fontSize: "0.8rem",
+                color: HOME.green,
+                bgcolor: HOME.gold,
+                borderRadius: "12px",
+                px: 1.75,
+                py: 0.85,
+                boxShadow: "none",
+                "&:hover": {
+                  bgcolor: "#d4b44a",
+                  boxShadow: "none",
+                },
+              }}
+            >
+              {downloadingCard ? "Preparing card…" : "Download exam card"}
+            </Button>
+          </Stack>
         </Stack>
       </Box>
 
