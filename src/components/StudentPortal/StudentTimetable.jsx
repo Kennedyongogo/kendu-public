@@ -9,6 +9,7 @@ import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import QuizRoundedIcon from "@mui/icons-material/QuizRounded";
 import FactCheckRoundedIcon from "@mui/icons-material/FactCheckRounded";
 import { HOME, fadeUp } from "./studentPortalShared";
+import StudentExamTimetable from "./StudentExamTimetable";
 
 const GAP_PX = 16;
 
@@ -305,6 +306,7 @@ export default function StudentTimetable() {
   );
 
   const activeTab = SCHEDULE_TABS[tab];
+  const isExamTab = activeTab.key === "exam";
   const primaryDark = HOME.heroSplitGreenDark || "#004840";
   const navy = HOME.navyDeep || HOME.navy;
 
@@ -399,7 +401,11 @@ export default function StudentTimetable() {
             flexShrink: 0,
           }}
         >
-          <CalendarMonthRoundedIcon sx={{ fontSize: 22, color: "#fff" }} />
+          {isExamTab ? (
+            <FactCheckRoundedIcon sx={{ fontSize: 22, color: "#fff" }} />
+          ) : (
+            <CalendarMonthRoundedIcon sx={{ fontSize: 22, color: "#fff" }} />
+          )}
         </Box>
         <Box sx={{ minWidth: 0 }}>
           <Typography
@@ -410,10 +416,12 @@ export default function StudentTimetable() {
               lineHeight: 1.2,
             }}
           >
-            Timetable
+            {isExamTab ? "Exam Timetable" : "Timetable"}
           </Typography>
           <Typography noWrap sx={{ fontFamily: HOME.fontBody, color: "rgba(255,255,255,0.75)", fontSize: "0.76rem" }}>
-            View your class sessions, CATs and examination schedules.
+            {isExamTab
+              ? "Your published exam papers for this semester."
+              : "View your class sessions, CATs and examination schedules."}
           </Typography>
         </Box>
       </Box>
@@ -472,38 +480,43 @@ export default function StudentTimetable() {
           })}
         </Stack>
 
-        <Stack direction="row" spacing={1} justifyContent="flex-end" sx={{ flexShrink: 0 }}>
-          <TextField
-            select
-            size="small"
-            label="Year"
-            value={selectedYear}
-            onChange={(event) => setSelectedYear(Number(event.target.value))}
-            sx={filterFieldSx}
-          >
-            {yearOptions.map((year) => (
-              <MenuItem key={year} value={year}>
-                {year}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            select
-            size="small"
-            label="Month"
-            value={visibleMonth}
-            onChange={(event) => scrollToMonth(Number(event.target.value))}
-            sx={{ ...filterFieldSx, minWidth: { xs: 130, sm: 145 } }}
-          >
-            {MONTH_NAMES.map((name, index) => (
-              <MenuItem key={name} value={index}>
-                {name}
-              </MenuItem>
-            ))}
-          </TextField>
-        </Stack>
+        {!isExamTab ? (
+          <Stack direction="row" spacing={1} justifyContent="flex-end" sx={{ flexShrink: 0 }}>
+            <TextField
+              select
+              size="small"
+              label="Year"
+              value={selectedYear}
+              onChange={(event) => setSelectedYear(Number(event.target.value))}
+              sx={filterFieldSx}
+            >
+              {yearOptions.map((year) => (
+                <MenuItem key={year} value={year}>
+                  {year}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              select
+              size="small"
+              label="Month"
+              value={visibleMonth}
+              onChange={(event) => scrollToMonth(Number(event.target.value))}
+              sx={{ ...filterFieldSx, minWidth: { xs: 130, sm: 145 } }}
+            >
+              {MONTH_NAMES.map((name, index) => (
+                <MenuItem key={name} value={index}>
+                  {name}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Stack>
+        ) : null}
       </Stack>
 
+      {isExamTab ? (
+        <StudentExamTimetable />
+      ) : (
       <Box
         sx={{
           ...cardSx,
@@ -616,6 +629,7 @@ export default function StudentTimetable() {
           ))}
         </Box>
       </Box>
+      )}
     </Box>
   );
 }
