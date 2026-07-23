@@ -191,7 +191,7 @@ function HeroFeatureItem({ icon: Icon, title, subtitle }) {
         alignItems: "center",
         gap: { xs: 1, md: 1.25 },
         flex: 1,
-        minWidth: { xs: 0, md: 0 },
+        minWidth: 0,
       }}
     >
       <Box
@@ -208,7 +208,7 @@ function HeroFeatureItem({ icon: Icon, title, subtitle }) {
       >
         <Icon sx={{ fontSize: { xs: 18, md: 22 } }} />
       </Box>
-      <Box sx={{ minWidth: 0 }}>
+      <Box sx={{ minWidth: 0, flex: 1, pr: { xs: 0.35, md: 0 } }}>
         <Typography
           sx={{
             fontFamily: HOME.fontBody,
@@ -217,8 +217,9 @@ function HeroFeatureItem({ icon: Icon, title, subtitle }) {
             color: HOME.ink,
             lineHeight: 1.2,
             mb: 0.15,
-            letterSpacing: "0.03em",
+            letterSpacing: { xs: "0.01em", md: "0.03em" },
             textTransform: "uppercase",
+            overflowWrap: "break-word",
           }}
         >
           {title}
@@ -234,6 +235,7 @@ function HeroFeatureItem({ icon: Icon, title, subtitle }) {
             WebkitLineClamp: { xs: 2, md: "unset" },
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
+            overflowWrap: "break-word",
           }}
         >
           {subtitle}
@@ -636,7 +638,7 @@ export default function HeroSection() {
           </Box>
         </Box>
 
-        {/* Feature card — always a horizontal row (scroll on very small screens) */}
+        {/* Feature card — always a horizontal row */}
         <Box
           sx={{
             position: "relative",
@@ -647,16 +649,14 @@ export default function HeroSection() {
             mb: { xs: 1.25, md: 1 },
             bgcolor: "#fff",
             borderRadius: { xs: "18px", md: "28px" },
-            px: { xs: 1.5, md: 3 },
+            pl: { xs: 1.5, md: 3 },
+            pr: { xs: 2, md: 3 },
             py: { xs: 1.25, md: 1.75 },
             boxShadow: "0 16px 40px rgba(0,0,0,0.12)",
             display: "flex",
             flexDirection: "row",
             gap: { xs: 1.25, md: 3 },
-            overflowX: { xs: "auto", md: "visible" },
-            WebkitOverflowScrolling: "touch",
-            scrollbarWidth: "none",
-            "&::-webkit-scrollbar": { display: "none" },
+            overflow: "hidden",
           }}
         >
           {HERO_FEATURES.map((feature) => (
