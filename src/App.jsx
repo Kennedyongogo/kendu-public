@@ -20,6 +20,8 @@ const Team = lazy(() => import("./pages/Team"));
 const MarketplaceLogin = lazy(() => import("./pages/MarketplaceLogin"));
 const AdmissionApplication = lazy(() => import("./pages/AdmissionApplication"));
 const MeetOurTeam = lazy(() => import("./pages/MeetOurTeam"));
+const News = lazy(() => import("./pages/News"));
+const NewsDetail = lazy(() => import("./pages/NewsDetail"));
 const ProgrammeDetail = lazy(() => import("./pages/ProgrammeDetail"));
 const StudentPortal = lazy(() => import("./pages/StudentPortal"));
 
@@ -62,6 +64,24 @@ function AppLayout() {
               element={
                 <>
                   <MeetOurTeam />
+                </>
+              }
+            />
+            <Route
+              path="/news"
+              element={
+                <>
+                  <News />
+                  <Footer />
+                </>
+              }
+            />
+            <Route
+              path="/news/:slug"
+              element={
+                <>
+                  <NewsDetail />
+                  <Footer />
                 </>
               }
             />

@@ -331,7 +331,7 @@ export default function ProgrammesSection() {
       sx={{
         width: "100%",
         pt: { xs: 2.5, md: 3.5 },
-        pb: { xs: 2.5, md: 3.5 },
+        pb: { xs: 1, md: 1.25 },
         px: 0,
       }}
     >

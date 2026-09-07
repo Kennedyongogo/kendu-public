@@ -9,7 +9,11 @@ import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import QuizRoundedIcon from "@mui/icons-material/QuizRounded";
 import FactCheckRoundedIcon from "@mui/icons-material/FactCheckRounded";
 import { HOME, fadeUp } from "./studentPortalShared";
+<<<<<<< HEAD
 import StudentExamPlan from "./StudentExamPlan";
+=======
+import StudentExamTimetable from "./StudentExamTimetable";
+>>>>>>> 9f9ac5361b8899b1958182b59e007fc9e2d147cc
 
 const GAP_PX = 16;
 
@@ -401,7 +405,11 @@ export default function StudentTimetable() {
             flexShrink: 0,
           }}
         >
-          <CalendarMonthRoundedIcon sx={{ fontSize: 22, color: "#fff" }} />
+          {isExamTab ? (
+            <FactCheckRoundedIcon sx={{ fontSize: 22, color: "#fff" }} />
+          ) : (
+            <CalendarMonthRoundedIcon sx={{ fontSize: 22, color: "#fff" }} />
+          )}
         </Box>
         <Box sx={{ minWidth: 0 }}>
           <Typography
@@ -412,12 +420,17 @@ export default function StudentTimetable() {
               lineHeight: 1.2,
             }}
           >
-            Timetable
+            {isExamTab ? "Exam Timetable" : "Timetable"}
           </Typography>
           <Typography noWrap sx={{ fontFamily: HOME.fontBody, color: "rgba(255,255,255,0.75)", fontSize: "0.76rem" }}>
             {isExamTab
+<<<<<<< HEAD
               ? "Your published exam timetable for this semester."
               : "View your class sessions and CATs."}
+=======
+              ? "Your published exam papers for this semester."
+              : "View your class sessions, CATs and examination schedules."}
+>>>>>>> 9f9ac5361b8899b1958182b59e007fc9e2d147cc
           </Typography>
         </Box>
       </Box>
@@ -510,6 +523,9 @@ export default function StudentTimetable() {
         ) : null}
       </Stack>
 
+      {isExamTab ? (
+        <StudentExamTimetable />
+      ) : (
       <Box
         sx={{
           ...cardSx,
@@ -628,6 +644,7 @@ export default function StudentTimetable() {
           </>
         )}
       </Box>
+      )}
     </Box>
   );
 }

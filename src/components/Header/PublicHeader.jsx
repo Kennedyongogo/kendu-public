@@ -23,6 +23,7 @@ import {
   Close,
   Groups,
   MenuBookOutlined,
+  CampaignOutlined,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import BrandLogoMark from "../common/BrandLogoMark";
@@ -65,6 +66,12 @@ export default function PublicHeader() {
         label: "About Us",
         icon: <Groups />,
         route: "/about-us",
+        color: BRAND.gold,
+      },
+      {
+        label: "News",
+        icon: <CampaignOutlined />,
+        route: "/news",
         color: BRAND.gold,
       },
     ],
