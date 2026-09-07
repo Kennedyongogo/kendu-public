@@ -298,12 +298,19 @@ export default function StudentTimetableDay() {
   const { dateKey } = useParams();
   const [searchParams] = useSearchParams();
   const parsed = useMemo(() => parseDateKey(dateKey), [dateKey]);
-  const categoryKey = CATEGORY_META[searchParams.get("tab")] ? searchParams.get("tab") : "class";
-  const meta = CATEGORY_META[categoryKey];
+  const tabParam = searchParams.get("tab");
+  const categoryKey = CATEGORY_META[tabParam] ? tabParam : "class";
+  const meta = CATEGORY_META[categoryKey] || CATEGORY_META.class;
 
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (tabParam === "exam") {
+      navigate("/student/timetable?tab=exam", { replace: true });
+    }
+  }, [tabParam, navigate]);
 
   const goBack = () => {
     if (!parsed) {
