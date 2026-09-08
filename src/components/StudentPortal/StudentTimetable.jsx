@@ -9,11 +9,7 @@ import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import QuizRoundedIcon from "@mui/icons-material/QuizRounded";
 import FactCheckRoundedIcon from "@mui/icons-material/FactCheckRounded";
 import { HOME, fadeUp } from "./studentPortalShared";
-<<<<<<< HEAD
-import StudentExamPlan from "./StudentExamPlan";
-=======
 import StudentExamTimetable from "./StudentExamTimetable";
->>>>>>> 9f9ac5361b8899b1958182b59e007fc9e2d147cc
 
 const GAP_PX = 16;
 
@@ -424,13 +420,8 @@ export default function StudentTimetable() {
           </Typography>
           <Typography noWrap sx={{ fontFamily: HOME.fontBody, color: "rgba(255,255,255,0.75)", fontSize: "0.76rem" }}>
             {isExamTab
-<<<<<<< HEAD
               ? "Your published exam timetable for this semester."
-              : "View your class sessions and CATs."}
-=======
-              ? "Your published exam papers for this semester."
               : "View your class sessions, CATs and examination schedules."}
->>>>>>> 9f9ac5361b8899b1958182b59e007fc9e2d147cc
           </Typography>
         </Box>
       </Box>
@@ -536,10 +527,6 @@ export default function StudentTimetable() {
           "--schedule-accent": activeTab.accent,
         }}
       >
-        {isExamTab ? (
-          <StudentExamPlan />
-        ) : (
-          <>
         <Stack
           direction="row"
           justifyContent="space-between"
@@ -641,8 +628,6 @@ export default function StudentTimetable() {
             </Box>
           ))}
         </Box>
-          </>
-        )}
       </Box>
       )}
     </Box>
