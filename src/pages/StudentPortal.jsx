@@ -7,6 +7,7 @@ import StudentSettings from "../components/StudentPortal/StudentSettings";
 import StudentFees from "../components/StudentPortal/StudentFees";
 import StudentTimetable from "../components/StudentPortal/StudentTimetable";
 import StudentTimetableDay from "../components/StudentPortal/StudentTimetableDay";
+import StudentTranscript from "../components/StudentPortal/StudentTranscript";
 import { HOME, readStoredStudent } from "../components/StudentPortal/studentPortalShared";
 
 export default function StudentPortal() {
@@ -18,9 +19,11 @@ export default function StudentPortal() {
     ? "settings"
     : location.pathname.endsWith("/fees")
       ? "fees"
-      : location.pathname.endsWith("/timetable") || isTimetableDay
-        ? "timetable"
-        : "home";
+      : location.pathname.endsWith("/transcript")
+        ? "transcript"
+        : location.pathname.endsWith("/timetable") || isTimetableDay
+          ? "timetable"
+          : "home";
 
   useEffect(() => {
     if (!student) navigate("/login", { replace: true });
@@ -60,6 +63,8 @@ export default function StudentPortal() {
         />
       ) : activePage === "fees" ? (
         <StudentFees student={student} />
+      ) : activePage === "transcript" ? (
+        <StudentTranscript />
       ) : activePage === "timetable" ? (
         isTimetableDay ? <StudentTimetableDay /> : <StudentTimetable />
       ) : (

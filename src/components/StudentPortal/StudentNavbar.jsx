@@ -17,6 +17,7 @@ import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceWalletRounded";
 import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
+import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import BrandLogoMark from "../common/BrandLogoMark";
 import { HOME, firstName } from "./studentPortalShared";
@@ -88,12 +89,13 @@ export default function StudentNavbar({ student, activePage, onNavigate, onLogou
         {/* Nav items — desktop, centered */}
         <Stack
           direction="row"
-          spacing={0.5}
+          spacing={0.25}
           justifyContent="center"
-          sx={{ flex: 1, minWidth: 0, display: { xs: "none", sm: "flex" } }}
+          sx={{ flex: 1, minWidth: 0, display: { xs: "none", md: "flex" } }}
         >
           {navButtonSx("home", HomeRoundedIcon, "Home")}
           {navButtonSx("timetable", CalendarMonthRoundedIcon, "Timetable")}
+          {navButtonSx("transcript", DescriptionRoundedIcon, "Transcript")}
           {navButtonSx("fees", AccountBalanceWalletRoundedIcon, "Fees")}
           {navButtonSx("settings", SettingsRoundedIcon, "Settings")}
         </Stack>
@@ -105,7 +107,7 @@ export default function StudentNavbar({ student, activePage, onNavigate, onLogou
           alignItems="center"
           onClick={(e) => setAnchorEl(e.currentTarget)}
           sx={{
-            display: { xs: "none", sm: "flex" },
+            display: { xs: "none", md: "flex" },
             cursor: "pointer",
             pl: 1.25,
             pr: 0.5,
@@ -164,7 +166,7 @@ export default function StudentNavbar({ student, activePage, onNavigate, onLogou
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
           onClick={(e) => setMobileAnchorEl(mobileOpen ? null : e.currentTarget)}
           sx={{
-            display: { xs: "inline-flex", sm: "none" },
+            display: { xs: "inline-flex", md: "none" },
             ml: "auto",
             width: 42,
             height: 42,
@@ -251,6 +253,18 @@ export default function StudentNavbar({ student, activePage, onNavigate, onLogou
               <CalendarMonthRoundedIcon fontSize="small" sx={{ color: HOME.green }} />
             </ListItemIcon>
             Timetable
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              setMobileAnchorEl(null);
+              onNavigate("transcript");
+            }}
+            sx={{ fontFamily: HOME.fontBody, fontWeight: 600, fontSize: "0.88rem", py: 1.15 }}
+          >
+            <ListItemIcon>
+              <DescriptionRoundedIcon fontSize="small" sx={{ color: HOME.green }} />
+            </ListItemIcon>
+            Transcript
           </MenuItem>
           <MenuItem
             onClick={() => {

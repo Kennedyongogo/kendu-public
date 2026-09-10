@@ -124,13 +124,18 @@ async function downloadMyExamTimetablePdf(title) {
   });
   if (!res.ok) {
     let message = "Could not download PDF";
+    let access = null;
     try {
       const data = await res.json();
       if (data?.message) message = data.message;
+      if (data?.data?.access) access = data.data.access;
     } catch {
       /* binary or empty */
     }
-    throw new Error(message);
+    const err = new Error(message);
+    err.status = res.status;
+    err.access = access;
+    throw err;
   }
   const blob = await res.blob();
   const safeSlug =
@@ -353,6 +358,7 @@ export default function StudentExamTimetable() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState(null);
+  const [access, setAccess] = useState(null);
   const [emptyMessage, setEmptyMessage] = useState(null);
   const [error, setError] = useState(null);
   const [downloading, setDownloading] = useState(false);
@@ -362,6 +368,7 @@ export default function StudentExamTimetable() {
     setLoading(true);
     setError(null);
     setPeriod(null);
+    setAccess(null);
     setEmptyMessage(null);
     try {
       const res = await fetch("/api/exam-timetables/me", {
@@ -369,14 +376,33 @@ export default function StudentExamTimetable() {
       });
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.message || "Failed to load exam timetable");
-      if (!data.data) {
+
+      const payload = data.data || {};
+      // API returns { access, period, locked_period }; older clients may get a bare period
+      if (
+        payload &&
+        (payload.period !== undefined ||
+          payload.locked_period !== undefined ||
+          payload.access !== undefined)
+      ) {
+        setAccess(payload.access || null);
+        const nextPeriod = payload.period || payload.locked_period || null;
+        setPeriod(nextPeriod);
+        if (!nextPeriod) {
+          setEmptyMessage(
+            data.message ||
+              "No exam timetable has been published for your programme, year and semester yet."
+          );
+        }
+      } else if (payload && payload.id) {
+        setAccess(null);
+        setPeriod(payload);
+      } else {
         setEmptyMessage(
           data.message ||
             "No exam timetable has been published for your programme, year and semester yet."
         );
-        return;
       }
-      setPeriod(data.data);
     } catch (err) {
       setError(err.message || "Failed to load exam timetable");
     } finally {
@@ -394,7 +420,15 @@ export default function StudentExamTimetable() {
     try {
       await downloadMyExamTimetablePdf(period.title);
     } catch (err) {
-      setError(err.message || "Could not download PDF");
+      if (err.status === 403 && err.access) {
+        setAccess(err.access);
+        await showExamFeeGateDialog({
+          access: err.access,
+          onGoToFees: () => navigate("/student/fees"),
+        });
+      } else {
+        setError(err.message || "Could not download PDF");
+      }
     } finally {
       setDownloading(false);
     }
@@ -407,6 +441,7 @@ export default function StudentExamTimetable() {
       await downloadMyExamCardPdf();
     } catch (err) {
       if (err.status === 403 && err.access) {
+        setAccess(err.access);
         await showExamFeeGateDialog({
           access: err.access,
           onGoToFees: () => navigate("/student/fees"),
@@ -468,7 +503,10 @@ export default function StudentExamTimetable() {
   const slots = Array.isArray(period.slots) ? period.slots : [];
   const periodLabel = formatPeriodRange(period.period_start, period.period_end);
   const navy = HOME.navyDeep || HOME.navy;
-  const cohortLabel = `Year ${period.year_of_study} · Semester ${period.semester}`;
+  const yearLabel = period.year_of_study ?? period.year ?? "—";
+  const semesterLabel = period.semester ?? "—";
+  const cohortLabel = `Year ${yearLabel} · Semester ${semesterLabel}`;
+  const feeLocked = Boolean(access?.is_enabled && access?.eligible !== true);
 
   return (
     <Box sx={{ ...cardSx, flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
@@ -609,6 +647,26 @@ export default function StudentExamTimetable() {
           </Stack>
         </Stack>
       </Box>
+
+      {feeLocked ? (
+        <Box
+          sx={{
+            px: { xs: 2.25, sm: 3 },
+            py: 1.25,
+            bgcolor: "rgba(154,103,0,0.08)",
+            borderBottom: "1px solid rgba(154,103,0,0.18)",
+            flexShrink: 0,
+          }}
+        >
+          <Typography sx={{ fontFamily: HOME.fontBody, fontSize: "0.8rem", color: "#9a6700", fontWeight: 600 }}>
+            Fee requirement not met yet
+            {access?.min_fee_percent != null
+              ? ` · need ${access.min_fee_percent}% paid (you are at ${access.percent_paid ?? 0}%)`
+              : ""}
+            . You can view the schedule; downloads unlock after you clear the required fees.
+          </Typography>
+        </Box>
+      ) : null}
 
       <Box
         sx={{
