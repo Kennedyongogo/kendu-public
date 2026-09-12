@@ -37,7 +37,7 @@ function SettingsCard({ icon, title, subtitle, children, delay = 0 }) {
         transition: "box-shadow 0.2s ease, border-color 0.2s ease",
         "&:hover": {
           boxShadow: HOME.shadowMd,
-          borderColor: "rgba(0,96,80,0.22)",
+          borderColor: "rgba(27,94,168,0.22)",
         },
       }}
     >
@@ -48,7 +48,7 @@ function SettingsCard({ icon, title, subtitle, children, delay = 0 }) {
         sx={{
           px: { xs: 2, sm: 2.25 },
           py: { xs: 1.5, lg: 1.15 },
-          bgcolor: "rgba(0,96,80,0.045)",
+          bgcolor: "rgba(27,94,168,0.045)",
           borderBottom: `1px solid ${HOME.border}`,
         }}
       >
@@ -60,7 +60,7 @@ function SettingsCard({ icon, title, subtitle, children, delay = 0 }) {
             display: "grid",
             placeItems: "center",
             color: "#fff",
-            background: `linear-gradient(135deg, ${HOME.green}, #004840)`,
+            background: `linear-gradient(135deg, ${HOME.green}, #0E3D73)`,
             flexShrink: 0,
           }}
         >
@@ -367,7 +367,7 @@ export default function StudentSettings({ student, onStudentUpdate, onLogout }) 
                       border: "2px solid #fff",
                       width: 32,
                       height: 32,
-                      "&:hover": { bgcolor: "#004840" },
+                      "&:hover": { bgcolor: "#0E3D73" },
                     }}
                   >
                     <PhotoCameraOutlinedIcon sx={{ fontSize: 16 }} />
@@ -448,7 +448,7 @@ export default function StudentSettings({ student, onStudentUpdate, onLogout }) 
                     py: { xs: 1.1, lg: 0.85 },
                     bgcolor: HOME.green,
                     boxShadow: "none",
-                    "&:hover": { bgcolor: "#004840", boxShadow: "none" },
+                    "&:hover": { bgcolor: "#0E3D73", boxShadow: "none" },
                   }}
                 >
                   {savingProfile ? "Saving…" : "Save profile"}

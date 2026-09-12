@@ -160,9 +160,9 @@ export default function HomeBackgroundMusic() {
                 height: 44,
                 bgcolor: HOME.green,
                 color: "#fff",
-                boxShadow: "0 10px 28px -10px rgba(0,96,80,0.55)",
+                boxShadow: "0 10px 28px -10px rgba(27,94,168,0.55)",
                 border: "1px solid rgba(255,255,255,0.25)",
-                "&:hover": { bgcolor: "#004840" },
+                "&:hover": { bgcolor: "#0E3D73" },
                 animation: needsGesture
                   ? "kenduMusicPulse 1.6s ease-in-out infinite"
                   : "none",

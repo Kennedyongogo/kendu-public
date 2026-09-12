@@ -103,7 +103,7 @@ function EmptyState() {
           borderRadius: "16px",
           display: "grid",
           placeItems: "center",
-          bgcolor: "rgba(0,96,80,0.08)",
+          bgcolor: "rgba(27,94,168,0.08)",
           color: HOME.green,
           mx: "auto",
           mb: 1.5,
@@ -251,7 +251,7 @@ export default function StudentTranscript() {
           mb: 1.75,
           background: `linear-gradient(135deg, ${HOME.green} 0%, ${navy} 100%)`,
           color: "#fff",
-          boxShadow: "0 14px 32px -14px rgba(0, 96, 80, 0.4)",
+          boxShadow: "0 14px 32px -14px rgba(27, 94, 168, 0.4)",
           display: "flex",
           alignItems: "center",
           gap: 1.5,
@@ -344,7 +344,7 @@ export default function StudentTranscript() {
                       borderRadius: "13px",
                       display: "grid",
                       placeItems: "center",
-                      bgcolor: "rgba(0,96,80,0.09)",
+                      bgcolor: "rgba(27,94,168,0.09)",
                       color: HOME.green,
                       flexShrink: 0,
                     }}
@@ -371,7 +371,7 @@ export default function StudentTranscript() {
                           fontWeight: 800,
                           fontSize: "0.65rem",
                           textTransform: "uppercase",
-                          bgcolor: "rgba(0,96,80,0.12)",
+                          bgcolor: "rgba(27,94,168,0.12)",
                           color: HOME.green,
                         }}
                       />
@@ -415,12 +415,12 @@ export default function StudentTranscript() {
                       fontWeight: 700,
                       fontSize: "0.8rem",
                       borderRadius: "11px",
-                      borderColor: "rgba(0,96,80,0.28)",
+                      borderColor: "rgba(27,94,168,0.28)",
                       color: HOME.green,
                       minWidth: { sm: 108 },
                       "&:hover": {
                         borderColor: HOME.green,
-                        bgcolor: "rgba(0,96,80,0.06)",
+                        bgcolor: "rgba(27,94,168,0.06)",
                       },
                     }}
                   >
@@ -445,9 +445,9 @@ export default function StudentTranscript() {
                       fontSize: "0.8rem",
                       borderRadius: "11px",
                       bgcolor: HOME.green,
-                      boxShadow: "0 8px 18px -10px rgba(0,96,80,0.7)",
+                      boxShadow: "0 8px 18px -10px rgba(27,94,168,0.7)",
                       minWidth: { sm: 124 },
-                      "&:hover": { bgcolor: HOME.heroSplitGreenDark || "#004840" },
+                      "&:hover": { bgcolor: HOME.heroSplitGreenDark || "#0E3D73" },
                     }}
                   >
                     Download
@@ -535,7 +535,7 @@ export default function StudentTranscript() {
               >
                 <Table size="small">
                   <TableHead>
-                    <TableRow sx={{ bgcolor: "rgba(0,96,80,0.05)" }}>
+                    <TableRow sx={{ bgcolor: "rgba(27,94,168,0.05)" }}>
                       <TableCell sx={{ fontFamily: HOME.fontBody, fontWeight: 800 }}>Code</TableCell>
                       <TableCell sx={{ fontFamily: HOME.fontBody, fontWeight: 800 }}>Unit</TableCell>
                       <TableCell
@@ -630,7 +630,7 @@ export default function StudentTranscript() {
               fontWeight: 800,
               bgcolor: HOME.green,
               borderRadius: "11px",
-              "&:hover": { bgcolor: HOME.heroSplitGreenDark || "#004840" },
+              "&:hover": { bgcolor: HOME.heroSplitGreenDark || "#0E3D73" },
             }}
           >
             Download PDF

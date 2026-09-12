@@ -88,7 +88,7 @@ function ProgrammeCard({ programme, index, onView }) {
             p: usingLogo ? { xs: 3, sm: 4 } : 0,
             display: "block",
             transition: "transform 0.5s ease",
-            bgcolor: usingLogo ? "rgba(0,96,80,0.06)" : "transparent",
+            bgcolor: usingLogo ? "rgba(27,94,168,0.06)" : "transparent",
           }}
         />
         <Box
@@ -183,7 +183,7 @@ function ProgrammeCard({ programme, index, onView }) {
               borderRadius: "10px",
               display: "grid",
               placeItems: "center",
-              bgcolor: "rgba(0,96,80,0.08)",
+              bgcolor: "rgba(27,94,168,0.08)",
               color: HOME.green,
               flexShrink: 0,
             }}
@@ -228,10 +228,10 @@ function NavArrow({ direction, onClick, disabled }) {
         bgcolor: HOME.green,
         color: "#fff",
         border: "1px solid rgba(255,255,255,0.2)",
-        boxShadow: "0 10px 28px -10px rgba(0,96,80,0.55)",
-        "&:hover": { bgcolor: "#004840" },
+        boxShadow: "0 10px 28px -10px rgba(27,94,168,0.55)",
+        "&:hover": { bgcolor: "#0E3D73" },
         "&.Mui-disabled": {
-          bgcolor: "rgba(0,96,80,0.25)",
+          bgcolor: "rgba(27,94,168,0.25)",
           color: "rgba(255,255,255,0.7)",
         },
       }}

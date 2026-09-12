@@ -147,9 +147,9 @@ function AboutHero({ slideIndex, onSelectSlide, imageUrls, onApply, onMeetStaff 
               letterSpacing: "0.12em",
               textTransform: "uppercase",
               height: 28,
-              bgcolor: "rgba(0, 96, 80, 0.1)",
+              bgcolor: "rgba(27, 94, 168, 0.1)",
               color: HOME.green,
-              border: "1px solid rgba(0, 96, 80, 0.22)",
+              border: "1px solid rgba(27, 94, 168, 0.22)",
             }}
           />
           <Typography

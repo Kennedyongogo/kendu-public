@@ -65,7 +65,7 @@ const fieldSx = {
       "& fieldset": { borderColor: HOME.green },
     },
     "&.Mui-focused": {
-      boxShadow: "0 0 0 4px rgba(0,96,80,0.12)",
+      boxShadow: "0 0 0 4px rgba(27,94,168,0.12)",
       "& fieldset": { borderColor: HOME.green, borderWidth: 1.5 },
     },
   },
@@ -216,7 +216,7 @@ export default function MarketplaceLogin() {
             position: "absolute",
             inset: 0,
             backgroundImage:
-              "radial-gradient(ellipse 80% 50% at 0% 0%, rgba(0,96,80,0.07) 0%, transparent 55%), radial-gradient(ellipse 60% 40% at 100% 100%, rgba(200,168,64,0.1) 0%, transparent 50%)",
+              "radial-gradient(ellipse 80% 50% at 0% 0%, rgba(27,94,168,0.07) 0%, transparent 55%), radial-gradient(ellipse 60% 40% at 100% 100%, rgba(200,168,64,0.1) 0%, transparent 50%)",
             pointerEvents: "none",
           },
         }}
@@ -245,7 +245,7 @@ export default function MarketplaceLogin() {
                 color: HOME.navy,
                 border: `1px solid ${HOME.border}`,
                 bgcolor: "rgba(255,255,255,0.8)",
-                "&:hover": { bgcolor: "rgba(0,96,80,0.08)", borderColor: HOME.green },
+                "&:hover": { bgcolor: "rgba(27,94,168,0.08)", borderColor: HOME.green },
               }}
             >
               <ArrowBack fontSize="small" />
@@ -430,15 +430,15 @@ export default function MarketplaceLogin() {
                 borderRadius: "12px",
                 py: { xs: 1.45, md: 1.15, lg: 1.3 },
                 color: "#fff",
-                background: `linear-gradient(135deg, ${HOME.green} 0%, #004840 100%)`,
-                boxShadow: "0 14px 32px rgba(0,96,80,0.28)",
+                background: `linear-gradient(135deg, ${HOME.green} 0%, #0E3D73 100%)`,
+                boxShadow: "0 14px 32px rgba(27,94,168,0.28)",
                 transition: "transform 0.2s ease, box-shadow 0.2s ease",
                 "&:hover": {
-                  background: `linear-gradient(135deg, #004840 0%, ${HOME.green} 100%)`,
+                  background: `linear-gradient(135deg, #0E3D73 0%, ${HOME.green} 100%)`,
                   transform: "translateY(-1px)",
-                  boxShadow: "0 18px 36px rgba(0,96,80,0.34)",
+                  boxShadow: "0 18px 36px rgba(27,94,168,0.34)",
                 },
-                "&.Mui-disabled": { bgcolor: "rgba(0,96,80,0.45)", color: "#fff" },
+                "&.Mui-disabled": { bgcolor: "rgba(27,94,168,0.45)", color: "#fff" },
               }}
             >
               {loading ? <CircularProgress size={22} color="inherit" /> : "Sign in"}
@@ -544,7 +544,7 @@ export default function MarketplaceLogin() {
             position: "absolute",
             inset: 0,
             background: `
-              linear-gradient(155deg, rgba(20,26,58,0.55) 0%, rgba(0,96,80,0.42) 48%, rgba(20,26,58,0.62) 100%),
+              linear-gradient(155deg, rgba(20,26,58,0.55) 0%, rgba(27,94,168,0.42) 48%, rgba(20,26,58,0.62) 100%),
               radial-gradient(ellipse 70% 55% at 80% 15%, rgba(200,168,64,0.28) 0%, transparent 55%)
             `,
             pointerEvents: "none",
@@ -789,7 +789,7 @@ export default function MarketplaceLogin() {
             position: "absolute",
             inset: 0,
             background:
-              "linear-gradient(180deg, rgba(20,26,58,0.35) 0%, rgba(0,96,80,0.55) 55%, rgba(20,26,58,0.72) 100%)",
+              "linear-gradient(180deg, rgba(20,26,58,0.35) 0%, rgba(27,94,168,0.55) 55%, rgba(20,26,58,0.72) 100%)",
           }}
         />
         <IconButton

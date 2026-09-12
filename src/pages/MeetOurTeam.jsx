@@ -64,7 +64,7 @@ function StaffCard({ person, index }) {
           p: usingLogo ? { xs: 3, sm: 4 } : 0,
           display: "block",
           transition: "transform 0.45s ease",
-          bgcolor: usingLogo ? "rgba(0,96,80,0.06)" : "transparent",
+          bgcolor: usingLogo ? "rgba(27,94,168,0.06)" : "transparent",
         }}
       />
 
@@ -189,7 +189,7 @@ export default function MeetOurTeam() {
         sx={{
           position: "relative",
           overflow: "hidden",
-          background: `linear-gradient(135deg, ${HOME.green} 0%, #004840 100%)`,
+          background: `linear-gradient(135deg, ${HOME.green} 0%, #0E3D73 100%)`,
           pt: { xs: 2, md: 3 },
           pb: { xs: 2.5, md: 3.5 },
         }}

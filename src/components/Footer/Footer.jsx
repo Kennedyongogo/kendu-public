@@ -89,7 +89,7 @@ export default function Footer() {
       component="footer"
       sx={{
         mt: "auto",
-        background: `linear-gradient(145deg, #004840 0%, ${HOME.green} 48%, #007a66 100%)`,
+        background: `linear-gradient(145deg, #0E3D73 0%, ${HOME.green} 48%, #2B7BC4 100%)`,
         color: "rgba(255,255,255,0.88)",
         fontFamily: HOME.fontBody,
         position: "relative",

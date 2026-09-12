@@ -359,7 +359,7 @@ function DataTable({
               <TableRow
                 key={row.id || i}
                 sx={{
-                  bgcolor: i % 2 === 0 ? "#fff" : "rgba(0,96,80,0.03)",
+                  bgcolor: i % 2 === 0 ? "#fff" : "rgba(27,94,168,0.03)",
                   "& td": {
                     fontFamily: HOME.fontBody,
                     fontWeight: 600,
@@ -491,7 +491,7 @@ export default function ProgrammeDetail() {
           width: "100%",
           overflow: "hidden",
           color: "#fff",
-          background: `linear-gradient(135deg, ${HOME.green} 0%, #004840 48%, ${HOME.navyDeep} 100%)`,
+          background: `linear-gradient(135deg, ${HOME.green} 0%, #0E3D73 48%, ${HOME.navyDeep} 100%)`,
         }}
       >
         <Box
@@ -544,7 +544,7 @@ export default function ProgrammeDetail() {
                   "&:hover": {
                     bgcolor: "#fff",
                     color: HOME.green,
-                    boxShadow: "0 14px 32px -12px rgba(0,96,80,0.4)",
+                    boxShadow: "0 14px 32px -12px rgba(27,94,168,0.4)",
                   },
                 }}
               >

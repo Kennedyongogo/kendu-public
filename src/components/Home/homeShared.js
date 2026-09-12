@@ -25,12 +25,12 @@ export const HOME = {
   heroBackground: `linear-gradient(165deg, ${BRAND.navyDeep} 0%, ${BRAND.navy} 38%, ${BRAND.navyMid} 72%, ${BRAND.green} 100%)`,
   heroBackgroundAccent: `
     radial-gradient(ellipse 70% 55% at 88% 12%, rgba(200, 168, 64, 0.2) 0%, transparent 58%),
-    radial-gradient(ellipse 55% 45% at 8% 88%, rgba(0, 96, 80, 0.25) 0%, transparent 52%)
+    radial-gradient(ellipse 55% 45% at 8% 88%, rgba(27, 94, 168, 0.25) 0%, transparent 52%)
   `,
   heroSplitWhite: "#ffffff",
   heroSplitGreen: BRAND.green,
-  heroSplitGreenDark: "#004840",
-  heroSplitGreenLight: "#3d9e78",
+  heroSplitGreenDark: BRAND.greenDark,
+  heroSplitGreenLight: BRAND.greenLight,
   navyGradient: `linear-gradient(135deg, ${BRAND.navyDeep} 0%, ${BRAND.navy} 55%, ${BRAND.navyMid} 100%)`,
   goldGradient: `linear-gradient(135deg, ${BRAND.gold} 0%, ${BRAND.goldMuted} 100%)`,
   fontDisplay: '"Cormorant Garamond", Georgia, serif',

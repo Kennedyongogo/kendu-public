@@ -14,11 +14,11 @@ const earthTones = {
     main: "#6B4E3D", // Medium brown for logo/primary
     light: "#8B6F5E", // Lighter brown for secondary text
   },
-  // Green tones
+  // Accent blues (aligned with brand.js)
   green: {
-    olive: "#6B7D47", // Olive green
-    forest: "#2D4A2D", // Dark forest green
-    light: "#8B9A6B", // Light olive
+    olive: "#4A8AD4", // Light brand blue
+    forest: "#1B5EA8", // Main brand blue
+    light: "#7AADE0", // Soft brand blue
   },
   // Orange/Rust tones
   orange: {
@@ -41,7 +41,7 @@ const theme = createTheme({
       dark: earthTones.orange.dark,
     },
     info: {
-      main: earthTones.green.olive, // Olive green
+      main: earthTones.green.olive, // Brand blue accent
       light: earthTones.green.light,
       dark: earthTones.green.forest,
     },
@@ -55,9 +55,9 @@ const theme = createTheme({
       secondary: "#000000", // Body / supporting copy (was earthTones.brown.light)
     },
     success: {
-      main: earthTones.green.forest, // Dark forest green for success
+      main: earthTones.green.forest, // Brand blue for success accents
       light: earthTones.green.olive,
-      dark: "#1E331E",
+      dark: "#0E3D73",
     },
     // Custom earth tone colors for direct use
     earthTones: earthTones,

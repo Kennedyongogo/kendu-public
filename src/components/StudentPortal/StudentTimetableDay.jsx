@@ -19,7 +19,7 @@ import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import WbSunnyRoundedIcon from "@mui/icons-material/WbSunnyRounded";
 import { HOME, fadeUp } from "./studentPortalShared";
 
-const primaryDark = HOME.heroSplitGreenDark || "#004840";
+const primaryDark = HOME.heroSplitGreenDark || "#0E3D73";
 const navy = HOME.navyDeep || HOME.navy;
 
 const CATEGORY_META = {
@@ -490,7 +490,7 @@ export default function StudentTimetableDay() {
             px: 3,
             borderRadius: "22px",
             bgcolor: "#fff",
-            border: `1px dashed rgba(0,96,80,0.25)`,
+            border: `1px dashed rgba(27,94,168,0.25)`,
             boxShadow: HOME.shadowSm,
             animation: `${fadeUp} 0.45s ease both`,
           }}
@@ -505,7 +505,7 @@ export default function StudentTimetableDay() {
               display: "grid",
               placeItems: "center",
               color: HOME.green,
-              background: "linear-gradient(145deg, rgba(0,96,80,0.1) 0%, rgba(200,168,64,0.12) 100%)",
+              background: "linear-gradient(145deg, rgba(27,94,168,0.1) 0%, rgba(200,168,64,0.12) 100%)",
             }}
           >
             <WbSunnyRoundedIcon sx={{ fontSize: 32 }} />

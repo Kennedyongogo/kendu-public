@@ -107,7 +107,7 @@ function FeaturedCard({ item, onOpen }) {
           height: "100%",
           objectFit: usingLogo ? "contain" : "cover",
           p: usingLogo ? { xs: 5, md: 8 } : 0,
-          bgcolor: usingLogo ? "rgba(0,96,80,0.06)" : "transparent",
+          bgcolor: usingLogo ? "rgba(27,94,168,0.06)" : "transparent",
           transition: "transform 0.5s ease",
         }}
       />
@@ -237,7 +237,7 @@ function SideCard({ item, onOpen, index }) {
           overflow: "hidden",
           alignSelf: "stretch",
           minHeight: 96,
-          bgcolor: usingLogo ? "rgba(0,96,80,0.06)" : "rgba(8,22,43,0.08)",
+          bgcolor: usingLogo ? "rgba(27,94,168,0.06)" : "rgba(8,22,43,0.08)",
         }}
       >
         <Box
@@ -303,7 +303,7 @@ function SideCard({ item, onOpen, index }) {
           borderRadius: "50%",
           flexShrink: 0,
           border: `1px solid ${HOME.border}`,
-          bgcolor: "rgba(0,96,80,0.06)",
+          bgcolor: "rgba(27,94,168,0.06)",
           color: HOME.green,
         }}
       >
@@ -367,7 +367,7 @@ export default function NewsSection() {
           width: 460,
           height: 460,
           borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(0,96,80,0.08) 0%, transparent 60%)",
+          background: "radial-gradient(circle, rgba(27,94,168,0.08) 0%, transparent 60%)",
           pointerEvents: "none",
         }}
       />

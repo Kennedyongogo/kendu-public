@@ -72,12 +72,12 @@ const primaryCtaSx = {
   borderRadius: "12px",
   px: { xs: 2, md: 2.75 },
   py: { xs: 1, md: 1.15 },
-  boxShadow: "0 10px 24px rgba(0, 96, 80, 0.35)",
+  boxShadow: "0 10px 24px rgba(27, 94, 168, 0.35)",
   transition: "transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease",
   "&:hover": {
     bgcolor: HOME.heroSplitGreenDark,
     transform: "translateY(-3px)",
-    boxShadow: "0 16px 32px rgba(0, 96, 80, 0.45)",
+    boxShadow: "0 16px 32px rgba(27, 94, 168, 0.45)",
   },
 };
 
@@ -202,7 +202,7 @@ function HeroFeatureItem({ icon: Icon, title, subtitle }) {
           flexShrink: 0,
           display: "grid",
           placeItems: "center",
-          bgcolor: "rgba(0, 96, 80, 0.09)",
+          bgcolor: "rgba(27, 94, 168, 0.09)",
           color: HOME.heroSplitGreen,
         }}
       >
@@ -489,7 +489,7 @@ export default function HeroSection() {
               background: {
                 xs: `
                   linear-gradient(180deg, #ffffff 0%, #fbfbfb 100%),
-                  radial-gradient(circle at top left, rgba(0, 96, 80, 0.05), transparent 55%)
+                  radial-gradient(circle at top left, rgba(27, 94, 168, 0.05), transparent 55%)
                 `,
                 md: "transparent",
               },
@@ -671,7 +671,7 @@ export default function HeroSection() {
           position: "relative",
           zIndex: 3,
           flexShrink: 0,
-          bgcolor: "#043c2e",
+          bgcolor: HOME.heroSplitGreenDark,
           height: { xs: 76, sm: 80, md: 88 },
           display: "grid",
           gridTemplateColumns: "repeat(3, 1fr)",

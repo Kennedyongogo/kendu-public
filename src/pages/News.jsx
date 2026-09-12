@@ -83,7 +83,7 @@ function NewsCard({ item, onOpen, index = 0, featured = false }) {
           "&::before": { transform: "scaleX(1)" },
           "& .news-photo": { transform: "scale(1.06)" },
           "& .news-title": { color: HOME.gold },
-          "& .news-cta": { gap: 1, color: "#004840" },
+          "& .news-cta": { gap: 1, color: "#0E3D73" },
         },
       }}
     >
@@ -105,7 +105,7 @@ function NewsCard({ item, onOpen, index = 0, featured = false }) {
             height: "100%",
             objectFit: usingLogo ? "contain" : "cover",
             p: usingLogo ? 3 : 0,
-            bgcolor: usingLogo ? "rgba(0,96,80,0.06)" : "transparent",
+            bgcolor: usingLogo ? "rgba(27,94,168,0.06)" : "transparent",
             transition: "transform 0.5s ease",
           }}
         />
@@ -303,7 +303,7 @@ export default function News() {
         sx={{
           position: "relative",
           overflow: "hidden",
-          background: `linear-gradient(135deg, ${HOME.green} 0%, #004840 100%)`,
+          background: `linear-gradient(135deg, ${HOME.green} 0%, #0E3D73 100%)`,
           py: { xs: 1.75, md: 2.25 },
         }}
       >
@@ -390,7 +390,7 @@ export default function News() {
             gap: { xs: 1, sm: 0 },
             px: { xs: 1.25, sm: 0 },
             py: { xs: 1.5, sm: 0 },
-            bgcolor: { xs: "rgba(0,96,80,0.05)", sm: "transparent" },
+            bgcolor: { xs: "rgba(27,94,168,0.05)", sm: "transparent" },
           }}
         >
           {CATEGORY_FILTERS.map((f, index) => {
@@ -429,7 +429,7 @@ export default function News() {
                   // Phone: pill styling; desktop: flat tab
                   borderRadius: { xs: "999px", sm: 0 },
                   border: {
-                    xs: `1.5px solid ${active ? HOME.green : "rgba(0,96,80,0.3)"}`,
+                    xs: `1.5px solid ${active ? HOME.green : "rgba(27,94,168,0.3)"}`,
                     sm: "none",
                   },
                   color: {
@@ -438,19 +438,19 @@ export default function News() {
                   },
                   bgcolor: {
                     xs: active ? HOME.green : "#fff",
-                    sm: active ? "rgba(0,96,80,0.05)" : "transparent",
+                    sm: active ? "rgba(27,94,168,0.05)" : "transparent",
                   },
                   boxShadow: {
                     xs: active
-                      ? "0 8px 18px -6px rgba(0,96,80,0.55)"
+                      ? "0 8px 18px -6px rgba(27,94,168,0.55)"
                       : "0 2px 8px -2px rgba(8,22,43,0.12)",
                     sm: "none",
                   },
                   "&:hover": {
                     color: { xs: active ? "#fff" : HOME.green, sm: HOME.green },
                     bgcolor: {
-                      xs: active ? HOME.green : "rgba(0,96,80,0.06)",
-                      sm: "rgba(0,96,80,0.04)",
+                      xs: active ? HOME.green : "rgba(27,94,168,0.06)",
+                      sm: "rgba(27,94,168,0.04)",
                     },
                   },
                   // Desktop/tablet: gold underline indicator
@@ -480,7 +480,7 @@ export default function News() {
                       py: 0.35,
                       borderRadius: "999px",
                       bgcolor: {
-                        xs: active ? "rgba(255,255,255,0.28)" : "rgba(0,96,80,0.12)",
+                        xs: active ? "rgba(255,255,255,0.28)" : "rgba(27,94,168,0.12)",
                         sm: active ? HOME.green : "rgba(8,22,43,0.08)",
                       },
                       color: {
@@ -525,7 +525,7 @@ export default function News() {
                   borderRadius: "22px",
                   border: "1px solid rgba(200,168,64,0.35)",
                   background:
-                    "linear-gradient(135deg, rgba(200,168,64,0.08) 0%, rgba(0,96,80,0.05) 100%)",
+                    "linear-gradient(135deg, rgba(200,168,64,0.08) 0%, rgba(27,94,168,0.05) 100%)",
                   animation: `${fadeUp} 0.5s ease both`,
                 }}
               >
@@ -538,9 +538,9 @@ export default function News() {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      background: `linear-gradient(145deg, ${HOME.green}, #004840)`,
+                      background: `linear-gradient(145deg, ${HOME.green}, #0E3D73)`,
                       color: "#fff",
-                      boxShadow: "0 6px 14px -6px rgba(0,96,80,0.55)",
+                      boxShadow: "0 6px 14px -6px rgba(27,94,168,0.55)",
                     }}
                   >
                     <EventOutlinedIcon sx={{ fontSize: 19 }} />
@@ -603,8 +603,8 @@ export default function News() {
                             borderRadius: "14px",
                             overflow: "hidden",
                             textAlign: "center",
-                            border: "1px solid rgba(0,96,80,0.18)",
-                            boxShadow: "0 4px 10px -4px rgba(0,96,80,0.3)",
+                            border: "1px solid rgba(27,94,168,0.18)",
+                            boxShadow: "0 4px 10px -4px rgba(27,94,168,0.3)",
                           }}
                         >
                           <Box
@@ -736,7 +736,7 @@ function EmptyState() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          bgcolor: "rgba(0,96,80,0.1)",
+          bgcolor: "rgba(27,94,168,0.1)",
           color: HOME.green,
         }}
       >

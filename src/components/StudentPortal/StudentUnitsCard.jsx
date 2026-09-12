@@ -63,13 +63,13 @@ function showFeeGateDialog({ unit, access, onGoToFees }) {
       <div style="text-align:left;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#1a2638;">
         <p style="margin:0 0 10px;font-size:0.86rem;line-height:1.45;color:rgba(8,22,43,0.72);">
           You need to clear more of your school fees before enrolling in
-          <strong style="color:#006050;">${unitCode}</strong>
+          <strong style="color:#1B5EA8;">${unitCode}</strong>
           — ${unitName}.
         </p>
-        <div style="display:grid;gap:6px;padding:10px 12px;border-radius:12px;background:rgba(0,96,80,0.05);border:1px solid rgba(0,96,80,0.12);">
+        <div style="display:grid;gap:6px;padding:10px 12px;border-radius:12px;background:rgba(27,94,168,0.05);border:1px solid rgba(27,94,168,0.12);">
           <div style="display:flex;justify-content:space-between;gap:12px;">
             <span style="font-size:0.74rem;font-weight:700;color:rgba(8,22,43,0.55);">Required</span>
-            <span style="font-size:0.84rem;font-weight:800;color:#006050;">${required}% of fees paid</span>
+            <span style="font-size:0.84rem;font-weight:800;color:#1B5EA8;">${required}% of fees paid</span>
           </div>
           <div style="display:flex;justify-content:space-between;gap:12px;">
             <span style="font-size:0.74rem;font-weight:700;color:rgba(8,22,43,0.55);">You have paid</span>
@@ -79,7 +79,7 @@ function showFeeGateDialog({ unit, access, onGoToFees }) {
             <span style="font-size:0.74rem;font-weight:700;color:rgba(8,22,43,0.55);">Still needed</span>
             <span style="font-size:0.84rem;font-weight:800;color:#9a6700;">${shortfall}%</span>
           </div>
-          <hr style="border:none;border-top:1px solid rgba(0,96,80,0.12);margin:2px 0;" />
+          <hr style="border:none;border-top:1px solid rgba(27,94,168,0.12);margin:2px 0;" />
           <div style="display:flex;justify-content:space-between;gap:12px;">
             <span style="font-size:0.74rem;font-weight:700;color:rgba(8,22,43,0.55);">Total charged</span>
             <span style="font-size:0.8rem;font-weight:700;">${totalCharged}</span>
@@ -114,8 +114,8 @@ function UnitSkeleton() {
       sx={{
         p: 1.75,
         borderRadius: "16px",
-        border: "1px solid rgba(0,96,80,0.08)",
-        bgcolor: "rgba(0,96,80,0.02)",
+        border: "1px solid rgba(27,94,168,0.08)",
+        bgcolor: "rgba(27,94,168,0.02)",
       }}
     >
       <Stack direction="row" spacing={1.5} alignItems="flex-start">
@@ -143,16 +143,16 @@ function UnitRow({ unit, index, registeringId, onRegister }) {
         position: "relative",
         p: { xs: 1.5, sm: 1.75 },
         borderRadius: "18px",
-        border: enrolled ? "1.5px solid rgba(0,96,80,0.35)" : "1px solid rgba(0,96,80,0.1)",
-        bgcolor: enrolled ? "rgba(0,96,80,0.04)" : "#fff",
-        boxShadow: enrolled ? "0 10px 28px -16px rgba(0,96,80,0.45)" : HOME.shadowSm,
+        border: enrolled ? "1.5px solid rgba(27,94,168,0.35)" : "1px solid rgba(27,94,168,0.1)",
+        bgcolor: enrolled ? "rgba(27,94,168,0.04)" : "#fff",
+        boxShadow: enrolled ? "0 10px 28px -16px rgba(27,94,168,0.45)" : HOME.shadowSm,
         transition: "transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease",
         animation: `${fadeUp} 0.5s ease both`,
         animationDelay: `${0.06 + index * 0.05}s`,
         "&:hover": {
           transform: "translateY(-2px)",
-          boxShadow: enrolled ? "0 14px 32px -14px rgba(0,96,80,0.5)" : HOME.shadowMd,
-          borderColor: enrolled ? "rgba(0,96,80,0.5)" : "rgba(200,168,64,0.45)",
+          boxShadow: enrolled ? "0 14px 32px -14px rgba(27,94,168,0.5)" : HOME.shadowMd,
+          borderColor: enrolled ? "rgba(27,94,168,0.5)" : "rgba(200,168,64,0.45)",
         },
       }}
     >
@@ -165,7 +165,7 @@ function UnitRow({ unit, index, registeringId, onRegister }) {
             flexShrink: 0,
             display: "grid",
             placeItems: "center",
-            bgcolor: enrolled ? HOME.green : "rgba(0,96,80,0.08)",
+            bgcolor: enrolled ? HOME.green : "rgba(27,94,168,0.08)",
             color: enrolled ? "#fff" : HOME.green,
             fontFamily: HOME.fontBody,
             fontWeight: 800,
@@ -202,7 +202,7 @@ function UnitRow({ unit, index, registeringId, onRegister }) {
                   height: 22,
                   fontWeight: 700,
                   fontSize: "0.68rem",
-                  bgcolor: "rgba(0,96,80,0.12)",
+                  bgcolor: "rgba(27,94,168,0.12)",
                   color: HOME.green,
                   "& .MuiChip-icon": { color: HOME.green },
                 }}
@@ -278,7 +278,7 @@ function UnitRow({ unit, index, registeringId, onRegister }) {
                   height: 24,
                   fontWeight: 600,
                   fontSize: "0.68rem",
-                  bgcolor: "rgba(0,96,80,0.06)",
+                  bgcolor: "rgba(27,94,168,0.06)",
                   color: HOME.green,
                 }}
               />
@@ -308,8 +308,8 @@ function UnitRow({ unit, index, registeringId, onRegister }) {
               py: 0.85,
               bgcolor: HOME.green,
               color: "#fff",
-              boxShadow: "0 10px 24px -10px rgba(0,96,80,0.65)",
-              "&:hover": { bgcolor: HOME.heroSplitGreenDark || "#004840" },
+              boxShadow: "0 10px 24px -10px rgba(27,94,168,0.65)",
+              "&:hover": { bgcolor: HOME.heroSplitGreenDark || "#0E3D73" },
             }}
           >
             {busy ? "Enrolling…" : "Enroll"}
@@ -607,8 +607,8 @@ export default function StudentUnitsCard({ student }) {
                 py: { xs: 3.5, sm: 4.5 },
                 px: 2,
                 borderRadius: "18px",
-                bgcolor: "rgba(0,96,80,0.03)",
-                border: "1px dashed rgba(0,96,80,0.16)",
+                bgcolor: "rgba(27,94,168,0.03)",
+                border: "1px dashed rgba(27,94,168,0.16)",
               }}
             >
               <Box
@@ -620,7 +620,7 @@ export default function StudentUnitsCard({ student }) {
                   mb: 1.5,
                   display: "grid",
                   placeItems: "center",
-                  bgcolor: "rgba(0,96,80,0.08)",
+                  bgcolor: "rgba(27,94,168,0.08)",
                   color: HOME.green,
                 }}
               >

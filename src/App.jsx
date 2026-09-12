@@ -91,6 +91,7 @@ function AppLayout() {
             <Route path="/student/timetable/day/:dateKey" element={<StudentPortal />} />
             <Route path="/student/transcript" element={<StudentPortal />} />
             <Route path="/student/fees" element={<StudentPortal />} />
+            <Route path="/student/library" element={<StudentPortal />} />
             <Route path="/student/settings" element={<StudentPortal />} />
             <Route path="/admission/apply" element={<AdmissionApplication />} />
             <Route path="/programmes/:id" element={<ProgrammeDetail />} />

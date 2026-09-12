@@ -95,7 +95,7 @@ const fieldSx = {
       "& fieldset": { borderColor: HOME.green },
     },
     "&.Mui-focused": {
-      boxShadow: `0 0 0 4px rgba(0,96,80,0.12)`,
+      boxShadow: `0 0 0 4px rgba(27,94,168,0.12)`,
       "& fieldset": { borderColor: HOME.green, borderWidth: 1.5 },
     },
   },
@@ -162,7 +162,7 @@ function FormSection({ icon, step, title, subtitle, children, delay = 0, tone = 
           bgcolor: isSoft ? HOME.sky : "#fff",
           py: { xs: 3.75, md: 5 },
           backgroundImage: isSoft
-            ? `radial-gradient(ellipse 60% 80% at 100% 0%, rgba(0,96,80,0.06) 0%, transparent 55%)`
+            ? `radial-gradient(ellipse 60% 80% at 100% 0%, rgba(27,94,168,0.06) 0%, transparent 55%)`
             : `radial-gradient(ellipse 50% 70% at 0% 100%, rgba(200,168,64,0.07) 0%, transparent 50%)`,
         }}
       >
@@ -193,8 +193,8 @@ function FormSection({ icon, step, title, subtitle, children, delay = 0, tone = 
               placeItems: "center",
               flexShrink: 0,
               color: "#fff",
-              background: `linear-gradient(145deg, ${HOME.green} 0%, #004840 100%)`,
-              boxShadow: `0 12px 28px rgba(0,96,80,0.28)`,
+              background: `linear-gradient(145deg, ${HOME.green} 0%, #0E3D73 100%)`,
+              boxShadow: `0 12px 28px rgba(27,94,168,0.28)`,
               position: "relative",
               "& svg": { fontSize: 26 },
             }}
@@ -287,14 +287,14 @@ function FileUploadField({ label, required, file, onSelect, onClear, accept, hin
           textAlign: "left",
           borderRadius: "14px",
           border: `1.5px dashed ${file ? HOME.green : "rgba(12, 35, 64, 0.18)"}`,
-          bgcolor: file ? "rgba(0,96,80,0.05)" : "rgba(255,255,255,0.9)",
+          bgcolor: file ? "rgba(27,94,168,0.05)" : "rgba(255,255,255,0.9)",
           px: { xs: 2, md: 2.5 },
           py: { xs: 2.35, md: 2.85 },
           transition: "all 0.22s ease",
-          boxShadow: file ? "0 10px 24px rgba(0,96,80,0.1)" : "none",
+          boxShadow: file ? "0 10px 24px rgba(27,94,168,0.1)" : "none",
           "&:hover": {
             borderColor: HOME.green,
-            bgcolor: "rgba(0,96,80,0.06)",
+            bgcolor: "rgba(27,94,168,0.06)",
             transform: "translateY(-1px)",
           },
         }}
@@ -318,7 +318,7 @@ function FileUploadField({ label, required, file, onSelect, onClear, accept, hin
               borderRadius: "14px",
               display: "grid",
               placeItems: "center",
-              bgcolor: file ? "rgba(0,96,80,0.14)" : "rgba(12,35,64,0.06)",
+              bgcolor: file ? "rgba(27,94,168,0.14)" : "rgba(12,35,64,0.06)",
               color: file ? HOME.green : HOME.navy,
               flexShrink: 0,
             }}
@@ -587,7 +587,7 @@ export default function AdmissionApplication() {
           width: "100%",
           overflow: "hidden",
           bgcolor: HOME.green,
-          background: `linear-gradient(165deg, ${HOME.green} 0%, #004840 55%, #003830 100%)`,
+          background: `linear-gradient(165deg, ${HOME.green} 0%, #0E3D73 55%, #0A2F5C 100%)`,
           color: "#fff",
           pt: { xs: 1.5, md: 2 },
           pb: { xs: 2.25, md: 2.75 },
@@ -710,12 +710,12 @@ export default function AdmissionApplication() {
                     height: 6,
                     borderRadius: 999,
                     transition: "background 0.35s ease, opacity 0.35s ease",
-                    bgcolor: done || active ? undefined : "rgba(0,96,80,0.12)",
+                    bgcolor: done || active ? undefined : "rgba(27,94,168,0.12)",
                     background: done
                       ? `linear-gradient(90deg, ${HOME.green}, ${HOME.gold})`
                       : active
-                        ? `linear-gradient(90deg, rgba(0,96,80,0.45), rgba(200,168,64,0.55))`
-                        : "rgba(0,96,80,0.12)",
+                        ? `linear-gradient(90deg, rgba(27,94,168,0.45), rgba(200,168,64,0.55))`
+                        : "rgba(27,94,168,0.12)",
                   }}
                 />
               );

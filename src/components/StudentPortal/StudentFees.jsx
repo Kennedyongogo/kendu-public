@@ -76,7 +76,7 @@ function ReceiptDetailRow({ label, value }) {
         py: 0.85,
         px: 1.25,
         borderRadius: "10px",
-        bgcolor: "rgba(0,96,80,0.03)",
+        bgcolor: "rgba(27,94,168,0.03)",
       }}
     >
       <Typography
@@ -271,7 +271,7 @@ function ReceiptPreviewCard({ payment, student, summary }) {
                   gap: 0.75,
                   p: 1.1,
                   borderRadius: "12px",
-                  bgcolor: "rgba(0,96,80,0.04)",
+                  bgcolor: "rgba(27,94,168,0.04)",
                 }}
               >
                 {[
@@ -301,7 +301,7 @@ function ReceiptPreviewCard({ payment, student, summary }) {
           ) : null}
         </Box>
 
-        <Box sx={{ px: 2, py: 1.25, borderTop: `1px solid ${HOME.border}`, bgcolor: "rgba(0,96,80,0.02)" }}>
+        <Box sx={{ px: 2, py: 1.25, borderTop: `1px solid ${HOME.border}`, bgcolor: "rgba(27,94,168,0.02)" }}>
           <Typography sx={{ fontFamily: HOME.fontBody, color: HOME.inkSoft, fontSize: "0.65rem", textAlign: "center", lineHeight: 1.4 }}>
             Computer-generated receipt from the Kendu student portal. Present with your admission number for verification.
           </Typography>
@@ -403,7 +403,7 @@ function SectionCard({ title, subtitle, children, delay = 0 }) {
         animationDelay: `${delay * 0.08}s`,
       }}
     >
-      <Box sx={{ px: 2, py: 1.5, bgcolor: "rgba(0,96,80,0.04)", borderBottom: `1px solid ${HOME.border}` }}>
+      <Box sx={{ px: 2, py: 1.5, bgcolor: "rgba(27,94,168,0.04)", borderBottom: `1px solid ${HOME.border}` }}>
         <Typography sx={{ fontFamily: HOME.fontDisplay, fontWeight: 700, color: HOME.navyDeep, fontSize: "1.1rem" }}>
           {title}
         </Typography>
@@ -787,10 +787,10 @@ export default function StudentFees({ student }) {
           sx={{
             height: 9,
             borderRadius: 8,
-            bgcolor: "rgba(0,96,80,0.09)",
+            bgcolor: "rgba(27,94,168,0.09)",
             "& .MuiLinearProgress-bar": {
               borderRadius: 8,
-              background: `linear-gradient(90deg, ${HOME.green} 0%, #3d9e78 100%)`,
+              background: `linear-gradient(90deg, ${HOME.green} 0%, #4A8AD4 100%)`,
             },
           }}
         />
@@ -818,7 +818,7 @@ export default function StudentFees({ student }) {
                   : 0;
                 const cleared = !Number(charge.balance);
                 return (
-                  <Box key={charge.id} sx={{ px: 2, py: 1.5, transition: "background 0.15s ease", "&:hover": { bgcolor: "rgba(0,96,80,0.025)" } }}>
+                  <Box key={charge.id} sx={{ px: 2, py: 1.5, transition: "background 0.15s ease", "&:hover": { bgcolor: "rgba(27,94,168,0.025)" } }}>
                     <Stack direction="row" justifyContent="space-between" spacing={2}>
                       <Box sx={{ minWidth: 0 }}>
                         <Stack direction="row" spacing={0.75} alignItems="center" flexWrap="wrap">
@@ -826,7 +826,7 @@ export default function StudentFees({ student }) {
                             Year {charge.year_of_study} · Semester {charge.semester}
                           </Typography>
                           {charge.is_current ? (
-                            <Chip size="small" label="Current" sx={{ height: 21, fontSize: "0.65rem", fontWeight: 700, bgcolor: "rgba(0,96,80,0.1)", color: HOME.green }} />
+                            <Chip size="small" label="Current" sx={{ height: 21, fontSize: "0.65rem", fontWeight: 700, bgcolor: "rgba(27,94,168,0.1)", color: HOME.green }} />
                           ) : null}
                           {cleared ? (
                             <Chip
@@ -855,12 +855,12 @@ export default function StudentFees({ student }) {
                         mt: 1,
                         height: 6,
                         borderRadius: 6,
-                        bgcolor: "rgba(0,96,80,0.08)",
+                        bgcolor: "rgba(27,94,168,0.08)",
                         "& .MuiLinearProgress-bar": {
                           borderRadius: 6,
                           background: cleared
                             ? "linear-gradient(90deg, #2e7d32 0%, #4caf50 100%)"
-                            : `linear-gradient(90deg, ${HOME.green} 0%, #3d9e78 100%)`,
+                            : `linear-gradient(90deg, ${HOME.green} 0%, #4A8AD4 100%)`,
                         },
                       }}
                     />
@@ -870,7 +870,7 @@ export default function StudentFees({ student }) {
             </Stack>
           ) : (
             <Stack alignItems="center" spacing={1} sx={{ py: 4 }}>
-              <SchoolRoundedIcon sx={{ fontSize: 40, color: "rgba(0,96,80,0.25)" }} />
+              <SchoolRoundedIcon sx={{ fontSize: 40, color: "rgba(27,94,168,0.25)" }} />
               <Typography sx={{ fontFamily: HOME.fontBody, color: HOME.inkMuted, fontSize: "0.85rem" }}>
                 No fee charges are available yet.
               </Typography>
@@ -888,7 +888,7 @@ export default function StudentFees({ student }) {
             <Box sx={{ overflowX: "auto", display: { xs: "none", md: "block" } }}>
               <Box component="table" sx={{ width: "100%", borderCollapse: "collapse", minWidth: 650 }}>
                 <Box component="thead">
-                  <Box component="tr" sx={{ bgcolor: "rgba(0,96,80,0.04)" }}>
+                  <Box component="tr" sx={{ bgcolor: "rgba(27,94,168,0.04)" }}>
                     {["Date", "Reference", "Method", "Amount", "Status", "Action"].map((heading) => (
                       <Box
                         component="th"
@@ -919,7 +919,7 @@ export default function StudentFees({ student }) {
                       sx={{
                         borderTop: `1px solid ${HOME.border}`,
                         transition: "background 0.15s ease",
-                        "&:hover": { bgcolor: "rgba(0,96,80,0.03)" },
+                        "&:hover": { bgcolor: "rgba(27,94,168,0.03)" },
                       }}
                     >
                       <Box component="td" sx={{ px: 2, py: 1.2, fontFamily: HOME.fontBody, fontSize: "0.78rem", color: HOME.inkMuted }}>
@@ -952,9 +952,9 @@ export default function StudentFees({ student }) {
                                 disabled={actionBusy(payment.id)}
                                 onClick={() => viewReceipt(payment)}
                                 sx={{
-                                  color: payment.status === "confirmed" ? HOME.green : "rgba(0,96,80,0.35)",
-                                  bgcolor: "rgba(0,96,80,0.06)",
-                                  "&:hover": { bgcolor: "rgba(0,96,80,0.12)" },
+                                  color: payment.status === "confirmed" ? HOME.green : "rgba(27,94,168,0.35)",
+                                  bgcolor: "rgba(27,94,168,0.06)",
+                                  "&:hover": { bgcolor: "rgba(27,94,168,0.12)" },
                                 }}
                               >
                                 <VisibilityRoundedIcon sx={{ fontSize: 18 }} />
@@ -974,7 +974,7 @@ export default function StudentFees({ student }) {
                                 disabled={actionBusy(payment.id)}
                                 onClick={() => downloadReceipt(payment)}
                                 sx={{
-                                  color: payment.status === "confirmed" ? HOME.navyDeep : "rgba(0,96,80,0.35)",
+                                  color: payment.status === "confirmed" ? HOME.navyDeep : "rgba(27,94,168,0.35)",
                                   bgcolor: "rgba(30,40,88,0.05)",
                                   "&:hover": { bgcolor: "rgba(30,40,88,0.1)" },
                                 }}
@@ -1003,7 +1003,7 @@ export default function StudentFees({ student }) {
                     border: `1px solid ${HOME.border}`,
                     borderRadius: "14px",
                     p: 1.5,
-                    bgcolor: "rgba(0,96,80,0.02)",
+                    bgcolor: "rgba(27,94,168,0.02)",
                   }}
                 >
                   <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={1}>
@@ -1050,7 +1050,7 @@ export default function StudentFees({ student }) {
                         fontFamily: HOME.fontBody,
                         fontWeight: 700,
                         borderRadius: "10px",
-                        borderColor: "rgba(0,96,80,0.25)",
+                        borderColor: "rgba(27,94,168,0.25)",
                         color: HOME.green,
                       }}
                     >
@@ -1087,7 +1087,7 @@ export default function StudentFees({ student }) {
             </>
           ) : (
             <Stack alignItems="center" spacing={1} sx={{ py: 4 }}>
-              <ReceiptLongRoundedIcon sx={{ fontSize: 40, color: "rgba(0,96,80,0.25)" }} />
+              <ReceiptLongRoundedIcon sx={{ fontSize: 40, color: "rgba(27,94,168,0.25)" }} />
               <Typography sx={{ fontFamily: HOME.fontBody, fontWeight: 700, color: HOME.navyDeep, fontSize: "0.9rem" }}>
                 No payments yet
               </Typography>
@@ -1133,7 +1133,7 @@ export default function StudentFees({ student }) {
             onClick={initiatePayment}
             disabled={paying}
             startIcon={paying ? <CircularProgress size={16} color="inherit" /> : <PhoneIphoneRoundedIcon />}
-            sx={{ textTransform: "none", bgcolor: HOME.green, fontWeight: 800, boxShadow: "none", "&:hover": { bgcolor: "#004840", boxShadow: "none" } }}
+            sx={{ textTransform: "none", bgcolor: HOME.green, fontWeight: 800, boxShadow: "none", "&:hover": { bgcolor: "#0E3D73", boxShadow: "none" } }}
           >
             {paying ? "Sending prompt…" : "Send M-Pesa prompt"}
           </Button>
@@ -1195,7 +1195,7 @@ export default function StudentFees({ student }) {
             p: 0,
             flex: 1,
             minHeight: 0,
-            bgcolor: "rgba(0,96,80,0.04)",
+            bgcolor: "rgba(27,94,168,0.04)",
             overflowY: "auto",
             WebkitOverflowScrolling: "touch",
           }}
@@ -1241,7 +1241,7 @@ export default function StudentFees({ student }) {
               bgcolor: HOME.green,
               fontWeight: 800,
               boxShadow: "none",
-              "&:hover": { bgcolor: "#004840", boxShadow: "none" },
+              "&:hover": { bgcolor: "#0E3D73", boxShadow: "none" },
             }}
           >
             Download PDF

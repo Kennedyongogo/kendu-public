@@ -74,12 +74,12 @@ function showExamFeeGateDialog({ access, onGoToFees }) {
       <div style="text-align:left;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#1a2638;">
         <p style="margin:0 0 10px;font-size:0.86rem;line-height:1.45;color:rgba(8,22,43,0.72);">
           You need to clear more of your school fees before unlocking your
-          <strong style="color:#006050;">exam timetable</strong>.
+          <strong style="color:#1B5EA8;">exam timetable</strong>.
         </p>
-        <div style="display:grid;gap:6px;padding:10px 12px;border-radius:12px;background:rgba(0,96,80,0.05);border:1px solid rgba(0,96,80,0.12);">
+        <div style="display:grid;gap:6px;padding:10px 12px;border-radius:12px;background:rgba(27,94,168,0.05);border:1px solid rgba(27,94,168,0.12);">
           <div style="display:flex;justify-content:space-between;gap:12px;">
             <span style="font-size:0.74rem;font-weight:700;color:rgba(8,22,43,0.55);">Required</span>
-            <span style="font-size:0.84rem;font-weight:800;color:#006050;">${required}% of fees paid</span>
+            <span style="font-size:0.84rem;font-weight:800;color:#1B5EA8;">${required}% of fees paid</span>
           </div>
           <div style="display:flex;justify-content:space-between;gap:12px;">
             <span style="font-size:0.74rem;font-weight:700;color:rgba(8,22,43,0.55);">You have paid</span>
@@ -89,7 +89,7 @@ function showExamFeeGateDialog({ access, onGoToFees }) {
             <span style="font-size:0.74rem;font-weight:700;color:rgba(8,22,43,0.55);">Still needed</span>
             <span style="font-size:0.84rem;font-weight:800;color:#9a6700;">${shortfall}%</span>
           </div>
-          <div style="display:flex;justify-content:space-between;gap:12px;margin-top:2px;padding-top:6px;border-top:1px dashed rgba(0,96,80,0.18);">
+          <div style="display:flex;justify-content:space-between;gap:12px;margin-top:2px;padding-top:6px;border-top:1px dashed rgba(27,94,168,0.18);">
             <span style="font-size:0.74rem;font-weight:700;color:rgba(8,22,43,0.55);">Paid</span>
             <span style="font-size:0.8rem;font-weight:700;">${totalPaid} of ${totalCharged}</span>
           </div>
@@ -130,7 +130,7 @@ function SlotCard({ slot }) {
             borderRadius: "12px",
             overflow: "hidden",
             textAlign: "center",
-            border: "1px solid rgba(0,96,80,0.15)",
+            border: "1px solid rgba(27,94,168,0.15)",
           }}
         >
           <Box
@@ -162,7 +162,7 @@ function SlotCard({ slot }) {
           </Box>
           <Box
             sx={{
-              bgcolor: "rgba(0,96,80,0.06)",
+              bgcolor: "rgba(27,94,168,0.06)",
               color: HOME.inkSoft,
               fontFamily: HOME.fontBody,
               fontSize: "0.58rem",
@@ -351,7 +351,7 @@ export default function StudentExamPlan() {
             borderRadius: "18px",
             display: "grid",
             placeItems: "center",
-            bgcolor: "rgba(0,96,80,0.08)",
+            bgcolor: "rgba(27,94,168,0.08)",
             color: HOME.green,
             mb: 2,
           }}
@@ -462,10 +462,10 @@ export default function StudentExamPlan() {
               fontSize: "0.78rem",
               color: HOME.green,
               borderRadius: "10px",
-              border: "1px solid rgba(0,96,80,0.25)",
+              border: "1px solid rgba(27,94,168,0.25)",
               bgcolor: "#fff",
               alignSelf: { xs: "stretch", sm: "center" },
-              "&:hover": { bgcolor: "rgba(0,96,80,0.06)" },
+              "&:hover": { bgcolor: "rgba(27,94,168,0.06)" },
             }}
           >
             {downloading ? "Preparing…" : eligible ? "Download PDF" : "Unlock to download"}
@@ -495,8 +495,8 @@ export default function StudentExamPlan() {
               mb: 2,
               p: 1.5,
               borderRadius: "14px",
-              bgcolor: "rgba(0,96,80,0.04)",
-              border: "1px solid rgba(0,96,80,0.12)",
+              bgcolor: "rgba(27,94,168,0.04)",
+              border: "1px solid rgba(27,94,168,0.12)",
             }}
           >
             <Typography
@@ -533,7 +533,7 @@ export default function StudentExamPlan() {
               sx={{
                 height: 8,
                 borderRadius: 4,
-                bgcolor: "rgba(0,96,80,0.1)",
+                bgcolor: "rgba(27,94,168,0.1)",
                 "& .MuiLinearProgress-bar": {
                   bgcolor: paidPct >= required ? HOME.green : HOME.gold || "#c8a840",
                   borderRadius: 4,
@@ -559,7 +559,7 @@ export default function StudentExamPlan() {
                 borderRadius: "12px",
                 px: 2,
                 py: 1,
-                "&:hover": { bgcolor: "#004840" },
+                "&:hover": { bgcolor: "#0E3D73" },
               }}
             >
               Go to Fees

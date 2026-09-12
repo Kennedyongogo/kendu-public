@@ -87,7 +87,7 @@ function NoticeItem({ item }) {
         p: { xs: 1.5, sm: 1.75 },
         pl: { xs: 1.75, sm: 2 },
         borderRadius: "16px",
-        border: `1px solid ${item.is_pinned ? "rgba(200,168,64,0.5)" : "rgba(0,96,80,0.1)"}`,
+        border: `1px solid ${item.is_pinned ? "rgba(200,168,64,0.5)" : "rgba(27,94,168,0.1)"}`,
         bgcolor: item.is_pinned ? "rgba(200,168,64,0.06)" : "#fff",
         cursor: hasMore ? "pointer" : "default",
         transition: "box-shadow 0.22s ease, transform 0.22s ease, border-color 0.22s ease",
@@ -95,7 +95,7 @@ function NoticeItem({ item }) {
         "&:hover": {
           boxShadow: HOME.shadowSm,
           transform: hasMore ? "translateY(-2px)" : "none",
-          borderColor: item.is_pinned ? HOME.gold : "rgba(0,96,80,0.25)",
+          borderColor: item.is_pinned ? HOME.gold : "rgba(27,94,168,0.25)",
         },
         // Category accent bar
         "&::before": {
@@ -244,7 +244,7 @@ function NoticeItem({ item }) {
                   color: HOME.ink,
                   mt: 0.9,
                   pt: 0.9,
-                  borderTop: "1px dashed rgba(0,96,80,0.15)",
+                  borderTop: "1px dashed rgba(27,94,168,0.15)",
                   whiteSpace: "pre-wrap",
                 }}
               >
@@ -308,7 +308,7 @@ function EmptyNotices() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          bgcolor: "rgba(0,96,80,0.08)",
+          bgcolor: "rgba(27,94,168,0.08)",
           color: HOME.green,
         }}
       >
@@ -378,8 +378,8 @@ export default function StudentNoticesCard() {
             display: "flex",
             alignItems: "center",
             gap: 1.25,
-            borderBottom: "1px solid rgba(0,96,80,0.1)",
-            background: "linear-gradient(135deg, rgba(0,96,80,0.07), rgba(200,168,64,0.07))",
+            borderBottom: "1px solid rgba(27,94,168,0.1)",
+            background: "linear-gradient(135deg, rgba(27,94,168,0.07), rgba(200,168,64,0.07))",
           }}
         >
           <Box
@@ -391,9 +391,9 @@ export default function StudentNoticesCard() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              background: `linear-gradient(145deg, ${HOME.green}, #004840)`,
+              background: `linear-gradient(145deg, ${HOME.green}, #0E3D73)`,
               color: "#fff",
-              boxShadow: "0 8px 18px -8px rgba(0,96,80,0.55)",
+              boxShadow: "0 8px 18px -8px rgba(27,94,168,0.55)",
             }}
           >
             <CampaignRoundedIcon sx={{ fontSize: { xs: 20, sm: 22 } }} />
@@ -440,8 +440,8 @@ export default function StudentNoticesCard() {
           <Box
             sx={{
               width: "100%",
-              borderBottom: "1px solid rgba(0,96,80,0.1)",
-              bgcolor: { xs: "rgba(0,96,80,0.05)", sm: "rgba(0,96,80,0.02)" },
+              borderBottom: "1px solid rgba(27,94,168,0.1)",
+              bgcolor: { xs: "rgba(27,94,168,0.05)", sm: "rgba(27,94,168,0.02)" },
               // Phone: 3-column grid so every tab stretches edge to edge
               display: { xs: "grid", sm: "flex" },
               gridTemplateColumns: { xs: "repeat(3, 1fr)" },
@@ -484,7 +484,7 @@ export default function StudentNoticesCard() {
                     // Phone: rounded pill chips that wrap — no scrolling needed
                     borderRadius: { xs: "999px", sm: 0 },
                     border: {
-                      xs: `1.5px solid ${active ? HOME.green : "rgba(0,96,80,0.3)"}`,
+                      xs: `1.5px solid ${active ? HOME.green : "rgba(27,94,168,0.3)"}`,
                       sm: "none",
                     },
                     color: {
@@ -493,19 +493,19 @@ export default function StudentNoticesCard() {
                     },
                     bgcolor: {
                       xs: active ? HOME.green : "#fff",
-                      sm: active ? "rgba(0,96,80,0.06)" : "transparent",
+                      sm: active ? "rgba(27,94,168,0.06)" : "transparent",
                     },
                     boxShadow: {
                       xs: active
-                        ? "0 8px 18px -6px rgba(0,96,80,0.55)"
+                        ? "0 8px 18px -6px rgba(27,94,168,0.55)"
                         : "0 2px 8px -2px rgba(8,22,43,0.12)",
                       sm: "none",
                     },
                     "&:hover": {
                       color: { xs: active ? "#fff" : HOME.green, sm: HOME.green },
                       bgcolor: {
-                        xs: active ? HOME.green : "rgba(0,96,80,0.06)",
-                        sm: "rgba(0,96,80,0.04)",
+                        xs: active ? HOME.green : "rgba(27,94,168,0.06)",
+                        sm: "rgba(27,94,168,0.04)",
                       },
                     },
                     // Desktop/tablet: gold underline indicator
@@ -535,7 +535,7 @@ export default function StudentNoticesCard() {
                         py: 0.3,
                         borderRadius: "999px",
                         bgcolor: {
-                          xs: active ? "rgba(255,255,255,0.28)" : "rgba(0,96,80,0.12)",
+                          xs: active ? "rgba(255,255,255,0.28)" : "rgba(27,94,168,0.12)",
                           sm: active ? HOME.green : "rgba(8,22,43,0.08)",
                         },
                         color: {

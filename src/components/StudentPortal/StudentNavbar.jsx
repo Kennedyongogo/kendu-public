@@ -18,6 +18,7 @@ import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceWalletRounded";
 import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
+import LocalLibraryRoundedIcon from "@mui/icons-material/LocalLibraryRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import BrandLogoMark from "../common/BrandLogoMark";
 import { HOME, firstName } from "./studentPortalShared";
@@ -59,8 +60,8 @@ export default function StudentNavbar({ student, activePage, onNavigate, onLogou
         color: activePage === page ? HOME.green : HOME.inkMuted,
         px: 1.75,
         borderRadius: "999px",
-        bgcolor: activePage === page ? "rgba(0,96,80,0.08)" : "transparent",
-        "&:hover": { bgcolor: "rgba(0,96,80,0.14)" },
+        bgcolor: activePage === page ? "rgba(27,94,168,0.08)" : "transparent",
+        "&:hover": { bgcolor: "rgba(27,94,168,0.14)" },
       }}
     >
       {label}
@@ -97,6 +98,7 @@ export default function StudentNavbar({ student, activePage, onNavigate, onLogou
           {navButtonSx("timetable", CalendarMonthRoundedIcon, "Timetable")}
           {navButtonSx("transcript", DescriptionRoundedIcon, "Transcript")}
           {navButtonSx("fees", AccountBalanceWalletRoundedIcon, "Fees")}
+          {navButtonSx("library", LocalLibraryRoundedIcon, "Library")}
           {navButtonSx("settings", SettingsRoundedIcon, "Settings")}
         </Stack>
 
@@ -172,7 +174,7 @@ export default function StudentNavbar({ student, activePage, onNavigate, onLogou
             height: 42,
             borderRadius: "12px",
             border: `1px solid ${HOME.border}`,
-            bgcolor: mobileOpen ? "rgba(0,96,80,0.08)" : "transparent",
+            bgcolor: mobileOpen ? "rgba(27,94,168,0.08)" : "transparent",
           }}
         >
           <BurgerIcon open={mobileOpen} />
@@ -277,6 +279,18 @@ export default function StudentNavbar({ student, activePage, onNavigate, onLogou
               <AccountBalanceWalletRoundedIcon fontSize="small" sx={{ color: HOME.green }} />
             </ListItemIcon>
             Fees
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              setMobileAnchorEl(null);
+              onNavigate("library");
+            }}
+            sx={{ fontFamily: HOME.fontBody, fontWeight: 600, fontSize: "0.88rem", py: 1.15 }}
+          >
+            <ListItemIcon>
+              <LocalLibraryRoundedIcon fontSize="small" sx={{ color: HOME.green }} />
+            </ListItemIcon>
+            Library
           </MenuItem>
           <MenuItem
             onClick={() => {
