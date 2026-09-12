@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Box, Typography, Stack, keyframes, CircularProgress, IconButton, Chip } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -13,6 +13,11 @@ import useBrandImageSrc from "../../hooks/useBrandImageSrc";
 const fadeUp = keyframes`
   from { opacity: 0; transform: translateY(18px); }
   to { opacity: 1; transform: translateY(0); }
+`;
+
+const highlightPulse = keyframes`
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200, 168, 64, 0); }
+  50% { box-shadow: 0 0 0 4px rgba(200, 168, 64, 0.22); }
 `;
 
 // On xs the gap must equal the scroller's side padding so the neighbouring
@@ -32,11 +37,26 @@ function formatDuration(programme) {
   return "Duration TBA";
 }
 
-function ProgrammeCard({ programme, index, onView }) {
+function ProgrammeCard({ programme, index, onView, highlighted }) {
   const { src: imgSrc, usingLogo, onError } = useBrandImageSrc(programmeImageSrc(programme));
+  const [ringMounted, setRingMounted] = useState(false);
+  const [ringOn, setRingOn] = useState(false);
+
+  useEffect(() => {
+    if (highlighted) {
+      setRingMounted(true);
+      const id = requestAnimationFrame(() => setRingOn(true));
+      return () => cancelAnimationFrame(id);
+    }
+    setRingOn(false);
+    const t = window.setTimeout(() => setRingMounted(false), 420);
+    return () => window.clearTimeout(t);
+  }, [highlighted]);
 
   return (
     <Box
+      id={`programme-card-${programme.id}`}
+      data-programme-id={programme.id}
       sx={{
         position: "relative",
         width: "100%",
@@ -44,11 +64,15 @@ function ProgrammeCard({ programme, index, onView }) {
         display: "flex",
         flexDirection: "column",
         borderRadius: "22px",
-        border: `1px solid ${HOME.border}`,
+        // Keep 2px always — switching 2px↔1px caused a visible blink
+        border: `2px solid ${highlighted ? HOME.gold : HOME.border}`,
         bgcolor: "#fff",
         overflow: "hidden",
-        boxShadow: "0 10px 30px -18px rgba(8,22,43,0.18)",
-        transition: "transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease",
+        boxShadow: highlighted
+          ? "0 12px 32px -16px rgba(200,168,64,0.4)"
+          : "0 10px 30px -18px rgba(8,22,43,0.18)",
+        transition: "box-shadow 0.45s ease, border-color 0.45s ease",
+        // Don't toggle entrance animation with highlight — that restarts fadeUp and blinks
         "@media (prefers-reduced-motion: no-preference)": {
           animation: `${fadeUp} 0.55s ease both`,
           animationDelay: `${Math.min(index, 8) * 0.06}s`,
@@ -63,6 +87,25 @@ function ProgrammeCard({ programme, index, onView }) {
         },
       }}
     >
+      {/* Inset ring fades out instead of unmounting abruptly */}
+      {ringMounted ? (
+        <Box
+          aria-hidden
+          sx={{
+            pointerEvents: "none",
+            position: "absolute",
+            inset: 8,
+            zIndex: 4,
+            borderRadius: "14px",
+            border: `2.5px solid ${HOME.gold}`,
+            opacity: ringOn ? 1 : 0,
+            transition: "opacity 0.4s ease",
+            "@media (prefers-reduced-motion: no-preference)": {
+              animation: ringOn ? `${highlightPulse} 1.4s ease-in-out 3` : "none",
+            },
+          }}
+        />
+      ) : null}
       <Box
         sx={{
           position: "relative",
@@ -247,12 +290,15 @@ function NavArrow({ direction, onClick, disabled }) {
 
 export default function ProgrammesSection() {
   const navigate = useNavigate();
+  const location = useLocation();
   const scrollerRef = useRef(null);
+  const highlightTimerRef = useRef(null);
   const [programmes, setProgrammes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(false);
+  const [highlightedId, setHighlightedId] = useState(null);
   // Arrows activate whenever the cards overflow the visible area:
   // one card per view on phones, two on tablets, three on desktop.
   const [carouselEnabled, setCarouselEnabled] = useState(false);
@@ -315,6 +361,53 @@ export default function ProgrammesSection() {
       window.removeEventListener("resize", updateArrowState);
     };
   }, [programmes, loading, updateArrowState]);
+
+  // Restore carousel position + highlight after returning from programme detail
+  useEffect(() => {
+    const highlightId = location.state?.highlightProgrammeId;
+    const scrollTo = location.state?.scrollTo;
+    if (!highlightId && scrollTo !== "programmes") return;
+    if (loading || !programmes.length) return;
+
+    const section = document.getElementById("programmes");
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    const focusCard = () => {
+      const card = highlightId
+        ? document.getElementById(`programme-card-${highlightId}`)
+        : null;
+      const scroller = scrollerRef.current;
+      if (card && scroller) {
+        const scrollerRect = scroller.getBoundingClientRect();
+        const cardRect = card.getBoundingClientRect();
+        const cardOffset =
+          cardRect.left - scrollerRect.left + scroller.scrollLeft;
+        const target =
+          cardOffset - Math.max(0, (scroller.clientWidth - cardRect.width) / 2);
+        scroller.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
+      } else if (card) {
+        card.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+      }
+      if (highlightId) {
+        setHighlightedId(String(highlightId));
+        if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
+        highlightTimerRef.current = setTimeout(() => setHighlightedId(null), 4200);
+      }
+      // Clear one-shot navigation state so refresh / revisit doesn't re-trigger
+      navigate(location.pathname + location.hash, { replace: true, state: {} });
+    };
+
+    const t = window.setTimeout(focusCard, 120);
+    return () => window.clearTimeout(t);
+  }, [loading, programmes, location.state, location.pathname, location.hash, navigate]);
+
+  useEffect(() => {
+    return () => {
+      if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
+    };
+  }, []);
 
   const scrollByPage = (dir) => {
     if (!carouselEnabled) return;
@@ -470,8 +563,15 @@ export default function ProgrammesSection() {
                 <ProgrammeCard
                   programme={p}
                   index={i}
-                  onView={(id) =>
-                    navigate(`/programmes/${id}`, { state: { from: "/", fromLabel: "Home" } })
+                  highlighted={highlightedId != null && String(highlightedId) === String(p.id)}
+                  onView={(programmeId) =>
+                    navigate(`/programmes/${programmeId}`, {
+                      state: {
+                        from: "/",
+                        fromLabel: "Programmes",
+                        fromSection: "programmes",
+                      },
+                    })
                   }
                 />
               </Box>

@@ -24,6 +24,7 @@ import {
   Groups,
   MenuBookOutlined,
   CampaignOutlined,
+  PictureAsPdfOutlined,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import BrandLogoMark from "../common/BrandLogoMark";
@@ -72,6 +73,12 @@ export default function PublicHeader() {
         label: "News",
         icon: <CampaignOutlined />,
         route: "/news",
+        color: BRAND.gold,
+      },
+      {
+        label: "Brochures",
+        icon: <PictureAsPdfOutlined />,
+        route: "/brochures",
         color: BRAND.gold,
       },
     ],

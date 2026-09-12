@@ -37,6 +37,7 @@ const FOOTER_LINKS = [
   { label: "Programmes", path: "/", sectionId: "programmes" },
   { label: "About Us", path: "/about-us" },
   { label: "News & Events", path: "/news" },
+  { label: "Brochures", path: "/brochures" },
   { label: "Student Portal", path: "/login" },
 ];
 

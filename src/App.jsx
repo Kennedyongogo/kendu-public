@@ -22,6 +22,7 @@ const AdmissionApplication = lazy(() => import("./pages/AdmissionApplication"));
 const MeetOurTeam = lazy(() => import("./pages/MeetOurTeam"));
 const News = lazy(() => import("./pages/News"));
 const NewsDetail = lazy(() => import("./pages/NewsDetail"));
+const Brochures = lazy(() => import("./pages/Brochures"));
 const ProgrammeDetail = lazy(() => import("./pages/ProgrammeDetail"));
 const StudentPortal = lazy(() => import("./pages/StudentPortal"));
 
@@ -85,6 +86,15 @@ function AppLayout() {
                 </>
               }
             />
+            <Route
+              path="/brochures"
+              element={
+                <>
+                  <Brochures />
+                  <Footer />
+                </>
+              }
+            />
             <Route path="/login" element={<MarketplaceLogin />} />
             <Route path="/student" element={<StudentPortal />} />
             <Route path="/student/timetable" element={<StudentPortal />} />
@@ -92,6 +102,7 @@ function AppLayout() {
             <Route path="/student/transcript" element={<StudentPortal />} />
             <Route path="/student/fees" element={<StudentPortal />} />
             <Route path="/student/library" element={<StudentPortal />} />
+            <Route path="/student/programme" element={<StudentPortal />} />
             <Route path="/student/settings" element={<StudentPortal />} />
             <Route path="/admission/apply" element={<AdmissionApplication />} />
             <Route path="/programmes/:id" element={<ProgrammeDetail />} />

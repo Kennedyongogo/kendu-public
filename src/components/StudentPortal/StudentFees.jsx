@@ -27,6 +27,7 @@ import PaymentsRoundedIcon from "@mui/icons-material/PaymentsRounded";
 import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
 import PhoneIphoneRoundedIcon from "@mui/icons-material/PhoneIphoneRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
+import SavingsRoundedIcon from "@mui/icons-material/SavingsRounded";
 import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
@@ -267,7 +268,7 @@ function ReceiptPreviewCard({ payment, student, summary }) {
               <Box
                 sx={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(3, 1fr)",
+                  gridTemplateColumns: Number(summary.credit) > 0 ? "repeat(4, 1fr)" : "repeat(3, 1fr)",
                   gap: 0.75,
                   p: 1.1,
                   borderRadius: "12px",
@@ -278,6 +279,9 @@ function ReceiptPreviewCard({ payment, student, summary }) {
                   ["Billed", formatMoney(summary.total_charged, summary.currency)],
                   ["Paid", formatMoney(summary.total_paid, summary.currency)],
                   ["Balance", formatMoney(summary.balance, summary.currency)],
+                  ...(Number(summary.credit) > 0
+                    ? [["Excess", formatMoney(summary.credit, summary.currency)]]
+                    : []),
                 ].map(([label, value]) => (
                   <Box key={label} sx={{ textAlign: "center", minWidth: 0 }}>
                     <Typography sx={{ fontFamily: HOME.fontBody, color: HOME.inkSoft, fontSize: "0.62rem", fontWeight: 600 }}>
@@ -719,7 +723,7 @@ export default function StudentFees({ student }) {
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", xl: "repeat(4, 1fr)" },
+          gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", xl: "repeat(5, 1fr)" },
           gap: 1.5,
           mt: 2,
         }}
@@ -743,12 +747,30 @@ export default function StudentFees({ student }) {
           delay={3}
           label="Fee balance"
           value={formatMoney(summary.balance, summary.currency)}
-          hint={summary.balance ? "Amount still payable" : "Your account is clear"}
+          hint={
+            summary.credit > 0
+              ? "Fully paid — see excess credit"
+              : summary.balance
+                ? "Amount still payable"
+                : "Your account is clear"
+          }
           icon={<AccountBalanceWalletRoundedIcon />}
           accent={summary.balance ? "#b26a00" : "#2e7d32"}
         />
         <SummaryCard
           delay={4}
+          label="Excess credit"
+          value={formatMoney(summary.credit || 0, summary.currency)}
+          hint={
+            summary.credit > 0
+              ? "Paid above billed fees — held on your account"
+              : "No overpayment on file"
+          }
+          icon={<SavingsRoundedIcon />}
+          accent={summary.credit > 0 ? HOME.gold : HOME.green}
+        />
+        <SummaryCard
+          delay={5}
           label="Previous arrears"
           value={formatMoney(summary.arrears, summary.currency)}
           hint="Before the current semester"
@@ -756,6 +778,28 @@ export default function StudentFees({ student }) {
           accent={summary.arrears ? "#b91c1c" : HOME.green}
         />
       </Box>
+
+      {summary.credit > 0 ? (
+        <Alert
+          severity="info"
+          sx={{
+            mt: 1.5,
+            borderRadius: "14px",
+            fontFamily: HOME.fontBody,
+            border: `1px solid ${HOME.borderGold || "rgba(200,168,64,0.35)"}`,
+            bgcolor: "rgba(200,168,64,0.08)",
+            "& .MuiAlert-message": { width: "100%" },
+          }}
+        >
+          <Typography sx={{ fontFamily: HOME.fontBody, fontWeight: 800, color: HOME.navyDeep, mb: 0.35 }}>
+            You have {formatMoney(summary.credit, summary.currency)} excess fee credit
+          </Typography>
+          <Typography sx={{ fontFamily: HOME.fontBody, fontSize: "0.82rem", color: HOME.inkMuted, lineHeight: 1.45 }}>
+            You paid more than your current billed fees. This credit stays on your account and will apply
+            automatically when new semester charges are posted.
+          </Typography>
+        </Alert>
+      ) : null}
 
       <Box
         sx={{

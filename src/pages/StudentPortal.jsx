@@ -9,6 +9,7 @@ import StudentTimetable from "../components/StudentPortal/StudentTimetable";
 import StudentTimetableDay from "../components/StudentPortal/StudentTimetableDay";
 import StudentTranscript from "../components/StudentPortal/StudentTranscript";
 import StudentLibrary from "../components/StudentPortal/StudentLibrary";
+import StudentProgramme from "../components/StudentPortal/StudentProgramme";
 import { HOME, readStoredStudent } from "../components/StudentPortal/studentPortalShared";
 
 export default function StudentPortal() {
@@ -18,7 +19,9 @@ export default function StudentPortal() {
   const isTimetableDay = location.pathname.includes("/timetable/day/");
   const activePage = location.pathname.endsWith("/settings")
     ? "settings"
-    : location.pathname.endsWith("/library")
+    : location.pathname.endsWith("/programme")
+      ? "programme"
+      : location.pathname.endsWith("/library")
       ? "library"
       : location.pathname.endsWith("/fees")
       ? "fees"
@@ -66,6 +69,8 @@ export default function StudentPortal() {
         />
       ) : activePage === "library" ? (
         <StudentLibrary />
+      ) : activePage === "programme" ? (
+        <StudentProgramme />
       ) : activePage === "fees" ? (
         <StudentFees student={student} />
       ) : activePage === "transcript" ? (

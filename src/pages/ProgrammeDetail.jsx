@@ -20,7 +20,6 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ScheduleOutlinedIcon from "@mui/icons-material/ScheduleOutlined";
 import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
 import PaymentsOutlinedIcon from "@mui/icons-material/PaymentsOutlined";
-import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
 import GradeOutlinedIcon from "@mui/icons-material/GradeOutlined";
 import { HOME } from "../components/Home/homeShared";
 import { HomePrimaryButton, HomeGhostButton } from "../components/Home/homeUi";
@@ -33,7 +32,6 @@ const SECTIONS = [
   { id: "requirements", label: "Subjects" },
   { id: "fees", label: "Fees" },
   { id: "hours", label: "Hours" },
-  { id: "modules", label: "Modules" },
 ];
 
 const edgePad = { px: { xs: 1.5, sm: 2.5, md: 3.5, lg: 4 } };
@@ -397,7 +395,17 @@ export default function ProgrammeDetail() {
   const [tab, setTab] = useState(0);
 
   const fromPath = location.state?.from || "/";
-  const fromLabel = location.state?.fromLabel || "Home";
+  const fromLabel = location.state?.fromLabel || "Programmes";
+  const fromSection = location.state?.fromSection || (fromPath === "/" ? "programmes" : null);
+
+  const goBack = () => {
+    navigate(fromPath, {
+      state: {
+        highlightProgrammeId: id,
+        scrollTo: fromSection,
+      },
+    });
+  };
 
   useEffect(() => {
     let active = true;
@@ -446,15 +454,6 @@ export default function ProgrammeDetail() {
     return list.sort((a, b) => Number(a.sort_order) - Number(b.sort_order));
   }, [programme]);
 
-  const modules = useMemo(() => {
-    const list = Array.isArray(programme?.modules) ? [...programme.modules] : [];
-    return list.sort(
-      (a, b) =>
-        Number(a.year_of_study || 0) - Number(b.year_of_study || 0) ||
-        Number(a.sort_order) - Number(b.sort_order)
-    );
-  }, [programme]);
-
   const subjects = useMemo(() => {
     const list = Array.isArray(programme?.subject_requirements)
       ? [...programme.subject_requirements]
@@ -476,7 +475,7 @@ export default function ProgrammeDetail() {
         <Typography sx={{ fontFamily: HOME.fontDisplay, fontWeight: 700, color: HOME.navyDeep, mb: 1 }}>
           {error || "Programme not found"}
         </Typography>
-        <HomeGhostButton onClick={() => navigate(fromPath)}>Back to {fromLabel}</HomeGhostButton>
+        <HomeGhostButton onClick={goBack}>Back to {fromLabel}</HomeGhostButton>
         <Footer />
       </Box>
     );
@@ -527,7 +526,7 @@ export default function ProgrammeDetail() {
             />
             <Tooltip title={`Back to ${fromLabel}`} arrow placement="right">
               <IconButton
-                onClick={() => navigate(fromPath)}
+                onClick={goBack}
                 aria-label={`Back to ${fromLabel}`}
                 sx={{
                   position: "absolute",
@@ -829,28 +828,6 @@ export default function ProgrammeDetail() {
               },
             ]}
             rows={hours}
-          />
-        </SectionBand>
-
-        <SectionBand id="modules" title="Modules" icon={<MenuBookOutlinedIcon />} tone="cream">
-          <DataTable
-            empty="Modules have not been published yet."
-            cardTitle="code"
-            cardSubtitle="name"
-            cardFields={["year_of_study", "semester", "hours", "credits"]}
-            columns={[
-              { key: "code", label: "Code" },
-              { key: "name", label: "Module" },
-              {
-                key: "year_of_study",
-                label: "Year",
-                render: (r) => (r.year_of_study != null ? `Y${r.year_of_study}` : "—"),
-              },
-              { key: "semester", label: "Sem", render: (r) => r.semester || "—" },
-              { key: "hours", label: "Hours", align: "right" },
-              { key: "credits", label: "Credits", align: "right" },
-            ]}
-            rows={modules}
           />
         </SectionBand>
       </Box>

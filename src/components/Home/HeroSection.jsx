@@ -11,6 +11,7 @@ import HandshakeRoundedIcon from "@mui/icons-material/HandshakeRounded";
 import { useNavigate } from "react-router-dom";
 import { BRAND } from "../../brand";
 import { HOME } from "./homeShared";
+import HeroUpcomingActivities from "./HeroUpcomingActivities";
 
 const SLIDE_INTERVAL_MS = 6500;
 const SLIDE_CROSSFADE_MS = 1800;
@@ -462,6 +463,9 @@ export default function HeroSection() {
             );
           })}
         </HeroDesktopCurvedSplit>
+
+        {/* Floating upcoming-activity shapes — non-blocking, hero only */}
+        <HeroUpcomingActivities />
 
         <Box
           sx={{

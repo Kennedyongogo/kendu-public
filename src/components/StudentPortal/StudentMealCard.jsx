@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import {
@@ -15,6 +15,7 @@ import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import LockRoundedIcon from "@mui/icons-material/LockRounded";
 import RestaurantRoundedIcon from "@mui/icons-material/RestaurantRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
+import SyncRoundedIcon from "@mui/icons-material/SyncRounded";
 import { HOME, fadeUp, studentAuthHeaders } from "./studentPortalShared";
 
 const CR80_RATIO = 85.6 / 53.98;
@@ -96,6 +97,217 @@ function initials(name) {
     .join("");
 }
 
+/** Current calendar month → three columns of ~10 days each (1–10, 11–20, 21–end). */
+function buildMonthDayColumns(date = new Date()) {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+  const chunk = Math.ceil(daysInMonth / 3) || 10;
+  const columns = [];
+  for (let i = 0; i < days.length; i += chunk) {
+    columns.push(days.slice(i, i + chunk));
+  }
+  while (columns.length < 3) columns.push([]);
+  const monthLabel = date.toLocaleDateString("en-KE", { month: "long", year: "numeric" });
+  return { monthLabel, columns: columns.slice(0, 3), daysInMonth };
+}
+
+function MealMarkBox() {
+  return (
+    <Box
+      aria-hidden
+      sx={{
+        width: { xs: 8, sm: 10 },
+        height: { xs: 8, sm: 10 },
+        borderRadius: "2px",
+        border: `1px solid ${HOME.green}`,
+        bgcolor: "#fff",
+        flexShrink: 0,
+      }}
+    />
+  );
+}
+
+/** Back of CR80 meal card — month grid with B / L / S mark boxes per day. */
+function MealCardBack({ referenceDate }) {
+  const { monthLabel, columns } = useMemo(
+    () => buildMonthDayColumns(referenceDate || new Date()),
+    [referenceDate]
+  );
+
+  return (
+    <Box
+      sx={{
+        width: "100%",
+        height: "100%",
+        borderRadius: "12px",
+        overflow: "hidden",
+        position: "relative",
+        bgcolor: "#f7f4ef",
+        border: "1px solid rgba(27,94,168,0.18)",
+        boxShadow: "0 18px 40px -18px rgba(27,94,168,0.45)",
+        fontFamily: HOME.fontBody,
+        userSelect: "none",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <Box
+        sx={{
+          flexShrink: 0,
+          height: { xs: 28, sm: 32 },
+          bgcolor: HOME.green,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          px: 1.1,
+          color: "#fff",
+        }}
+      >
+        <Typography
+          sx={{
+            fontFamily: HOME.fontBody,
+            fontWeight: 800,
+            fontSize: { xs: "0.55rem", sm: "0.62rem" },
+            letterSpacing: "0.1em",
+          }}
+        >
+          MEAL LOG
+        </Typography>
+        <Typography
+          sx={{
+            fontSize: { xs: "0.58rem", sm: "0.68rem" },
+            fontWeight: 800,
+            letterSpacing: "0.02em",
+            textTransform: "uppercase",
+          }}
+        >
+          {monthLabel}
+        </Typography>
+      </Box>
+
+      <Box
+        sx={{
+          flex: 1,
+          minHeight: 0,
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr 1fr",
+          gap: { xs: 0.35, sm: 0.55 },
+          px: { xs: 0.55, sm: 0.75 },
+          pt: { xs: 0.45, sm: 0.55 },
+          pb: { xs: 0.4, sm: 0.5 },
+        }}
+      >
+        {columns.map((days, colIdx) => (
+          <Box
+            key={`col-${colIdx}`}
+            sx={{
+              minWidth: 0,
+              display: "flex",
+              flexDirection: "column",
+              borderRadius: "6px",
+              border: "1px solid rgba(27,94,168,0.12)",
+              bgcolor: "rgba(255,255,255,0.72)",
+              overflow: "hidden",
+            }}
+          >
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "minmax(0,1.1fr) repeat(3, minmax(0,1fr))",
+                alignItems: "center",
+                px: 0.35,
+                py: 0.25,
+                bgcolor: "rgba(14,61,115,0.92)",
+                color: "#fff",
+              }}
+            >
+              {["#", "B", "L", "S"].map((h) => (
+                <Typography
+                  key={h}
+                  sx={{
+                    fontSize: { xs: "0.42rem", sm: "0.5rem" },
+                    fontWeight: 800,
+                    textAlign: "center",
+                    letterSpacing: "0.04em",
+                    lineHeight: 1,
+                  }}
+                >
+                  {h}
+                </Typography>
+              ))}
+            </Box>
+            <Box
+              sx={{
+                flex: 1,
+                py: 0.15,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-evenly",
+              }}
+            >
+              {days.map((day) => (
+                <Box
+                  key={day}
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns: "minmax(0,1.1fr) repeat(3, minmax(0,1fr))",
+                    alignItems: "center",
+                    px: 0.3,
+                    py: { xs: 0.05, sm: 0.08 },
+                    minHeight: { xs: 11, sm: 13 },
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: { xs: "0.48rem", sm: "0.56rem" },
+                      fontWeight: 800,
+                      color: HOME.navyDeep || "#1e2858",
+                      textAlign: "center",
+                      lineHeight: 1,
+                    }}
+                  >
+                    {day}
+                  </Typography>
+                  <Box sx={{ display: "grid", placeItems: "center" }}>
+                    <MealMarkBox />
+                  </Box>
+                  <Box sx={{ display: "grid", placeItems: "center" }}>
+                    <MealMarkBox />
+                  </Box>
+                  <Box sx={{ display: "grid", placeItems: "center" }}>
+                    <MealMarkBox />
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+          </Box>
+        ))}
+      </Box>
+
+      <Box
+        sx={{
+          flexShrink: 0,
+          px: 1,
+          py: 0.35,
+          bgcolor: "#0E3D73",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Typography sx={{ fontSize: "0.42rem", fontWeight: 700, color: "rgba(255,255,255,0.85)" }}>
+          B breakfast · L lunch · S supper
+        </Typography>
+        <Typography sx={{ fontSize: "0.42rem", fontWeight: 800, color: HOME.gold }}>
+          Mark when served
+        </Typography>
+      </Box>
+    </Box>
+  );
+}
+
 /** Visual CR80 meal card (preview). */
 function MealCardFace({ card }) {
   if (!card) return null;
@@ -111,8 +323,7 @@ function MealCardFace({ card }) {
     <Box
       sx={{
         width: "100%",
-        maxWidth: 420,
-        aspectRatio: `${CR80_RATIO}`,
+        height: "100%",
         borderRadius: "12px",
         overflow: "hidden",
         position: "relative",
@@ -344,6 +555,99 @@ function MealCardFace({ card }) {
   );
 }
 
+/** 3D flip wrapper — paid students can flip to the monthly B/L/S log. */
+function FlippableMealCard({ card, canFlip }) {
+  const [flipped, setFlipped] = useState(false);
+
+  useEffect(() => {
+    if (!canFlip) setFlipped(false);
+  }, [canFlip]);
+
+  const toggle = () => {
+    if (!canFlip) return;
+    setFlipped((v) => !v);
+  };
+
+  return (
+    <Box sx={{ width: "100%", maxWidth: 420 }}>
+      <Box
+        role={canFlip ? "button" : undefined}
+        tabIndex={canFlip ? 0 : undefined}
+        aria-label={canFlip ? (flipped ? "Show meal card front" : "Show meal log back") : undefined}
+        onClick={toggle}
+        onKeyDown={(e) => {
+          if (!canFlip) return;
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            toggle();
+          }
+        }}
+        sx={{
+          width: "100%",
+          aspectRatio: `${CR80_RATIO}`,
+          perspective: "1200px",
+          cursor: canFlip ? "pointer" : "default",
+          outline: "none",
+          "&:focus-visible": canFlip
+            ? {
+                boxShadow: `0 0 0 3px rgba(27,94,168,0.35)`,
+                borderRadius: "12px",
+              }
+            : undefined,
+        }}
+      >
+        <Box
+          sx={{
+            position: "relative",
+            width: "100%",
+            height: "100%",
+            transformStyle: "preserve-3d",
+            transition: "transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1)",
+            transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
+          }}
+        >
+          <Box
+            sx={{
+              position: "absolute",
+              inset: 0,
+              backfaceVisibility: "hidden",
+              WebkitBackfaceVisibility: "hidden",
+            }}
+          >
+            <MealCardFace card={card} />
+          </Box>
+          <Box
+            sx={{
+              position: "absolute",
+              inset: 0,
+              backfaceVisibility: "hidden",
+              WebkitBackfaceVisibility: "hidden",
+              transform: "rotateY(180deg)",
+            }}
+          >
+            <MealCardBack />
+          </Box>
+        </Box>
+      </Box>
+      {canFlip ? (
+        <Stack direction="row" spacing={0.6} alignItems="center" justifyContent="center" sx={{ mt: 1 }}>
+          <SyncRoundedIcon sx={{ fontSize: 14, color: HOME.green }} />
+          <Typography
+            sx={{
+              fontFamily: HOME.fontBody,
+              fontSize: "0.72rem",
+              fontWeight: 700,
+              color: HOME.inkMuted,
+            }}
+          >
+            {flipped ? "Tap to show front" : "Tap card to flip — month meal log (B / L / S)"}
+          </Typography>
+        </Stack>
+      ) : null}
+    </Box>
+  );
+}
+
 export default function StudentMealCard() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -487,7 +791,7 @@ export default function StudentMealCard() {
               </Typography>
               <Typography sx={{ fontFamily: HOME.fontBody, fontSize: "0.75rem", color: HOME.inkMuted }}>
                 {eligible
-                  ? "Ready to present at the cafeteria — download the ID-size PDF"
+                  ? "Ready to present at the cafeteria — flip for this month’s meal log"
                   : access?.is_enabled
                     ? `Unlocks at ${required}% fees paid · you are at ${paidPct}%`
                     : "Your digital cafeteria pass"}
@@ -551,17 +855,21 @@ export default function StudentMealCard() {
                   opacity: eligible ? 1 : 0.72,
                 }}
               >
-                <MealCardFace card={preview} />
+                <FlippableMealCard card={preview} canFlip={eligible} />
                 {!eligible ? (
                   <Box
                     sx={{
                       position: "absolute",
-                      inset: 0,
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      aspectRatio: `${CR80_RATIO}`,
                       borderRadius: "12px",
                       bgcolor: "rgba(8,22,43,0.38)",
                       display: "grid",
                       placeItems: "center",
                       px: 2,
+                      pointerEvents: "none",
                     }}
                   >
                     <Stack alignItems="center" spacing={0.75}>
@@ -593,8 +901,8 @@ export default function StudentMealCard() {
                         lineHeight: 1.5,
                       }}
                     >
-                      Your meal card is unlocked. Download a credit-card sized PDF (CR80) to print or save on
-                      your phone.
+                      Your meal card is unlocked. Flip it to see this month’s dates with Breakfast, Lunch and
+                      Supper boxes for cafeteria marking. Download the CR80 PDF (front + back) to print.
                     </Typography>
                     <Button
                       variant="contained"
