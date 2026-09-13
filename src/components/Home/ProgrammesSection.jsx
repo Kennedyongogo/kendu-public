@@ -15,11 +15,6 @@ const fadeUp = keyframes`
   to { opacity: 1; transform: translateY(0); }
 `;
 
-const highlightPulse = keyframes`
-  0%, 100% { box-shadow: 0 0 0 0 rgba(200, 168, 64, 0); }
-  50% { box-shadow: 0 0 0 4px rgba(200, 168, 64, 0.22); }
-`;
-
 // On xs the gap must equal the scroller's side padding so the neighbouring
 // cards sit fully off-screen and only one card is visible at a time.
 const GAP_PX = { xs: 16, sm: 16, md: 20 };
@@ -39,19 +34,6 @@ function formatDuration(programme) {
 
 function ProgrammeCard({ programme, index, onView, highlighted }) {
   const { src: imgSrc, usingLogo, onError } = useBrandImageSrc(programmeImageSrc(programme));
-  const [ringMounted, setRingMounted] = useState(false);
-  const [ringOn, setRingOn] = useState(false);
-
-  useEffect(() => {
-    if (highlighted) {
-      setRingMounted(true);
-      const id = requestAnimationFrame(() => setRingOn(true));
-      return () => cancelAnimationFrame(id);
-    }
-    setRingOn(false);
-    const t = window.setTimeout(() => setRingMounted(false), 420);
-    return () => window.clearTimeout(t);
-  }, [highlighted]);
 
   return (
     <Box
@@ -68,11 +50,8 @@ function ProgrammeCard({ programme, index, onView, highlighted }) {
         border: `2px solid ${highlighted ? HOME.gold : HOME.border}`,
         bgcolor: "#fff",
         overflow: "hidden",
-        boxShadow: highlighted
-          ? "0 12px 32px -16px rgba(200,168,64,0.4)"
-          : "0 10px 30px -18px rgba(8,22,43,0.18)",
+        boxShadow: "0 10px 30px -18px rgba(8,22,43,0.18)",
         transition: "box-shadow 0.45s ease, border-color 0.45s ease",
-        // Don't toggle entrance animation with highlight — that restarts fadeUp and blinks
         "@media (prefers-reduced-motion: no-preference)": {
           animation: `${fadeUp} 0.55s ease both`,
           animationDelay: `${Math.min(index, 8) * 0.06}s`,
@@ -80,32 +59,13 @@ function ProgrammeCard({ programme, index, onView, highlighted }) {
         "&:hover": {
           transform: "translateY(-5px)",
           boxShadow: HOME.shadowMd,
-          borderColor: HOME.borderGold,
+          borderColor: highlighted ? HOME.gold : HOME.borderGold,
           "& .programme-photo": { transform: "scale(1.06)" },
           "& .programme-accent": { transform: "scaleX(1)" },
           "& .programme-name": { color: HOME.gold },
         },
       }}
     >
-      {/* Inset ring fades out instead of unmounting abruptly */}
-      {ringMounted ? (
-        <Box
-          aria-hidden
-          sx={{
-            pointerEvents: "none",
-            position: "absolute",
-            inset: 8,
-            zIndex: 4,
-            borderRadius: "14px",
-            border: `2.5px solid ${HOME.gold}`,
-            opacity: ringOn ? 1 : 0,
-            transition: "opacity 0.4s ease",
-            "@media (prefers-reduced-motion: no-preference)": {
-              animation: ringOn ? `${highlightPulse} 1.4s ease-in-out 3` : "none",
-            },
-          }}
-        />
-      ) : null}
       <Box
         sx={{
           position: "relative",

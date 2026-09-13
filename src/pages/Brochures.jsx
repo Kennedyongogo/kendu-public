@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -35,7 +35,13 @@ function isImage(item) {
   );
 }
 
-function BrochureBlock({ item, pageWidth, isFirst, isLast }) {
+function viewportWidth() {
+  if (typeof window === "undefined") return 360;
+  // clientWidth excludes scrollbar — avoids 1–15px horizontal overflow on phones
+  return Math.max(280, document.documentElement?.clientWidth || window.innerWidth || 360);
+}
+
+function BrochureBlock({ item, pageWidth, widthReady, isFirst, isLast }) {
   const [numPages, setNumPages] = useState(0);
   const [pdfError, setPdfError] = useState("");
   const fileUrl = item?.file_url || "";
@@ -51,14 +57,19 @@ function BrochureBlock({ item, pageWidth, isFirst, isLast }) {
       sx={{
         mt: isFirst ? 0 : { xs: 4, md: 5 },
         mb: isLast ? 0 : { xs: 4, md: 5 },
+        width: "100%",
+        maxWidth: "100%",
+        overflow: "hidden",
       }}
     >
       <Box
         sx={{
+          width: "100%",
           maxWidth: pageWidth,
           mx: "auto",
           mb: isFirst ? 0.5 : 1,
           px: { xs: 1.5, sm: 2 },
+          boxSizing: "border-box",
           display: "flex",
           alignItems: "flex-end",
           justifyContent: "space-between",
@@ -70,7 +81,7 @@ function BrochureBlock({ item, pageWidth, isFirst, isLast }) {
             : null),
         }}
       >
-        <Box sx={{ minWidth: 0 }}>
+        <Box sx={{ minWidth: 0, flex: 1 }}>
           <Typography
             sx={{
               fontFamily: HOME.fontDisplay,
@@ -78,6 +89,7 @@ function BrochureBlock({ item, pageWidth, isFirst, isLast }) {
               fontSize: { xs: "1.35rem", sm: "1.6rem" },
               color: HOME.navy,
               lineHeight: 1.2,
+              overflowWrap: "anywhere",
             }}
           >
             {item.title}
@@ -89,6 +101,7 @@ function BrochureBlock({ item, pageWidth, isFirst, isLast }) {
                 fontFamily: HOME.fontBody,
                 fontSize: "0.9rem",
                 color: "rgba(30,40,88,0.65)",
+                overflowWrap: "anywhere",
               }}
             >
               {item.description}
@@ -131,7 +144,7 @@ function BrochureBlock({ item, pageWidth, isFirst, isLast }) {
       )}
 
       {!isImage(item) && !isPdf(item) && (
-        <Box sx={{ py: 4, textAlign: "center", maxWidth: pageWidth, mx: "auto" }}>
+        <Box sx={{ py: 4, textAlign: "center", maxWidth: pageWidth, mx: "auto", px: 2 }}>
           <Typography sx={{ fontFamily: HOME.fontBody, color: "rgba(30,40,88,0.7)", mb: 1.5 }}>
             This file can’t be shown on the page. Download it to open.
           </Typography>
@@ -183,37 +196,63 @@ function BrochureBlock({ item, pageWidth, isFirst, isLast }) {
             </Box>
           }
         >
-          <Stack spacing={isLast ? 0 : 2} alignItems="center">
-            {Array.from({ length: numPages }, (_, i) => (
-              <Box
-                key={`${item.id}-page-${i + 1}`}
-                sx={{
-                  boxShadow: "0 18px 48px -24px rgba(8,22,43,0.35)",
-                  bgcolor: "#fff",
-                  lineHeight: 0,
-                }}
-              >
-                <Page
-                  pageNumber={i + 1}
-                  width={pageWidth}
-                  renderTextLayer
-                  renderAnnotationLayer
-                  loading={
-                    <Box
-                      sx={{
-                        width: pageWidth,
-                        height: pageWidth * 1.3,
-                        display: "grid",
-                        placeItems: "center",
-                      }}
-                    >
-                      <CircularProgress size={28} sx={{ color: HOME.green }} />
-                    </Box>
-                  }
-                />
-              </Box>
-            ))}
-          </Stack>
+          {/* Wait for measured width so pages never paint at the desktop default (820px) on phones */}
+          {!widthReady ? (
+            <Box sx={{ py: 8, display: "grid", placeItems: "center" }}>
+              <CircularProgress sx={{ color: HOME.green }} />
+            </Box>
+          ) : (
+            <Stack
+              spacing={isLast ? 0 : 2}
+              alignItems="center"
+              sx={{ width: "100%", maxWidth: "100%", overflow: "hidden" }}
+            >
+              {Array.from({ length: numPages }, (_, i) => (
+                <Box
+                  key={`${item.id}-page-${i + 1}`}
+                  sx={{
+                    width: "100%",
+                    maxWidth: pageWidth,
+                    boxShadow: "0 18px 48px -24px rgba(8,22,43,0.35)",
+                    bgcolor: "#fff",
+                    lineHeight: 0,
+                    overflow: "hidden",
+                    "& .react-pdf__Page": {
+                      maxWidth: "100%",
+                    },
+                    "& .react-pdf__Page__canvas": {
+                      maxWidth: "100% !important",
+                      width: "100% !important",
+                      height: "auto !important",
+                    },
+                    "& .react-pdf__Page__textContent, & .react-pdf__Page__annotations": {
+                      maxWidth: "100%",
+                    },
+                  }}
+                >
+                  <Page
+                    pageNumber={i + 1}
+                    width={pageWidth}
+                    renderTextLayer
+                    renderAnnotationLayer
+                    loading={
+                      <Box
+                        sx={{
+                          width: "100%",
+                          maxWidth: pageWidth,
+                          height: Math.round(pageWidth * 1.3),
+                          display: "grid",
+                          placeItems: "center",
+                        }}
+                      >
+                        <CircularProgress size={28} sx={{ color: HOME.green }} />
+                      </Box>
+                    }
+                  />
+                </Box>
+              ))}
+            </Stack>
+          )}
         </Document>
       )}
     </Box>
@@ -224,7 +263,9 @@ export default function Brochures() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [pageWidth, setPageWidth] = useState(820);
+  const shellRef = useRef(null);
+  const [pageWidth, setPageWidth] = useState(() => viewportWidth());
+  const [widthReady, setWidthReady] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -248,12 +289,28 @@ export default function Brochures() {
   }, []);
 
   useEffect(() => {
-    const update = () => {
-      setPageWidth(Math.max(300, window.innerWidth));
+    const el = shellRef.current;
+    const apply = (raw) => {
+      const next = Math.max(280, Math.floor(raw));
+      setPageWidth(next);
+      setWidthReady(true);
     };
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
+
+    // Immediate measure — do not wait for ResizeObserver's first callback
+    apply(el?.clientWidth || viewportWidth());
+
+    if (!el || typeof ResizeObserver === "undefined") {
+      const onResize = () => apply(viewportWidth());
+      window.addEventListener("resize", onResize);
+      return () => window.removeEventListener("resize", onResize);
+    }
+
+    const ro = new ResizeObserver((entries) => {
+      const w = entries[0]?.contentRect?.width;
+      if (w) apply(w);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
   }, []);
 
   return (
@@ -272,13 +329,22 @@ export default function Brochures() {
           pb: 0,
           minHeight: "100vh",
           bgcolor: "#e8edf4",
+          width: "100%",
+          maxWidth: "100vw",
+          overflowX: "hidden",
         }}
       >
-        <Box sx={{ px: 0 }}>
+        <Box ref={shellRef} sx={{ width: "100%", maxWidth: "100%", overflowX: "hidden", px: 0 }}>
           {loading && (
-            <Stack spacing={3} alignItems="center" sx={{ pt: 1, px: 1 }}>
-              <Skeleton variant="rounded" width={Math.min(pageWidth, 900)} height={pageWidth * 1.15} />
-              <Skeleton variant="rounded" width={Math.min(pageWidth, 900)} height={pageWidth * 1.15} />
+            <Stack spacing={3} alignItems="center" sx={{ pt: 1, px: 1, width: "100%" }}>
+              <Skeleton
+                variant="rounded"
+                sx={{ width: "100%", maxWidth: pageWidth, height: Math.min(pageWidth * 1.15, 520) }}
+              />
+              <Skeleton
+                variant="rounded"
+                sx={{ width: "100%", maxWidth: pageWidth, height: Math.min(pageWidth * 1.15, 520) }}
+              />
             </Stack>
           )}
 
@@ -305,6 +371,7 @@ export default function Brochures() {
                 key={item.id}
                 item={item}
                 pageWidth={pageWidth}
+                widthReady={widthReady}
                 isFirst={index === 0}
                 isLast={index === items.length - 1}
               />
