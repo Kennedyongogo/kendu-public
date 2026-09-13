@@ -50,6 +50,190 @@ function MetaChip({ label }) {
   );
 }
 
+function ModuleCard({ module: m, detailed }) {
+  const meta = [
+    { label: "Year", value: m.year_of_study != null ? `Y${m.year_of_study}` : "—" },
+    { label: "Sem", value: m.semester || "—" },
+    ...(detailed
+      ? [
+          { label: "Hours", value: m.hours ?? "—" },
+          { label: "Credits", value: m.credits ?? "—" },
+        ]
+      : []),
+  ];
+
+  return (
+    <Box
+      sx={{
+        px: 1.75,
+        py: 1.5,
+        borderBottom: `1px solid ${HOME.border}`,
+        borderLeft: `3px solid ${HOME.green}`,
+        bgcolor: "#fff",
+        "&:last-child": { borderBottom: "none" },
+      }}
+    >
+      <Typography
+        sx={{
+          fontFamily: HOME.fontBody,
+          fontWeight: 800,
+          color: HOME.green,
+          fontSize: "0.78rem",
+          letterSpacing: "0.04em",
+          mb: 0.25,
+        }}
+      >
+        {m.code || "—"}
+      </Typography>
+      <Typography
+        sx={{
+          fontFamily: HOME.fontBody,
+          fontWeight: 700,
+          color: HOME.navyDeep,
+          fontSize: "0.92rem",
+          lineHeight: 1.35,
+          overflowWrap: "anywhere",
+          mb: 1,
+        }}
+      >
+        {m.name || "—"}
+      </Typography>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: detailed ? "repeat(2, minmax(0, 1fr))" : "repeat(2, minmax(0, 1fr))",
+          gap: 0.75,
+        }}
+      >
+        {meta.map((item) => (
+          <Box
+            key={item.label}
+            sx={{
+              px: 1,
+              py: 0.65,
+              borderRadius: "10px",
+              bgcolor: "rgba(27,94,168,0.04)",
+              border: "1px solid rgba(27,94,168,0.08)",
+              minWidth: 0,
+            }}
+          >
+            <Typography
+              sx={{
+                fontFamily: HOME.fontBody,
+                fontSize: "0.62rem",
+                fontWeight: 800,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                color: HOME.inkMuted,
+              }}
+            >
+              {item.label}
+            </Typography>
+            <Typography
+              sx={{
+                fontFamily: HOME.fontBody,
+                fontWeight: 700,
+                fontSize: "0.84rem",
+                color: HOME.navyDeep,
+                overflowWrap: "anywhere",
+              }}
+            >
+              {item.value}
+            </Typography>
+          </Box>
+        ))}
+      </Box>
+    </Box>
+  );
+}
+
+function ModulesTable({ rows, detailed }) {
+  return (
+    <TableContainer sx={{ display: { xs: "none", md: "block" }, overflowX: "hidden" }}>
+      <Table size="small" sx={{ width: "100%", tableLayout: "fixed" }}>
+        <TableHead>
+          <TableRow>
+            <TableCell sx={{ fontFamily: HOME.fontBody, fontWeight: 700, width: "18%" }}>Code</TableCell>
+            <TableCell sx={{ fontFamily: HOME.fontBody, fontWeight: 700 }}>Module</TableCell>
+            <TableCell sx={{ fontFamily: HOME.fontBody, fontWeight: 700, width: "10%" }}>Year</TableCell>
+            <TableCell sx={{ fontFamily: HOME.fontBody, fontWeight: 700, width: "10%" }}>Sem</TableCell>
+            {detailed ? (
+              <>
+                <TableCell align="right" sx={{ fontFamily: HOME.fontBody, fontWeight: 700, width: "12%" }}>
+                  Hours
+                </TableCell>
+                <TableCell align="right" sx={{ fontFamily: HOME.fontBody, fontWeight: 700, width: "12%" }}>
+                  Credits
+                </TableCell>
+              </>
+            ) : null}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((m) => (
+            <TableRow key={m.id} hover>
+              <TableCell
+                sx={{
+                  fontFamily: HOME.fontBody,
+                  fontWeight: 700,
+                  color: HOME.green,
+                  overflowWrap: "anywhere",
+                }}
+              >
+                {m.code}
+              </TableCell>
+              <TableCell sx={{ fontFamily: HOME.fontBody, overflowWrap: "anywhere" }}>{m.name}</TableCell>
+              <TableCell sx={{ fontFamily: HOME.fontBody }}>
+                {m.year_of_study != null ? `Y${m.year_of_study}` : "—"}
+              </TableCell>
+              <TableCell sx={{ fontFamily: HOME.fontBody }}>{m.semester || "—"}</TableCell>
+              {detailed ? (
+                <>
+                  <TableCell align="right" sx={{ fontFamily: HOME.fontBody }}>
+                    {m.hours ?? "—"}
+                  </TableCell>
+                  <TableCell align="right" sx={{ fontFamily: HOME.fontBody }}>
+                    {m.credits ?? "—"}
+                  </TableCell>
+                </>
+              ) : null}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+}
+
+function ModulesList({ rows, detailed, empty }) {
+  if (!rows.length) {
+    return (
+      <Typography
+        sx={{
+          p: 3,
+          textAlign: "center",
+          fontFamily: HOME.fontBody,
+          color: HOME.inkMuted,
+        }}
+      >
+        {empty}
+      </Typography>
+    );
+  }
+
+  return (
+    <>
+      {/* Small screens: one card per module — no horizontal scroll */}
+      <Box sx={{ display: { xs: "block", md: "none" } }}>
+        {rows.map((m) => (
+          <ModuleCard key={m.id} module={m} detailed={detailed} />
+        ))}
+      </Box>
+      <ModulesTable rows={rows} detailed={detailed} />
+    </>
+  );
+}
+
 export default function StudentProgramme() {
   const [programme, setProgramme] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -111,14 +295,16 @@ export default function StudentProgramme() {
     <Box
       sx={{
         width: "100%",
+        maxWidth: "100%",
         minHeight: "calc(100vh - 68px)",
         boxSizing: "border-box",
+        overflowX: "hidden",
         px: { xs: 1.5, sm: 3, lg: 4 },
         py: { xs: 2, md: 2.5 },
         animation: `${fadeUp} 0.45s ease both`,
       }}
     >
-      <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2.5 }}>
+      <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2.5, minWidth: 0 }}>
         <Box
           sx={{
             width: 44,
@@ -128,11 +314,12 @@ export default function StudentProgramme() {
             placeItems: "center",
             background: `linear-gradient(135deg, ${HOME.green} 0%, ${HOME.navy} 100%)`,
             color: "#fff",
+            flexShrink: 0,
           }}
         >
           <SchoolRoundedIcon />
         </Box>
-        <Box>
+        <Box sx={{ minWidth: 0 }}>
           <Typography
             sx={{
               fontFamily: HOME.fontDisplay,
@@ -157,7 +344,7 @@ export default function StudentProgramme() {
       )}
 
       {!error && programme && (
-        <Stack spacing={2.5}>
+        <Stack spacing={2.5} sx={{ width: "100%", maxWidth: "100%", minWidth: 0 }}>
           <Box
             sx={{
               p: { xs: 2, sm: 2.5 },
@@ -165,6 +352,7 @@ export default function StudentProgramme() {
               bgcolor: "#fff",
               border: `1px solid ${HOME.border}`,
               boxShadow: "0 12px 32px -22px rgba(8,22,43,0.28)",
+              overflow: "hidden",
             }}
           >
             <Typography
@@ -174,6 +362,7 @@ export default function StudentProgramme() {
                 fontSize: { xs: "1.25rem", md: "1.45rem" },
                 color: HOME.navyDeep,
                 mb: 1,
+                overflowWrap: "anywhere",
               }}
             >
               {programme.name}
@@ -186,6 +375,7 @@ export default function StudentProgramme() {
                   color: HOME.inkMuted,
                   lineHeight: 1.55,
                   mb: 1.5,
+                  overflowWrap: "anywhere",
                 }}
               >
                 {programme.description}
@@ -213,6 +403,8 @@ export default function StudentProgramme() {
               border: `1px solid ${HOME.border}`,
               overflow: "hidden",
               boxShadow: "0 12px 32px -22px rgba(8,22,43,0.28)",
+              width: "100%",
+              maxWidth: "100%",
             }}
           >
             <Stack
@@ -224,9 +416,10 @@ export default function StudentProgramme() {
                 py: 1.5,
                 borderBottom: `1px solid ${HOME.border}`,
                 bgcolor: "rgba(27,94,168,0.04)",
+                minWidth: 0,
               }}
             >
-              <MenuBookRoundedIcon sx={{ color: HOME.green, fontSize: 22 }} />
+              <MenuBookRoundedIcon sx={{ color: HOME.green, fontSize: 22, flexShrink: 0 }} />
               <Box sx={{ flex: 1, minWidth: 0 }}>
                 <Typography sx={{ fontFamily: HOME.fontBody, fontWeight: 800, color: HOME.navyDeep }}>
                   My modules
@@ -237,60 +430,14 @@ export default function StudentProgramme() {
                     : `${modules.length} module${modules.length === 1 ? "" : "s"}`}
                 </Typography>
               </Box>
-              <ScheduleRoundedIcon sx={{ color: HOME.inkMuted, fontSize: 18 }} />
+              <ScheduleRoundedIcon sx={{ color: HOME.inkMuted, fontSize: 18, flexShrink: 0 }} />
             </Stack>
 
-            {!myYearModules.length ? (
-              <Typography
-                sx={{
-                  p: 3,
-                  textAlign: "center",
-                  fontFamily: HOME.fontBody,
-                  color: HOME.inkMuted,
-                }}
-              >
-                No modules published for your programme yet.
-              </Typography>
-            ) : (
-              <TableContainer>
-                <Table size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell sx={{ fontFamily: HOME.fontBody, fontWeight: 700 }}>Code</TableCell>
-                      <TableCell sx={{ fontFamily: HOME.fontBody, fontWeight: 700 }}>Module</TableCell>
-                      <TableCell sx={{ fontFamily: HOME.fontBody, fontWeight: 700 }}>Year</TableCell>
-                      <TableCell sx={{ fontFamily: HOME.fontBody, fontWeight: 700 }}>Sem</TableCell>
-                      <TableCell align="right" sx={{ fontFamily: HOME.fontBody, fontWeight: 700 }}>
-                        Hours
-                      </TableCell>
-                      <TableCell align="right" sx={{ fontFamily: HOME.fontBody, fontWeight: 700 }}>
-                        Credits
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {myYearModules.map((m) => (
-                      <TableRow key={m.id} hover>
-                        <TableCell sx={{ fontFamily: HOME.fontBody, fontWeight: 700, color: HOME.green }}>
-                          {m.code}
-                        </TableCell>
-                        <TableCell sx={{ fontFamily: HOME.fontBody }}>{m.name}</TableCell>
-                        <TableCell sx={{ fontFamily: HOME.fontBody }}>
-                          {m.year_of_study != null ? `Y${m.year_of_study}` : "—"}
-                        </TableCell>
-                        <TableCell sx={{ fontFamily: HOME.fontBody }}>{m.semester || "—"}</TableCell>
-                        <TableCell align="right" sx={{ fontFamily: HOME.fontBody }}>
-                          {m.hours ?? "—"}
-                        </TableCell>
-                        <TableCell align="right" sx={{ fontFamily: HOME.fontBody }}>
-                          {m.credits ?? "—"}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            )}
+            <ModulesList
+              rows={myYearModules}
+              detailed
+              empty="No modules published for your programme yet."
+            />
           </Box>
 
           {programme.student_year && modules.length > myYearModules.length && (
@@ -300,6 +447,8 @@ export default function StudentProgramme() {
                 bgcolor: "#fff",
                 border: `1px solid ${HOME.border}`,
                 overflow: "hidden",
+                width: "100%",
+                maxWidth: "100%",
               }}
             >
               <Typography
@@ -315,30 +464,7 @@ export default function StudentProgramme() {
               >
                 All programme modules
               </Typography>
-              <TableContainer>
-                <Table size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell sx={{ fontFamily: HOME.fontBody, fontWeight: 700 }}>Code</TableCell>
-                      <TableCell sx={{ fontFamily: HOME.fontBody, fontWeight: 700 }}>Module</TableCell>
-                      <TableCell sx={{ fontFamily: HOME.fontBody, fontWeight: 700 }}>Year</TableCell>
-                      <TableCell sx={{ fontFamily: HOME.fontBody, fontWeight: 700 }}>Sem</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {modules.map((m) => (
-                      <TableRow key={`all-${m.id}`} hover>
-                        <TableCell sx={{ fontFamily: HOME.fontBody, fontWeight: 600 }}>{m.code}</TableCell>
-                        <TableCell sx={{ fontFamily: HOME.fontBody }}>{m.name}</TableCell>
-                        <TableCell sx={{ fontFamily: HOME.fontBody }}>
-                          {m.year_of_study != null ? `Y${m.year_of_study}` : "—"}
-                        </TableCell>
-                        <TableCell sx={{ fontFamily: HOME.fontBody }}>{m.semester || "—"}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+              <ModulesList rows={modules} detailed={false} empty="No modules published yet." />
             </Box>
           )}
         </Stack>
