@@ -16,10 +16,10 @@ import "react-pdf/dist/Page/TextLayer.css";
 import { HOME } from "../components/Home/homeShared";
 import { BRAND } from "../brand";
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.mjs",
-  import.meta.url
-).toString();
+// Serve the worker as `.js` from /public (copied by vite). Production hosts often
+// give Vite's hashed `.mjs` assets the wrong MIME type, which breaks module
+// workers: "Failed to fetch dynamically imported module: ...pdf.worker.min-….mjs"
+pdfjs.GlobalWorkerOptions.workerSrc = `${import.meta.env.BASE_URL}pdf.worker.min.js`;
 
 function isPdf(item) {
   return (

@@ -2,11 +2,31 @@ import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react-swc";
 import { VitePWA } from "vite-plugin-pwa";
 import svgr from "vite-plugin-svgr";
+import { copyFileSync, existsSync } from "fs";
+import { dirname, resolve } from "path";
+import { fileURLToPath } from "url";
+
+const rootDir = dirname(fileURLToPath(import.meta.url));
+
+function copyPdfWorkerPlugin() {
+  const copy = () => {
+    const src = resolve(rootDir, "node_modules/pdfjs-dist/build/pdf.worker.min.mjs");
+    const dest = resolve(rootDir, "public/pdf.worker.min.js");
+    if (!existsSync(src)) return;
+    copyFileSync(src, dest);
+  };
+  return {
+    name: "copy-pdf-worker",
+    buildStart: copy,
+    configureServer: copy,
+  };
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({
   base: "/",
   plugins: [
+    copyPdfWorkerPlugin(),
     react(),
     VitePWA({
       registerType: "autoUpdate",
@@ -17,6 +37,9 @@ export default defineConfig({
       workbox: {
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB limit
         cleanupOutdatedCaches: true,
+        // Don't let the SW intercept PDF.js module workers / brochure assets wrongly
+        globIgnores: ["**/pdf.worker*.mjs", "**/pdf.worker*.js"],
+        navigateFallbackDenylist: [/^\/api/, /^\/uploads/, /\.mjs$/],
       },
       includeAssets: ["favicon.ico"],
       manifest: {
