@@ -13,6 +13,9 @@ import {
 } from "@mui/material";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import LockRoundedIcon from "@mui/icons-material/LockRounded";
+import QrCode2RoundedIcon from "@mui/icons-material/QrCode2Rounded";
+import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import RestaurantRoundedIcon from "@mui/icons-material/RestaurantRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import SyncRoundedIcon from "@mui/icons-material/SyncRounded";
@@ -88,6 +91,32 @@ function showMealFeeGateDialog({ access, onGoToFees }) {
   });
 }
 
+function formatShortDate(value) {
+  if (!value) return "";
+  const d = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(d.getTime())) return value;
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+}
+
+function showDownloadLimitDialog(allowance) {
+  const used = allowance?.used ?? 0;
+  const allowed = allowance?.allowed ?? allowance?.max_downloads ?? 0;
+  const until = formatShortDate(allowance?.range_end);
+  return Swal.fire({
+    icon: "info",
+    title: "Download limit reached",
+    html: `
+      <div style="font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#1a2638;font-size:0.86rem;line-height:1.5;">
+        <p style="margin:0 0 8px;">You have used <strong>${used} of ${allowed}</strong> meal card downloads${until ? ` allowed until <strong>${until}</strong>` : ""}.</p>
+        <p style="margin:0;color:rgba(8,22,43,0.65);">Keep using your current printed card. If you lost it, ask the school administration to allow another download.</p>
+      </div>
+    `,
+    confirmButtonText: "OK",
+    confirmButtonColor: HOME.green,
+    width: 420,
+  });
+}
+
 function initials(name) {
   return String(name || "S")
     .split(/\s+/)
@@ -113,7 +142,7 @@ function buildMonthDayColumns(date = new Date()) {
   return { monthLabel, columns: columns.slice(0, 3), daysInMonth };
 }
 
-function MealMarkBox() {
+function MealMarkBox({ served = false }) {
   return (
     <Box
       aria-hidden
@@ -122,15 +151,20 @@ function MealMarkBox() {
         height: { xs: 8, sm: 10 },
         borderRadius: "2px",
         border: `1px solid ${HOME.green}`,
-        bgcolor: "#fff",
+        bgcolor: served ? HOME.green : "#fff",
+        color: "#fff",
+        display: "grid",
+        placeItems: "center",
         flexShrink: 0,
       }}
-    />
+    >
+      {served ? <CheckRoundedIcon sx={{ fontSize: { xs: 7, sm: 9 } }} /> : null}
+    </Box>
   );
 }
 
-/** Back of CR80 meal card — month grid with B / L / S mark boxes per day. */
-function MealCardBack({ referenceDate }) {
+/** Back of CR80 meal card — month grid with B / L / S boxes; served meals are filled. */
+function MealCardBack({ referenceDate, served = {} }) {
   const { monthLabel, columns } = useMemo(
     () => buildMonthDayColumns(referenceDate || new Date()),
     [referenceDate]
@@ -270,15 +304,11 @@ function MealCardBack({ referenceDate }) {
                   >
                     {day}
                   </Typography>
-                  <Box sx={{ display: "grid", placeItems: "center" }}>
-                    <MealMarkBox />
-                  </Box>
-                  <Box sx={{ display: "grid", placeItems: "center" }}>
-                    <MealMarkBox />
-                  </Box>
-                  <Box sx={{ display: "grid", placeItems: "center" }}>
-                    <MealMarkBox />
-                  </Box>
+                  {["B", "L", "S"].map((meal) => (
+                    <Box key={meal} sx={{ display: "grid", placeItems: "center" }}>
+                      <MealMarkBox served={Boolean(served[String(day)]?.[meal])} />
+                    </Box>
+                  ))}
                 </Box>
               ))}
             </Box>
@@ -301,7 +331,7 @@ function MealCardBack({ referenceDate }) {
           B breakfast · L lunch · S supper
         </Typography>
         <Typography sx={{ fontSize: "0.42rem", fontWeight: 800, color: HOME.gold }}>
-          Mark when served
+          Filled = served
         </Typography>
       </Box>
     </Box>
@@ -309,7 +339,7 @@ function MealCardBack({ referenceDate }) {
 }
 
 /** Visual CR80 meal card (preview). */
-function MealCardFace({ card }) {
+function MealCardFace({ card, cardVersion }) {
   if (!card) return null;
   const yearLine = [
     card.year_of_study ? `Y${card.year_of_study}` : null,
@@ -518,6 +548,37 @@ function MealCardFace({ card }) {
             {card.programme_name || "—"}
           </Typography>
         </Box>
+
+        <Box
+          aria-label="Unique QR code printed on the downloaded card"
+          sx={{
+            alignSelf: "flex-start",
+            flexShrink: 0,
+            width: { xs: 50, sm: 70 },
+            aspectRatio: "1 / 1",
+            borderRadius: "8px",
+            border: "1px solid #c5d4e8",
+            bgcolor: "#fff",
+            display: "grid",
+            placeItems: "center",
+            alignContent: "center",
+            gap: 0.25,
+            color: "rgba(11,31,58,0.55)",
+          }}
+        >
+          <QrCode2RoundedIcon sx={{ fontSize: { xs: 30, sm: 42 }, color: "#0b1f3a", opacity: 0.35 }} />
+          <Typography
+            sx={{
+              fontSize: { xs: "0.38rem", sm: "0.46rem" },
+              fontWeight: 800,
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+              lineHeight: 1,
+            }}
+          >
+            On PDF
+          </Typography>
+        </Box>
       </Stack>
 
       <Box
@@ -540,6 +601,7 @@ function MealCardFace({ card }) {
           </Typography>
           <Typography sx={{ fontSize: "0.55rem", color: HOME.gold, fontWeight: 700 }}>
             Issued {card.issued_on || "—"}
+            {cardVersion ? ` · Card #${cardVersion}` : ""}
           </Typography>
         </Box>
         <Box sx={{ textAlign: "right", flexShrink: 0 }}>
@@ -556,7 +618,7 @@ function MealCardFace({ card }) {
 }
 
 /** 3D flip wrapper — paid students can flip to the monthly B/L/S log. */
-function FlippableMealCard({ card, canFlip }) {
+function FlippableMealCard({ card, canFlip, served, cardVersion }) {
   const [flipped, setFlipped] = useState(false);
 
   useEffect(() => {
@@ -614,7 +676,7 @@ function FlippableMealCard({ card, canFlip }) {
               WebkitBackfaceVisibility: "hidden",
             }}
           >
-            <MealCardFace card={card} />
+            <MealCardFace card={card} cardVersion={cardVersion} />
           </Box>
           <Box
             sx={{
@@ -625,7 +687,7 @@ function FlippableMealCard({ card, canFlip }) {
               transform: "rotateY(180deg)",
             }}
           >
-            <MealCardBack />
+            <MealCardBack served={served} />
           </Box>
         </Box>
       </Box>
@@ -656,6 +718,9 @@ export default function StudentMealCard() {
   const [access, setAccess] = useState(null);
   const [card, setCard] = useState(null);
   const [lockedCard, setLockedCard] = useState(null);
+  const [allowance, setAllowance] = useState(null);
+  const [activeCard, setActiveCard] = useState(null);
+  const [served, setServed] = useState({});
   const [downloading, setDownloading] = useState(false);
 
   const load = useCallback(async ({ soft = false } = {}) => {
@@ -669,6 +734,9 @@ export default function StudentMealCard() {
       setAccess(data.data?.access || null);
       setCard(data.data?.card || null);
       setLockedCard(data.data?.locked_card || null);
+      setAllowance(data.data?.allowance || null);
+      setActiveCard(data.data?.active_card || null);
+      setServed(data.data?.served_this_month || {});
     } catch (err) {
       setError(err.message);
     } finally {
@@ -689,11 +757,38 @@ export default function StudentMealCard() {
       });
       return;
     }
+    if (limitReached) {
+      showDownloadLimitDialog(allowance);
+      return;
+    }
+    if (activeCard) {
+      const remainingLine =
+        allowance?.limited && allowance.remaining != null
+          ? `<p style="margin:10px 0 0;font-size:0.8rem;color:rgba(8,22,43,0.6);">This uses 1 of your ${allowance.remaining} remaining download${allowance.remaining === 1 ? "" : "s"}.</p>`
+          : "";
+      const confirm = await Swal.fire({
+        icon: "warning",
+        title: "Replace your meal card?",
+        html: `<p style="margin:0;font-size:0.88rem;line-height:1.5;">Downloading creates a new card with a new QR code. Your current card <strong>#${activeCard.version}</strong> will stop working at the cafeteria. Meals already served stay on your record.</p>${remainingLine}`,
+        showCancelButton: true,
+        confirmButtonText: "Download new card",
+        cancelButtonText: "Cancel",
+        confirmButtonColor: HOME.green,
+        cancelButtonColor: "#94a3b8",
+        reverseButtons: true,
+      });
+      if (!confirm.isConfirmed) return;
+    }
     setDownloading(true);
     try {
       const res = await fetch("/api/meals/card/pdf", { headers: studentAuthHeaders() });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
+        if (res.status === 403 && data.code === "download_limit") {
+          setAllowance(data.data?.allowance || allowance);
+          showDownloadLimitDialog(data.data?.allowance || allowance);
+          return;
+        }
         if (res.status === 403 && data.data?.access) {
           setAccess(data.data.access);
           setCard(null);
@@ -715,6 +810,7 @@ export default function StudentMealCard() {
       link.click();
       link.remove();
       URL.revokeObjectURL(url);
+      load({ soft: true });
     } catch (err) {
       Swal.fire({
         icon: "error",
@@ -728,6 +824,7 @@ export default function StudentMealCard() {
   };
 
   const eligible = access?.eligible === true;
+  const limitReached = Boolean(allowance?.limited && allowance.remaining <= 0);
   const preview = eligible ? card : lockedCard;
   const required = access?.min_fee_percent ?? 0;
   const paidPct = access?.percent_paid ?? 0;
@@ -855,7 +952,12 @@ export default function StudentMealCard() {
                   opacity: eligible ? 1 : 0.72,
                 }}
               >
-                <FlippableMealCard card={preview} canFlip={eligible} />
+                <FlippableMealCard
+                  card={preview}
+                  canFlip={eligible}
+                  served={eligible ? served : {}}
+                  cardVersion={eligible ? activeCard?.version : null}
+                />
                 {!eligible ? (
                   <Box
                     sx={{
@@ -901,9 +1003,60 @@ export default function StudentMealCard() {
                         lineHeight: 1.5,
                       }}
                     >
-                      Your meal card is unlocked. Flip it to see this month’s dates with Breakfast, Lunch and
-                      Supper boxes for cafeteria marking. Download the CR80 PDF (front + back) to print.
+                      Your meal card is unlocked. The printed PDF carries your unique QR code, which the
+                      cafeteria scans at each meal. Flip the preview to see this month’s Breakfast, Lunch and
+                      Supper served so far.
                     </Typography>
+
+                    {allowance?.limited ? (
+                      <Box
+                        sx={{
+                          p: 1.25,
+                          borderRadius: "12px",
+                          bgcolor: limitReached ? "rgba(154,103,0,0.07)" : "rgba(27,94,168,0.04)",
+                          border: `1px solid ${limitReached ? "rgba(154,103,0,0.25)" : "rgba(27,94,168,0.12)"}`,
+                        }}
+                      >
+                        <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={1}>
+                          <Typography
+                            sx={{
+                              fontSize: "0.7rem",
+                              fontWeight: 800,
+                              letterSpacing: "0.06em",
+                              textTransform: "uppercase",
+                              color: HOME.inkMuted,
+                            }}
+                          >
+                            Downloads left
+                          </Typography>
+                          <Typography
+                            sx={{
+                              fontWeight: 800,
+                              fontSize: "0.9rem",
+                              color: limitReached ? "#9a6700" : HOME.green,
+                            }}
+                          >
+                            {Math.max(0, allowance.remaining)} of {allowance.allowed}
+                          </Typography>
+                        </Stack>
+                        <Typography sx={{ fontSize: "0.74rem", color: HOME.inkMuted, mt: 0.5, lineHeight: 1.4 }}>
+                          {limitReached
+                            ? "You have reached the download limit. Ask the school administration if you need another copy."
+                            : `Limit applies from ${formatShortDate(allowance.range_start)} to ${formatShortDate(allowance.range_end)}.`}
+                        </Typography>
+                      </Box>
+                    ) : null}
+
+                    {activeCard ? (
+                      <Stack direction="row" spacing={0.75} alignItems="flex-start">
+                        <InfoOutlinedIcon sx={{ fontSize: 16, color: HOME.inkMuted, mt: "2px" }} />
+                        <Typography sx={{ fontSize: "0.74rem", color: HOME.inkMuted, lineHeight: 1.45 }}>
+                          Card #{activeCard.version} is active. A new download replaces it and older printed copies
+                          stop working.
+                        </Typography>
+                      </Stack>
+                    ) : null}
+
                     <Button
                       variant="contained"
                       startIcon={
@@ -914,7 +1067,7 @@ export default function StudentMealCard() {
                         )
                       }
                       onClick={downloadPdf}
-                      disabled={downloading}
+                      disabled={downloading || limitReached}
                       sx={{
                         alignSelf: { xs: "center", sm: "flex-start" },
                         textTransform: "none",
@@ -928,7 +1081,13 @@ export default function StudentMealCard() {
                         "&:hover": { bgcolor: "#0E3D73" },
                       }}
                     >
-                      {downloading ? "Preparing PDF…" : "Download meal card PDF"}
+                      {downloading
+                        ? "Preparing PDF…"
+                        : limitReached
+                          ? "Download limit reached"
+                          : activeCard
+                            ? "Download new meal card PDF"
+                            : "Download meal card PDF"}
                     </Button>
                   </Stack>
                 ) : (
