@@ -21,7 +21,9 @@ import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import LocalLibraryRoundedIcon from "@mui/icons-material/LocalLibraryRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import ChurchRoundedIcon from "@mui/icons-material/ChurchRounded";
 import BrandLogoMark from "../common/BrandLogoMark";
+import StudentNotificationsBell from "./StudentNotificationsBell";
 import { HOME, firstName } from "./studentPortalShared";
 
 /** Hamburger bars that morph into an X when open. */
@@ -101,8 +103,11 @@ export default function StudentNavbar({ student, activePage, onNavigate, onLogou
           {navButtonSx("transcript", DescriptionRoundedIcon, "Transcript")}
           {navButtonSx("fees", AccountBalanceWalletRoundedIcon, "Fees")}
           {navButtonSx("library", LocalLibraryRoundedIcon, "Library")}
+          {navButtonSx("church", ChurchRoundedIcon, "Church")}
           {navButtonSx("settings", SettingsRoundedIcon, "Settings")}
         </Stack>
+
+        <StudentNotificationsBell sx={{ ml: { xs: "auto", md: 0 }, flexShrink: 0 }} />
 
         {/* Student name + profile picture — far right (desktop) */}
         <Stack
@@ -171,7 +176,6 @@ export default function StudentNavbar({ student, activePage, onNavigate, onLogou
           onClick={(e) => setMobileAnchorEl(mobileOpen ? null : e.currentTarget)}
           sx={{
             display: { xs: "inline-flex", md: "none" },
-            ml: "auto",
             width: 42,
             height: 42,
             borderRadius: "12px",
@@ -305,6 +309,18 @@ export default function StudentNavbar({ student, activePage, onNavigate, onLogou
               <LocalLibraryRoundedIcon fontSize="small" sx={{ color: HOME.green }} />
             </ListItemIcon>
             Library
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              setMobileAnchorEl(null);
+              onNavigate("church");
+            }}
+            sx={{ fontFamily: HOME.fontBody, fontWeight: 600, fontSize: "0.88rem", py: 1.15 }}
+          >
+            <ListItemIcon>
+              <ChurchRoundedIcon fontSize="small" sx={{ color: HOME.green }} />
+            </ListItemIcon>
+            Church
           </MenuItem>
           <MenuItem
             onClick={() => {
