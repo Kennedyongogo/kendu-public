@@ -40,7 +40,79 @@ const SHAPE_STYLE = {
   label: { fill: "none", stroke: "none", strokeWidth: 0, rx: 0, text: "#1e2858", textSize: 18 },
 };
 
+// Wall positions of a cross-shaped hall as fractions of its box; same defaults as the admin designer.
+const CROSS_DEFAULTS = { hl: 0.3, hr: 0.7, fl: 0.3, fr: 0.7, lt: 0.22, lb: 0.5, rt: 0.22, rb: 0.5 };
+
+function crossWalls(shape) {
+  const f = { ...CROSS_DEFAULTS, ...(shape.cross || {}) };
+  const { x, y, w, h } = shape;
+  return {
+    left: x,
+    right: x + w,
+    top: y,
+    bottom: y + h,
+    hl: x + f.hl * w,
+    hr: x + f.hr * w,
+    fl: x + f.fl * w,
+    fr: x + f.fr * w,
+    lt: y + f.lt * h,
+    lb: y + f.lb * h,
+    rt: y + f.rt * h,
+    rb: y + f.rb * h,
+  };
+}
+
+function crossPoints(a) {
+  return [
+    [a.hl, a.top],
+    [a.hr, a.top],
+    [a.hr, a.rt],
+    [a.right, a.rt],
+    [a.right, a.rb],
+    [a.fr, a.rb],
+    [a.fr, a.bottom],
+    [a.fl, a.bottom],
+    [a.fl, a.lb],
+    [a.left, a.lb],
+    [a.left, a.lt],
+    [a.hl, a.lt],
+  ];
+}
+
+function CrossGraphic({ shape }) {
+  const st = SHAPE_STYLE.room;
+  const walls = crossWalls(shape);
+  return (
+    <g>
+      <polygon
+        points={crossPoints(walls).map((p) => p.join(",")).join(" ")}
+        fill={st.fill}
+        stroke={st.stroke}
+        strokeWidth={st.strokeWidth}
+        strokeLinejoin="round"
+      />
+      {shape.label ? (
+        <text
+          x={(walls.hl + walls.hr) / 2}
+          y={shape.y + st.textSize * 0.9 + 8}
+          textAnchor="middle"
+          dominantBaseline="central"
+          fontFamily='"Plus Jakarta Sans", system-ui, sans-serif'
+          fontWeight={700}
+          fontSize={st.textSize}
+          fill={st.text}
+          letterSpacing={4}
+          style={{ pointerEvents: "none", userSelect: "none" }}
+        >
+          {String(shape.label).toUpperCase()}
+        </text>
+      ) : null}
+    </g>
+  );
+}
+
 function ShapeGraphic({ shape }) {
+  if (shape.type === "cross") return <CrossGraphic shape={shape} />;
   const st = SHAPE_STYLE[shape.type] || SHAPE_STYLE.area;
   const cx = shape.x + shape.w / 2;
   const cy = shape.y + shape.h / 2;
