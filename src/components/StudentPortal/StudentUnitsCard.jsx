@@ -287,33 +287,18 @@ function UnitRow({ unit, index, registeringId, onRegister }) {
         </Box>
 
         {!enrolled ? (
-          <Button
+          <Chip
             size="small"
-            disabled={busy}
-            onClick={() => onRegister(unit)}
-            startIcon={
-              busy ? (
-                <CircularProgress size={14} sx={{ color: "inherit" }} />
-              ) : (
-                <TouchAppRoundedIcon sx={{ fontSize: 17 }} />
-              )
-            }
+            label="Not registered"
             sx={{
               alignSelf: { xs: "stretch", sm: "center" },
-              textTransform: "none",
-              fontWeight: 800,
+              height: 28,
+              fontWeight: 700,
               fontFamily: HOME.fontBody,
-              borderRadius: "12px",
-              px: 2,
-              py: 0.85,
-              bgcolor: HOME.green,
-              color: "#fff",
-              boxShadow: "0 10px 24px -10px rgba(27,94,168,0.65)",
-              "&:hover": { bgcolor: HOME.heroSplitGreenDark || "#0E3D73" },
+              bgcolor: "rgba(30,40,88,0.06)",
+              color: HOME.inkMuted,
             }}
-          >
-            {busy ? "Enrolling…" : "Enroll"}
-          </Button>
+          />
         ) : null}
       </Stack>
     </Box>
