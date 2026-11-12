@@ -6,18 +6,15 @@ import {
   Box,
   Button,
   Chip,
-  CircularProgress,
-  IconButton,
   LinearProgress,
   Skeleton,
   Stack,
-  Tooltip,
   Typography,
 } from "@mui/material";
+import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
 import AutoStoriesRoundedIcon from "@mui/icons-material/AutoStoriesRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
-import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import ScheduleRoundedIcon from "@mui/icons-material/ScheduleRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import TouchAppRoundedIcon from "@mui/icons-material/TouchAppRounded";
@@ -287,18 +284,30 @@ function UnitRow({ unit, index, registeringId, onRegister }) {
         </Box>
 
         {!enrolled ? (
-          <Chip
+          <Button
+            variant="contained"
             size="small"
-            label="Not registered"
+            disabled={busy}
+            startIcon={busy ? null : <TouchAppRoundedIcon />}
+            onClick={() => onRegister?.(unit)}
             sx={{
               alignSelf: { xs: "stretch", sm: "center" },
-              height: 28,
-              fontWeight: 700,
+              flexShrink: 0,
+              textTransform: "none",
               fontFamily: HOME.fontBody,
-              bgcolor: "rgba(30,40,88,0.06)",
-              color: HOME.inkMuted,
+              fontWeight: 800,
+              fontSize: "0.82rem",
+              borderRadius: "12px",
+              px: 1.75,
+              py: 0.9,
+              bgcolor: HOME.green,
+              boxShadow: "0 8px 18px -10px rgba(27,94,168,0.65)",
+              "&:hover": { bgcolor: HOME.greenDark || "#164a86" },
+              "&.Mui-disabled": { bgcolor: "rgba(27,94,168,0.35)", color: "#fff" },
             }}
-          />
+          >
+            {busy ? "Registering…" : "Register"}
+          </Button>
         ) : null}
       </Stack>
     </Box>
@@ -311,7 +320,6 @@ export default function StudentUnitsCard({ student }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [registeringId, setRegisteringId] = useState(null);
-  const [refreshing, setRefreshing] = useState(false);
 
   const cohortLabel = useMemo(() => {
     const parts = [];
@@ -320,9 +328,8 @@ export default function StudentUnitsCard({ student }) {
     return parts.join(" · ");
   }, [student]);
 
-  const loadUnits = useCallback(async (silent = false) => {
-    if (!silent) setLoading(true);
-    else setRefreshing(true);
+  const loadUnits = useCallback(async () => {
+    setLoading(true);
     setError("");
     try {
       const res = await fetch("/api/units/student/available", {
@@ -338,7 +345,6 @@ export default function StudentUnitsCard({ student }) {
       setUnits([]);
     } finally {
       setLoading(false);
-      setRefreshing(false);
     }
   }, []);
 
@@ -476,7 +482,12 @@ export default function StudentUnitsCard({ student }) {
               </Box>
             </Stack>
 
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
+              spacing={1}
+              alignItems={{ xs: "stretch", sm: "center" }}
+              sx={{ width: { xs: "100%", sm: "auto" }, flexShrink: 0 }}
+            >
               {!loading && stats.total > 0 ? (
                 <Chip
                   size="small"
@@ -488,30 +499,32 @@ export default function StudentUnitsCard({ student }) {
                     bgcolor: "rgba(255,255,255,0.14)",
                     color: "#fff",
                     border: "1px solid rgba(255,255,255,0.25)",
+                    alignSelf: { xs: "flex-start", sm: "center" },
                   }}
                 />
               ) : null}
-              <Tooltip title="Refresh units">
-                <span>
-                  <IconButton
-                    size="small"
-                    onClick={() => loadUnits(true)}
-                    disabled={loading || refreshing}
-                    sx={{
-                      color: "#fff",
-                      bgcolor: "rgba(255,255,255,0.12)",
-                      border: "1px solid rgba(255,255,255,0.2)",
-                      "&:hover": { bgcolor: "rgba(255,255,255,0.2)" },
-                    }}
-                  >
-                    {refreshing ? (
-                      <CircularProgress size={18} sx={{ color: "#fff" }} />
-                    ) : (
-                      <RefreshRoundedIcon sx={{ fontSize: 18 }} />
-                    )}
-                  </IconButton>
-                </span>
-              </Tooltip>
+              <Button
+                variant="contained"
+                startIcon={<AssignmentRoundedIcon sx={{ fontSize: "1.05rem !important" }} />}
+                onClick={() => navigate("/student/assignments")}
+                sx={{
+                  textTransform: "none",
+                  fontFamily: HOME.fontBody,
+                  fontWeight: 800,
+                  fontSize: { xs: "0.82rem", sm: "0.86rem" },
+                  borderRadius: "12px",
+                  px: { xs: 1.5, sm: 2 },
+                  py: 0.9,
+                  width: { xs: "100%", sm: "auto" },
+                  whiteSpace: "nowrap",
+                  color: HOME.navyDeep,
+                  bgcolor: HOME.gold,
+                  boxShadow: "0 8px 20px -10px rgba(160,128,40,0.55)",
+                  "&:hover": { bgcolor: "#d4b04a" },
+                }}
+              >
+                View assignment
+              </Button>
             </Stack>
           </Stack>
 

@@ -104,6 +104,7 @@ function AppLayout() {
             <Route path="/student/library" element={<StudentPortal />} />
             <Route path="/student/church" element={<StudentPortal />} />
             <Route path="/student/programme" element={<StudentPortal />} />
+            <Route path="/student/assignments" element={<StudentPortal />} />
             <Route path="/student/settings" element={<StudentPortal />} />
             <Route path="/admission/apply" element={<AdmissionApplication />} />
             <Route path="/programmes/:id" element={<ProgrammeDetail />} />
