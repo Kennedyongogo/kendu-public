@@ -43,7 +43,7 @@ function showExamFeeGateDialog({ access, onGoToFees }) {
       <div style="text-align:left;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#1a2638;">
         <p style="margin:0 0 10px;font-size:0.86rem;line-height:1.45;color:rgba(8,22,43,0.72);">
           You need to clear more of your school fees before downloading your
-          <strong style="color:#1B5EA8;">exam card</strong>.
+          <strong style="color:#1B5EA8;">exam clearance</strong>.
         </p>
         <div style="display:grid;gap:6px;padding:10px 12px;border-radius:12px;background:rgba(27,94,168,0.05);border:1px solid rgba(27,94,168,0.12);">
           <div style="display:flex;justify-content:space-between;gap:12px;">
@@ -69,7 +69,7 @@ function showExamFeeGateDialog({ access, onGoToFees }) {
           </div>
         </div>
         <p style="margin:10px 0 0;font-size:0.74rem;line-height:1.4;color:rgba(8,22,43,0.55);">
-          Make a payment under Fees, then come back and download your exam card when you reach the required share.
+          Make a payment under Fees, then come back and download your exam clearance when you reach the required share.
         </p>
       </div>
     `,
@@ -162,7 +162,7 @@ async function downloadMyExamCardPdf() {
     },
   });
   if (!res.ok) {
-    let message = "Could not download exam card";
+    let message = "Could not download exam clearance";
     let access = null;
     try {
       const data = await res.json();
@@ -180,7 +180,7 @@ async function downloadMyExamCardPdf() {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = "KASMS-ExamCard.pdf";
+  link.download = "KASMS-ExamClearance.pdf";
   document.body.appendChild(link);
   link.click();
   link.remove();
@@ -201,12 +201,6 @@ function ExamSlotTile({ slot }) {
         borderRadius: "16px",
         bgcolor: HOME.cream,
         border: "1px solid rgba(27,94,168,0.1)",
-        transition: "border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease",
-        "&:hover": {
-          borderColor: "rgba(27,94,168,0.28)",
-          boxShadow: "0 8px 22px -10px rgba(27,94,168,0.35)",
-          transform: "translateY(-2px)",
-        },
       }}
     >
       {parts ? (
@@ -218,62 +212,21 @@ function ExamSlotTile({ slot }) {
             overflow: "hidden",
             textAlign: "center",
             border: "1px solid rgba(27,94,168,0.15)",
-            boxShadow: "0 4px 12px -6px rgba(27,94,168,0.3)",
           }}
         >
-          <Box
-            sx={{
-              bgcolor: HOME.green,
-              color: "#fff",
-              fontFamily: HOME.fontBody,
-              fontSize: "0.58rem",
-              fontWeight: 800,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              py: 0.35,
-            }}
-          >
+          <Box sx={{ bgcolor: HOME.green, color: "#fff", fontFamily: HOME.fontBody, fontSize: "0.58rem", fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase", py: 0.35 }}>
             {parts.month}
           </Box>
-          <Box
-            sx={{
-              bgcolor: "#fff",
-              color: navy,
-              fontFamily: HOME.fontDisplay,
-              fontSize: "1.2rem",
-              fontWeight: 700,
-              lineHeight: 1.2,
-              py: 0.45,
-            }}
-          >
+          <Box sx={{ bgcolor: "#fff", color: navy, fontFamily: HOME.fontDisplay, fontSize: "1.2rem", fontWeight: 700, lineHeight: 1.2, py: 0.45 }}>
             {parts.day}
           </Box>
-          <Box
-            sx={{
-              bgcolor: "rgba(27,94,168,0.06)",
-              color: HOME.inkSoft,
-              fontFamily: HOME.fontBody,
-              fontSize: "0.58rem",
-              fontWeight: 700,
-              py: 0.3,
-            }}
-          >
+          <Box sx={{ bgcolor: "rgba(27,94,168,0.06)", color: HOME.inkSoft, fontFamily: HOME.fontBody, fontSize: "0.58rem", fontWeight: 700, py: 0.3 }}>
             {parts.weekday}
           </Box>
         </Box>
       ) : null}
-
       <Box sx={{ minWidth: 0, flex: 1 }}>
-        <Typography
-          sx={{
-            fontFamily: HOME.fontBody,
-            fontWeight: 700,
-            fontSize: "0.84rem",
-            color: HOME.ink,
-            lineHeight: 1.3,
-            mb: 0.5,
-          }}
-        >
+        <Typography sx={{ fontFamily: HOME.fontBody, fontWeight: 700, fontSize: "0.84rem", color: HOME.ink, lineHeight: 1.3, mb: 0.5 }}>
           {slot.title}
         </Typography>
         {slot.unit_code ? (
@@ -291,16 +244,7 @@ function ExamSlotTile({ slot }) {
         {slot.venue ? (
           <Stack direction="row" spacing={0.5} alignItems="center">
             <PlaceOutlinedIcon sx={{ fontSize: 13, color: HOME.gold }} />
-            <Typography
-              sx={{
-                fontFamily: HOME.fontBody,
-                fontSize: "0.7rem",
-                color: HOME.inkSoft,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}
-            >
+            <Typography sx={{ fontFamily: HOME.fontBody, fontSize: "0.7rem", color: HOME.inkSoft }} noWrap>
               {slot.venue}
             </Typography>
           </Stack>
@@ -447,7 +391,7 @@ export default function StudentExamTimetable() {
           onGoToFees: () => navigate("/student/fees"),
         });
       } else {
-        setError(err.message || "Could not download exam card");
+        setError(err.message || "Could not download exam clearance");
       }
     } finally {
       setDownloadingCard(false);
@@ -642,7 +586,7 @@ export default function StudentExamTimetable() {
                 },
               }}
             >
-              {downloadingCard ? "Preparing card…" : "Download exam card"}
+              {downloadingCard ? "Preparing clearance…" : "Download exam clearance"}
             </Button>
           </Stack>
         </Stack>
@@ -688,7 +632,6 @@ export default function StudentExamTimetable() {
               justifyContent: "center",
               background: `linear-gradient(145deg, ${HOME.green}, ${HOME.heroSplitGreenDark})`,
               color: "#fff",
-              boxShadow: "0 6px 14px -6px rgba(27,94,168,0.5)",
             }}
           >
             <CalendarMonthRoundedIcon sx={{ fontSize: 19 }} />

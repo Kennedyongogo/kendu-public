@@ -1,88 +1,107 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Box, IconButton, Typography, keyframes } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
+import ConfirmationNumberRoundedIcon from "@mui/icons-material/ConfirmationNumberRounded";
 import { HOME } from "./homeShared";
 
 const floatY = keyframes`
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  50% { transform: translateY(-7px); }
 `;
 
 const fadeIn = keyframes`
-  from { opacity: 0; transform: translateY(12px) scale(0.96); }
+  from { opacity: 0; transform: translateY(14px) scale(0.98); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 `;
 
 const ACCENTS = {
-  gold: { bg: "rgba(200,168,64,0.95)", fg: "#1e2858", border: "rgba(255,255,255,0.35)" },
-  blue: { bg: "rgba(27,94,168,0.94)", fg: "#fff", border: "rgba(255,255,255,0.28)" },
-  navy: { bg: "rgba(30,40,88,0.94)", fg: "#fff", border: "rgba(200,168,64,0.45)" },
-  cream: { bg: "rgba(255,255,255,0.95)", fg: "#1e2858", border: "rgba(200,168,64,0.55)" },
+  gold: {
+    surface: "rgba(255,252,248,0.96)",
+    ink: HOME.navyDeep,
+    muted: "rgba(30,40,88,0.68)",
+    badgeBg: HOME.gold,
+    badgeFg: HOME.navyDeep,
+    border: "rgba(200,168,64,0.45)",
+    glow: "0 18px 40px -16px rgba(8,22,43,0.42)",
+  },
+  blue: {
+    surface: "rgba(255,255,255,0.96)",
+    ink: HOME.navyDeep,
+    muted: "rgba(8,22,43,0.62)",
+    badgeBg: HOME.green,
+    badgeFg: "#fff",
+    border: "rgba(27,94,168,0.28)",
+    glow: "0 18px 40px -16px rgba(8,22,43,0.42)",
+  },
+  navy: {
+    surface: "rgba(30,40,88,0.94)",
+    ink: "#fff",
+    muted: "rgba(255,255,255,0.72)",
+    badgeBg: HOME.gold,
+    badgeFg: HOME.navyDeep,
+    border: "rgba(200,168,64,0.4)",
+    glow: "0 18px 40px -14px rgba(8,22,43,0.5)",
+  },
+  cream: {
+    surface: "rgba(255,252,248,0.97)",
+    ink: HOME.navyDeep,
+    muted: "rgba(8,22,43,0.62)",
+    badgeBg: HOME.navyDeep,
+    badgeFg: HOME.goldMuted,
+    border: "rgba(12,35,64,0.12)",
+    glow: "0 18px 40px -16px rgba(8,22,43,0.35)",
+  },
 };
 
-function shapeSx(shape) {
-  const clip = {
-    diamond: "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)",
-    hexagon: "polygon(18% 0%, 82% 0%, 100% 50%, 82% 100%, 18% 100%, 0% 50%)",
-    star: "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)",
-  };
-  const base = {
-    circle: { borderRadius: "50%", width: { xs: 132, md: 158 }, minHeight: { xs: 132, md: 158 } },
-    pill: { borderRadius: "999px", width: { xs: 168, md: 200 }, minHeight: { xs: 72, md: 84 } },
-    rounded_square: { borderRadius: "22px", width: { xs: 148, md: 168 }, minHeight: { xs: 148, md: 168 } },
-    diamond: {
-      borderRadius: 0,
-      clipPath: clip.diamond,
-      width: { xs: 150, md: 170 },
-      minHeight: { xs: 150, md: 170 },
-    },
-    hexagon: {
-      borderRadius: 0,
-      clipPath: clip.hexagon,
-      width: { xs: 156, md: 176 },
-      minHeight: { xs: 140, md: 158 },
-    },
-    oval: { borderRadius: "50%", width: { xs: 170, md: 200 }, minHeight: { xs: 110, md: 128 } },
-    speech_bubble: {
-      borderRadius: "20px 20px 20px 6px",
-      width: { xs: 170, md: 200 },
-      minHeight: { xs: 100, md: 112 },
-    },
-    ribbon: {
-      borderRadius: "6px 22px 22px 6px",
-      width: { xs: 176, md: 210 },
-      minHeight: { xs: 78, md: 88 },
-    },
-    banner: {
-      borderRadius: "10px",
-      width: { xs: 190, md: 230 },
-      minHeight: { xs: 70, md: 80 },
-    },
-    star: {
-      borderRadius: 0,
-      clipPath: clip.star,
-      width: { xs: 150, md: 170 },
-      minHeight: { xs: 150, md: 170 },
-    },
-  };
-  return base[shape] || base.pill;
+const LEGACY_SHAPE_MAP = {
+  circle: "event_card",
+  pill: "ticket",
+  rounded_square: "event_card",
+  diamond: "event_card",
+  hexagon: "event_card",
+  oval: "event_card",
+  speech_bubble: "event_card",
+  ribbon: "ticket",
+  banner: "ticket",
+  star: "event_card",
+};
+
+function normalizeShape(shape) {
+  const raw = String(shape || "").trim();
+  if (raw === "event_card" || raw === "ticket") return raw;
+  return LEGACY_SHAPE_MAP[raw] || "event_card";
 }
 
 function positionSx(hint) {
+  // Clear fixed PublicHeader (hero content uses ~88–108px top pad)
+  const belowNav = { xs: 96, sm: 100, md: 118 };
   const map = {
-    top_right: { top: { xs: 12, md: 28 }, right: { xs: 10, md: "6%" } },
-    mid_right: { top: { xs: "38%", md: "42%" }, right: { xs: 8, md: "5%" } },
-    bottom_right: { bottom: { xs: 88, md: 110 }, right: { xs: 10, md: "6%" } },
-    top_left: { top: { xs: 12, md: 28 }, left: { xs: 10, md: "4%" } },
+    top_right: { top: belowNav, right: { xs: 10, md: "5%" } },
+    mid_right: { top: { xs: "38%", md: "42%" }, right: { xs: 8, md: "4.5%" } },
+    bottom_right: { bottom: { xs: 88, md: 110 }, right: { xs: 10, md: "5%" } },
+    top_left: { top: belowNav, left: { xs: 10, md: "3.5%" } },
     mid_left: { top: { xs: "42%", md: "46%" }, left: { xs: 8, md: "3%" } },
   };
   return map[hint] || map.mid_right;
 }
 
-function FloatingShape({ item, onDismiss }) {
+function dateParts(value) {
+  if (!value) return null;
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return null;
+  return {
+    day: d.toLocaleDateString("en-GB", { day: "2-digit" }),
+    month: d.toLocaleDateString("en-GB", { month: "short" }).toUpperCase(),
+  };
+}
+
+function FloatingEventCard({ item, onDismiss }) {
   const accent = ACCENTS[item.accent] || ACCENTS.gold;
-  const shape = shapeSx(item.shape);
+  const shape = normalizeShape(item.shape);
   const pos = positionSx(item.position_hint);
+  const parts = dateParts(item.display_start);
+  const isTicket = shape === "ticket";
 
   return (
     <Box
@@ -91,8 +110,9 @@ function FloatingShape({ item, onDismiss }) {
         ...pos,
         zIndex: 5,
         pointerEvents: "auto",
-        animation: `${fadeIn} 0.55s ease both, ${floatY} 4.5s ease-in-out infinite`,
-        animationDelay: "0.35s, 0.9s",
+        animation: `${fadeIn} 0.55s ease both, ${floatY} 5s ease-in-out infinite`,
+        animationDelay: "0.3s, 0.85s",
+        maxWidth: { xs: 220, md: 248 },
       }}
     >
       <Box
@@ -100,20 +120,49 @@ function FloatingShape({ item, onDismiss }) {
         aria-label={item.title}
         sx={{
           position: "relative",
-          ...shape,
-          bgcolor: accent.bg,
-          color: accent.fg,
+          width: { xs: 210, md: 236 },
+          bgcolor: accent.surface,
+          color: accent.ink,
           border: `1px solid ${accent.border}`,
-          boxShadow: "0 16px 36px -14px rgba(8,22,43,0.45)",
-          px: 1.75,
-          py: 1.5,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
+          borderRadius: isTicket ? "18px 18px 18px 18px" : "18px",
+          boxShadow: accent.glow,
+          overflow: "hidden",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
         }}
       >
+        {/* Ticket stub edge */}
+        {isTicket ? (
+          <>
+            <Box
+              sx={{
+                position: "absolute",
+                left: -9,
+                top: "50%",
+                width: 18,
+                height: 18,
+                borderRadius: "50%",
+                bgcolor: "transparent",
+                boxShadow: `inset 0 0 0 10px rgba(8,22,43,0.18)`,
+                transform: "translateY(-50%)",
+                zIndex: 2,
+                pointerEvents: "none",
+              }}
+            />
+            <Box
+              sx={{
+                position: "absolute",
+                left: 22,
+                top: 12,
+                bottom: 12,
+                borderLeft: `1.5px dashed ${accent.border}`,
+                opacity: 0.85,
+                pointerEvents: "none",
+              }}
+            />
+          </>
+        ) : null}
+
         <IconButton
           size="small"
           aria-label="Dismiss"
@@ -123,55 +172,128 @@ function FloatingShape({ item, onDismiss }) {
           }}
           sx={{
             position: "absolute",
-            top: 2,
-            right: 2,
-            color: accent.fg,
-            opacity: 0.75,
-            p: 0.35,
-            "&:hover": { opacity: 1, bgcolor: "rgba(0,0,0,0.08)" },
+            top: 6,
+            right: 6,
+            zIndex: 3,
+            color: accent.muted,
+            opacity: 0.8,
+            p: 0.4,
+            bgcolor: "rgba(255,255,255,0.35)",
+            "&:hover": { opacity: 1, bgcolor: "rgba(0,0,0,0.06)", color: accent.ink },
           }}
         >
           <CloseRoundedIcon sx={{ fontSize: 14 }} />
         </IconButton>
 
-        <Typography
+        <Box
           sx={{
-            fontFamily: HOME.fontDisplay,
-            fontWeight: 700,
-            fontSize: { xs: "0.88rem", md: "0.98rem" },
-            lineHeight: 1.15,
-            px: 0.5,
-            maxWidth: "100%",
+            display: "grid",
+            gridTemplateColumns: "56px minmax(0, 1fr)",
+            gap: 1.25,
+            p: isTicket ? "14px 14px 14px 28px" : "14px",
+            alignItems: "start",
           }}
         >
-          {item.title}
-        </Typography>
-        {item.body ? (
-          <Typography
+          <Box
             sx={{
-              mt: 0.45,
-              fontFamily: HOME.fontBody,
-              fontSize: { xs: "0.68rem", md: "0.72rem" },
-              lineHeight: 1.35,
-              opacity: 0.9,
-              px: 0.35,
-              display: "-webkit-box",
-              WebkitLineClamp: 3,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
+              width: 56,
+              minHeight: 56,
+              borderRadius: "14px",
+              bgcolor: accent.badgeBg,
+              color: accent.badgeFg,
+              textAlign: "center",
+              py: parts ? 0.85 : 0,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 8px 18px rgba(8,22,43,0.12)",
             }}
           >
-            {item.body}
-          </Typography>
-        ) : null}
+            {parts ? (
+              <>
+                <Typography
+                  sx={{
+                    fontFamily: HOME.fontBody,
+                    fontWeight: 800,
+                    fontSize: "0.62rem",
+                    letterSpacing: "0.08em",
+                    lineHeight: 1,
+                    mb: 0.35,
+                  }}
+                >
+                  {parts.month}
+                </Typography>
+                <Typography
+                  sx={{
+                    fontFamily: HOME.fontDisplay,
+                    fontWeight: 700,
+                    fontSize: "1.35rem",
+                    lineHeight: 1,
+                  }}
+                >
+                  {parts.day}
+                </Typography>
+              </>
+            ) : isTicket ? (
+              <ConfirmationNumberRoundedIcon sx={{ fontSize: 22 }} />
+            ) : (
+              <EventAvailableRoundedIcon sx={{ fontSize: 22 }} />
+            )}
+          </Box>
+
+          <Box sx={{ minWidth: 0, pr: 1.5 }}>
+            <Typography
+              sx={{
+                fontFamily: HOME.fontBody,
+                fontWeight: 800,
+                fontSize: "0.62rem",
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: accent.muted,
+                mb: 0.45,
+              }}
+            >
+              {isTicket ? "Upcoming" : "Coming up"}
+            </Typography>
+            <Typography
+              sx={{
+                fontFamily: HOME.fontDisplay,
+                fontWeight: 700,
+                fontSize: { xs: "1.02rem", md: "1.1rem" },
+                lineHeight: 1.15,
+                color: accent.ink,
+                mb: item.body ? 0.55 : 0,
+              }}
+            >
+              {item.title}
+            </Typography>
+            {item.body ? (
+              <Typography
+                sx={{
+                  fontFamily: HOME.fontBody,
+                  fontSize: "0.72rem",
+                  lineHeight: 1.4,
+                  color: accent.muted,
+                  display: "-webkit-box",
+                  WebkitLineClamp: 3,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                }}
+              >
+                {item.body}
+              </Typography>
+            ) : null}
+          </Box>
+        </Box>
       </Box>
     </Box>
   );
 }
 
 /**
- * Non-blocking floating upcoming-activity shapes for the home hero.
- * News & Events stay primary elsewhere; these only inform briefly on the hero.
+ * Non-blocking floating upcoming-activity cards for the home hero.
+ * Styles: event_card | ticket (legacy novelty shapes map to these).
  */
 export default function HeroUpcomingActivities() {
   const [items, setItems] = useState([]);
@@ -229,7 +351,7 @@ export default function HeroUpcomingActivities() {
       }}
     >
       {visible.map((item) => (
-        <FloatingShape
+        <FloatingEventCard
           key={item.id}
           item={item}
           onDismiss={(id) => {
