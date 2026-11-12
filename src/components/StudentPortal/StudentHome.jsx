@@ -170,7 +170,9 @@ export default function StudentHome({ student }) {
       </Box>
 
       <StudentUnitsCard student={student} />
-      <StudentMealCard />
+      {String(student?.boarding_status || "").toLowerCase() === "boarder" ? (
+        <StudentMealCard />
+      ) : null}
       <StudentNoticesCard />
     </Box>
   );

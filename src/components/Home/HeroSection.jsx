@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { BRAND } from "../../brand";
 import { HOME } from "./homeShared";
 import HeroUpcomingActivities from "./HeroUpcomingActivities";
+import useAdmissionWindow from "../../hooks/useAdmissionWindow";
 
 const SLIDE_INTERVAL_MS = 6500;
 const SLIDE_CROSSFADE_MS = 1800;
@@ -328,6 +329,7 @@ function HeroStatItem({ stat, showBorder }) {
 
 export default function HeroSection() {
   const navigate = useNavigate();
+  const { isOpen, goApply } = useAdmissionWindow();
   const [slideUrls, setSlideUrls] = useState([]);
   const [activeSlide, setActiveSlide] = useState(0);
 
@@ -571,12 +573,19 @@ export default function HeroSection() {
                 <Button
                   variant="contained"
                   endIcon={<ArrowForwardIcon sx={{ fontSize: "1.1rem !important" }} />}
+                  disabled={!isOpen}
                   onClick={() =>
-                    navigate("/admission/apply", { state: { from: "/", fromLabel: "Home" } })
+                    void goApply(navigate, { from: "/", fromLabel: "Home" })
                   }
-                  sx={primaryCtaSx}
+                  sx={{
+                    ...primaryCtaSx,
+                    "&.Mui-disabled": {
+                      bgcolor: "rgba(12,35,64,0.28)",
+                      color: "rgba(255,255,255,0.75)",
+                    },
+                  }}
                 >
-                  Apply Admission
+                  {isOpen ? "Apply Admission" : "Applications closed"}
                 </Button>
                 <Button
                   variant="outlined"

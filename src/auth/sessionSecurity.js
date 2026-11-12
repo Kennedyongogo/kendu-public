@@ -64,7 +64,16 @@ function installFetchGuard() {
       const url = typeof input === "string" ? input : input?.url;
       const headers = init.headers || (input && input.headers);
       if (shouldInspectResponse(url, headers) && response.status === 401) {
-        forceStudentLogout("token_expired");
+        let reason = "token_expired";
+        try {
+          const clone = response.clone();
+          const body = await clone.json();
+          if (body?.code === "STUDENT_SUSPENDED") reason = "student_suspended";
+          else if (body?.code === "ACCOUNT_INACTIVE") reason = "account_inactive";
+        } catch {
+          /* ignore body parse */
+        }
+        forceStudentLogout(reason);
       }
     } catch {
       /* ignore */

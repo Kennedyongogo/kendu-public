@@ -32,6 +32,7 @@ import {
 } from "../components/Home/homeUi";
 import Footer from "../components/Footer/Footer";
 import { meetsMinimumKcseGrade } from "../utils/kcseGrade";
+import useAdmissionWindow from "../hooks/useAdmissionWindow";
 
 const emptyForm = () => ({
   full_name: "",
@@ -393,6 +394,7 @@ function pathLabel(pathname = "/") {
 export default function AdmissionApplication() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { isOpen, closedMessage, loading: windowLoading } = useAdmissionWindow();
   const fromPath = location.state?.from || "/";
   const fromLabel = location.state?.fromLabel || pathLabel(fromPath);
   const preselectedProgrammeId = location.state?.programme_id || "";
@@ -497,6 +499,15 @@ export default function AdmissionApplication() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isOpen) {
+      Swal.fire({
+        icon: "info",
+        title: "Applications closed",
+        text: closedMessage,
+        confirmButtonColor: HOME.green,
+      });
+      return;
+    }
     const { ok, errors } = validate();
     if (!ok) {
       const gradeMsg = errors.kcse_grade;
@@ -646,7 +657,11 @@ export default function AdmissionApplication() {
             align="left"
             title="Apply for"
             titleAccent="admission"
-            subtitle="Complete the form below to apply to Kendu Adventist School of Medical Sciences. Required fields are marked."
+            subtitle={
+              isOpen
+                ? "Complete the form below to apply to Kendu Adventist School of Medical Sciences. Required fields are marked."
+                : closedMessage
+            }
             sx={{
               mb: 0,
               ml: 0,
@@ -671,6 +686,14 @@ export default function AdmissionApplication() {
         </Box>
       </Box>
 
+      {!windowLoading && !isOpen ? (
+        <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, pt: 2.5 }}>
+          <Alert severity="info" sx={{ borderRadius: "14px" }}>
+            {closedMessage}
+          </Alert>
+        </Box>
+      ) : null}
+
       {/* Full-bleed form */}
       <Box
         component="form"
@@ -682,6 +705,7 @@ export default function AdmissionApplication() {
           flex: 1,
           bgcolor: HOME.warmWhite,
           borderTop: `3px solid ${HOME.gold}`,
+          ...(!isOpen ? { opacity: 0.55, pointerEvents: "none" } : null),
         }}
       >
         <Box

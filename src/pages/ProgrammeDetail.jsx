@@ -26,6 +26,7 @@ import { HomePrimaryButton, HomeGhostButton } from "../components/Home/homeUi";
 import Footer from "../components/Footer/Footer";
 import BrandPageLoader from "../components/common/BrandPageLoader";
 import useBrandImageSrc from "../hooks/useBrandImageSrc";
+import useAdmissionWindow from "../hooks/useAdmissionWindow";
 
 const SECTIONS = [
   { id: "overview", label: "Overview" },
@@ -389,6 +390,7 @@ export default function ProgrammeDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const { isOpen, goApply } = useAdmissionWindow();
   const [programme, setProgramme] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -618,13 +620,12 @@ export default function ProgrammeDetail() {
             </Typography>
 
             <HomePrimaryButton
+              disabled={!isOpen}
               onClick={() =>
-                navigate("/admission/apply", {
-                  state: {
-                    from: `/programmes/${id}`,
-                    fromLabel: programme.name,
-                    programme_id: programme.id,
-                  },
+                void goApply(navigate, {
+                  from: `/programmes/${id}`,
+                  fromLabel: programme.name,
+                  programme_id: programme.id,
                 })
               }
               sx={{
@@ -634,7 +635,7 @@ export default function ProgrammeDetail() {
                 "&:hover": { bgcolor: HOME.goldMuted },
               }}
             >
-              Apply for admission
+              {isOpen ? "Apply for admission" : "Applications closed"}
             </HomePrimaryButton>
           </Box>
         </Box>

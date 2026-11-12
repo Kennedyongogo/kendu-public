@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -26,6 +26,7 @@ import {
 } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import { HOME, BRAND_LOGO_SRC } from "../components/Home/homeShared";
+import useAdmissionWindow from "../hooks/useAdmissionWindow";
 
 const LOGIN_CIRCLE_LEFT = "/images/kendu%202.jpg";
 const LOGIN_CIRCLE_RIGHT = "/images/kendu%201.jpg";
@@ -95,10 +96,48 @@ const STEPS = [
 
 export default function MarketplaceLogin() {
   const navigate = useNavigate();
+  const { isOpen, goApply } = useAdmissionWindow();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    let reason = "";
+    try {
+      reason = sessionStorage.getItem("kendu_student_logout_reason") || "";
+      if (reason) sessionStorage.removeItem("kendu_student_logout_reason");
+    } catch {
+      reason = "";
+    }
+    if (reason === "student_suspended") {
+      void Swal.fire({
+        icon: "warning",
+        title: "Account suspended",
+        html:
+          "<p style='margin:0;line-height:1.5;'>Your student account is <strong>suspended</strong> and cannot stay signed in.</p>" +
+          "<p style='margin:12px 0 0;line-height:1.5;'>Contact the academic office to have the suspension lifted.</p>",
+        confirmButtonColor: HOME.green,
+        confirmButtonText: "Understood",
+      });
+    } else if (reason === "account_inactive") {
+      void Swal.fire({
+        icon: "info",
+        title: "Account inactive",
+        text: "This account is inactive. Contact the school if you should have access.",
+        confirmButtonColor: HOME.green,
+      });
+    } else if (reason === "idle_timeout") {
+      void Swal.fire({
+        icon: "info",
+        title: "Signed out",
+        text: "You were signed out after a period of inactivity.",
+        confirmButtonColor: HOME.green,
+        timer: 2200,
+        showConfirmButton: false,
+      });
+    }
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -125,7 +164,9 @@ export default function MarketplaceLogin() {
       });
       const data = await res.json();
       if (!res.ok || !data.success) {
-        throw new Error(data.message || "Login failed");
+        const err = new Error(data.message || "Login failed");
+        err.code = data.code;
+        throw err;
       }
 
       localStorage.setItem("token", data.data.token);
@@ -147,12 +188,31 @@ export default function MarketplaceLogin() {
       });
       navigate("/student");
     } catch (err) {
-      Swal.fire({
-        icon: "error",
-        title: "Login failed",
-        text: err.message || "Please check your credentials.",
-        confirmButtonColor: HOME.green,
-      });
+      if (err.code === "STUDENT_SUSPENDED") {
+        await Swal.fire({
+          icon: "warning",
+          title: "Account suspended",
+          html:
+            "<p style='margin:0;line-height:1.5;'>Your student account is <strong>suspended</strong> and cannot sign in.</p>" +
+            "<p style='margin:12px 0 0;line-height:1.5;'>Contact the academic office to have the suspension lifted.</p>",
+          confirmButtonColor: HOME.green,
+          confirmButtonText: "Understood",
+        });
+      } else if (err.code === "ACCOUNT_INACTIVE") {
+        await Swal.fire({
+          icon: "info",
+          title: "Account inactive",
+          text: err.message || "This account is inactive. Contact the school if you should have access.",
+          confirmButtonColor: HOME.green,
+        });
+      } else {
+        await Swal.fire({
+          icon: "error",
+          title: "Login failed",
+          text: err.message || "Please check your credentials.",
+          confirmButtonColor: HOME.green,
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -486,7 +546,8 @@ export default function MarketplaceLogin() {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => navigate("/admission/apply", { state: { from: "/login", fromLabel: "Login" } })}
+              disabled={!isOpen}
+              onClick={() => void goApply(navigate, { from: "/login", fromLabel: "Login" })}
               sx={{
                 textTransform: "none",
                 fontWeight: 700,
@@ -503,7 +564,7 @@ export default function MarketplaceLogin() {
                 },
               }}
             >
-              Start your application
+              {isOpen ? "Start your application" : "Applications closed"}
             </Button>
           </Box>
 

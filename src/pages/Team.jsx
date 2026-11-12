@@ -19,6 +19,7 @@ import {
   HomeGhostButton,
 } from "../components/Home/homeUi";
 import DicedImageGrid from "../components/About/DicedImageGrid";
+import useAdmissionWindow from "../hooks/useAdmissionWindow";
 
 const SLIDE_INTERVAL_MS = 6500;
 
@@ -58,7 +59,7 @@ const cardShellSx = {
   },
 };
 
-function AboutHero({ slideIndex, onSelectSlide, imageUrls, onApply, onMeetStaff }) {
+function AboutHero({ slideIndex, onSelectSlide, imageUrls, onApply, onMeetStaff, applyOpen }) {
   return (
     <Box
       sx={{
@@ -208,7 +209,9 @@ function AboutHero({ slideIndex, onSelectSlide, imageUrls, onApply, onMeetStaff 
             <HomePrimaryButton endIcon={<ArrowForward />} onClick={onMeetStaff}>
               Meet our staff
             </HomePrimaryButton>
-            <HomeGhostButton onClick={onApply}>Apply for admission</HomeGhostButton>
+            <HomeGhostButton disabled={!applyOpen} onClick={onApply}>
+              {applyOpen ? "Apply for admission" : "Applications closed"}
+            </HomeGhostButton>
           </Stack>
         </Box>
       </Box>
@@ -280,6 +283,7 @@ function PillarCard({ eyebrow, headline, subline, icon: Icon, items, checkIcon: 
 
 export default function Team() {
   const navigate = useNavigate();
+  const { isOpen, goApply } = useAdmissionWindow();
   const [slideIndex, setSlideIndex] = useState(0);
 
   const imageUrls = ABOUT_PAGE_IMAGES.map(aboutPublicUrl);
@@ -319,8 +323,9 @@ export default function Team() {
           slideIndex={slideIndex}
           onSelectSlide={setSlideIndex}
           imageUrls={imageUrls}
+          applyOpen={isOpen}
           onApply={() =>
-            navigate("/admission/apply", { state: { from: "/about-us", fromLabel: "About us" } })
+            void goApply(navigate, { from: "/about-us", fromLabel: "About us" })
           }
           onMeetStaff={() => navigate("/meet-our-team")}
         />
@@ -524,13 +529,12 @@ export default function Team() {
                 alignItems="center"
               >
                 <HomePrimaryButton
+                  disabled={!isOpen}
                   onClick={() =>
-                    navigate("/admission/apply", {
-                      state: { from: "/about-us", fromLabel: "About us" },
-                    })
+                    void goApply(navigate, { from: "/about-us", fromLabel: "About us" })
                   }
                 >
-                  Apply for admission
+                  {isOpen ? "Apply for admission" : "Applications closed"}
                 </HomePrimaryButton>
                 <HomeGhostButton light onClick={() => navigate("/")}>
                   Back to home
