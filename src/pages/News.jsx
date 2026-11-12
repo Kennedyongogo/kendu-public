@@ -20,6 +20,7 @@ import {
   formatEventRange,
   isUpcoming,
 } from "../components/News/newsShared";
+import { cachedFetchJson } from "../lib/cachedFetch";
 
 const fadeUp = keyframes`
   from { opacity: 0; transform: translateY(20px); }
@@ -264,9 +265,8 @@ export default function News() {
     (async () => {
       setLoading(true);
       try {
-        const res = await fetch("/api/announcements/public");
-        const json = await res.json();
-        if (active && res.ok && json.success) {
+        const { ok, data: json } = await cachedFetchJson("/api/announcements/public");
+        if (active && ok && json.success) {
           setItems(Array.isArray(json.data) ? json.data : []);
         }
       } catch {

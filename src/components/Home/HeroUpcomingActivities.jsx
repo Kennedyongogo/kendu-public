@@ -4,6 +4,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
 import ConfirmationNumberRoundedIcon from "@mui/icons-material/ConfirmationNumberRounded";
 import { HOME } from "./homeShared";
+import { cachedFetchJson } from "../../lib/cachedFetch";
 
 const floatY = keyframes`
   0%, 100% { transform: translateY(0); }
@@ -312,9 +313,8 @@ export default function HeroUpcomingActivities() {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch("/api/upcoming-activities/public");
-        const data = await res.json().catch(() => ({}));
-        if (!cancelled && res.ok && data.success) {
+        const { ok, data } = await cachedFetchJson("/api/upcoming-activities/public", {}, { ttlMs: 60_000 });
+        if (!cancelled && ok && data.success) {
           setItems(data.data || []);
         }
       } catch {

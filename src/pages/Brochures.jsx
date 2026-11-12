@@ -15,6 +15,7 @@ import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 import { HOME } from "../components/Home/homeShared";
 import { BRAND } from "../brand";
+import { cachedFetchJson } from "../lib/cachedFetch";
 
 // Serve the worker as `.js` from /public (copied by vite). Production hosts often
 // give Vite's hashed `.mjs` assets the wrong MIME type, which breaks module
@@ -271,9 +272,8 @@ export default function Brochures() {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch("/api/brochures/public");
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || data.success === false) {
+        const { ok, data } = await cachedFetchJson("/api/brochures/public");
+        if (!ok || data.success === false) {
           throw new Error(data.message || "Could not load brochures");
         }
         if (!cancelled) setItems(data.data || []);

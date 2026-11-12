@@ -19,6 +19,7 @@ import ScheduleRoundedIcon from "@mui/icons-material/ScheduleRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import TouchAppRoundedIcon from "@mui/icons-material/TouchAppRounded";
 import { HOME, fadeUp, studentAuthHeaders } from "./studentPortalShared";
+import { cachedFetchJson, invalidateApiCache } from "../../lib/cachedFetch";
 
 const cardSx = {
   bgcolor: "#fff",
@@ -45,49 +46,54 @@ function showFeeGateDialog({ unit, access, onGoToFees }) {
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
   const unitCode = escape(unit.code);
-  const unitName = escape(unit.name);
-  const required = access?.min_fee_percent ?? 0;
-  const paidPct = access?.percent_paid ?? 0;
-  const shortfall = access?.shortfall_percent ?? Math.max(0, required - paidPct);
+  const rawName = String(unit.name || "").trim();
+  const shortName =
+    rawName.length > 72 ? `${rawName.slice(0, 69).trimEnd()}…` : rawName;
+  const unitName = escape(shortName);
+  const required = Number(access?.min_fee_percent ?? 0);
+  const paidPct = Number(access?.percent_paid ?? 0);
+  const shortfall = Number(
+    access?.shortfall_percent ?? Math.max(0, required - paidPct)
+  );
   const currency = access?.currency || "KES";
   const totalCharged = formatMoney(access?.total_charged, currency);
   const totalPaid = formatMoney(access?.total_paid, currency);
+  const barMax = Math.max(required, paidPct, 1);
+  const paidWidth = Math.min(100, Math.round((paidPct / barMax) * 100));
+  const reqMark = Math.min(100, Math.round((required / barMax) * 100));
 
   return Swal.fire({
     icon: false,
     title: "Fee requirement not met",
     html: `
       <div style="text-align:left;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#1a2638;">
-        <p style="margin:0 0 10px;font-size:0.86rem;line-height:1.45;color:rgba(8,22,43,0.72);">
-          You need to clear more of your school fees before enrolling in
+        <p style="margin:0 0 8px;font-size:0.8rem;line-height:1.35;color:rgba(8,22,43,0.7);">
+          Clear more fees before enrolling in
           <strong style="color:#1B5EA8;">${unitCode}</strong>
-          — ${unitName}.
+          <span style="display:block;margin-top:2px;font-size:0.72rem;font-weight:600;color:rgba(8,22,43,0.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${escape(rawName)}">${unitName}</span>
         </p>
-        <div style="display:grid;gap:6px;padding:10px 12px;border-radius:12px;background:rgba(27,94,168,0.05);border:1px solid rgba(27,94,168,0.12);">
-          <div style="display:flex;justify-content:space-between;gap:12px;">
-            <span style="font-size:0.74rem;font-weight:700;color:rgba(8,22,43,0.55);">Required</span>
-            <span style="font-size:0.84rem;font-weight:800;color:#1B5EA8;">${required}% of fees paid</span>
+        <div style="padding:10px 12px;border-radius:12px;background:rgba(27,94,168,0.05);border:1px solid rgba(27,94,168,0.12);">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:6px;">
+            <span style="font-size:0.72rem;font-weight:800;color:#1B5EA8;">${paidPct}% paid</span>
+            <span style="font-size:0.72rem;font-weight:700;color:rgba(8,22,43,0.55);">${required}% required · ${shortfall}% short</span>
           </div>
-          <div style="display:flex;justify-content:space-between;gap:12px;">
-            <span style="font-size:0.74rem;font-weight:700;color:rgba(8,22,43,0.55);">You have paid</span>
-            <span style="font-size:0.84rem;font-weight:800;">${paidPct}%</span>
+          <div style="position:relative;height:8px;border-radius:999px;background:rgba(27,94,168,0.12);overflow:hidden;">
+            <div style="height:100%;width:${paidWidth}%;border-radius:999px;background:${HOME.green};"></div>
+            <div style="position:absolute;top:0;bottom:0;left:${reqMark}%;width:2px;margin-left:-1px;background:#9a6700;"></div>
           </div>
-          <div style="display:flex;justify-content:space-between;gap:12px;">
-            <span style="font-size:0.74rem;font-weight:700;color:rgba(8,22,43,0.55);">Still needed</span>
-            <span style="font-size:0.84rem;font-weight:800;color:#9a6700;">${shortfall}%</span>
-          </div>
-          <hr style="border:none;border-top:1px solid rgba(27,94,168,0.12);margin:2px 0;" />
-          <div style="display:flex;justify-content:space-between;gap:12px;">
-            <span style="font-size:0.74rem;font-weight:700;color:rgba(8,22,43,0.55);">Total charged</span>
-            <span style="font-size:0.8rem;font-weight:700;">${totalCharged}</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;gap:12px;">
-            <span style="font-size:0.74rem;font-weight:700;color:rgba(8,22,43,0.55);">Confirmed paid</span>
-            <span style="font-size:0.8rem;font-weight:700;">${totalPaid}</span>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;">
+            <div>
+              <div style="font-size:0.66rem;font-weight:700;color:rgba(8,22,43,0.5);">Confirmed paid</div>
+              <div style="font-size:0.84rem;font-weight:800;">${totalPaid}</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:0.66rem;font-weight:700;color:rgba(8,22,43,0.5);">Total charged</div>
+              <div style="font-size:0.84rem;font-weight:800;">${totalCharged}</div>
+            </div>
           </div>
         </div>
-        <p style="margin:10px 0 0;font-size:0.74rem;line-height:1.4;color:rgba(8,22,43,0.55);">
-          Make a payment under Fees, then come back and enroll when you reach the required share.
+        <p style="margin:8px 0 0;font-size:0.7rem;line-height:1.35;color:rgba(8,22,43,0.52);">
+          Pay under Fees, then return to enroll.
         </p>
       </div>
     `,
@@ -98,8 +104,40 @@ function showFeeGateDialog({ unit, access, onGoToFees }) {
     cancelButtonColor: "#94a3b8",
     reverseButtons: true,
     focusConfirm: true,
-    width: 420,
-    padding: "1.1em 1.15em 1em",
+    width: 380,
+    padding: "0.85em 1em 0.75em",
+    heightAuto: true,
+    scrollbarPadding: false,
+    customClass: {
+      popup: "kendu-fee-gate-swal",
+      title: "kendu-fee-gate-title",
+      htmlContainer: "kendu-fee-gate-html",
+      actions: "kendu-fee-gate-actions",
+    },
+    didOpen: () => {
+      const popup = Swal.getPopup();
+      if (!popup) return;
+      popup.style.maxWidth = "min(380px, calc(100vw - 28px))";
+      popup.style.maxHeight = "calc(100vh - 112px)";
+      popup.style.marginTop = "56px";
+      popup.style.overflow = "hidden";
+      const title = popup.querySelector(".kendu-fee-gate-title");
+      if (title) {
+        title.style.fontSize = "1.05rem";
+        title.style.padding = "0";
+        title.style.marginBottom = "0.35em";
+      }
+      const html = popup.querySelector(".kendu-fee-gate-html");
+      if (html) {
+        html.style.margin = "0";
+        html.style.padding = "0";
+        html.style.overflow = "hidden";
+      }
+      const actions = popup.querySelector(".kendu-fee-gate-actions");
+      if (actions) {
+        actions.style.margin = "0.85em 0 0";
+      }
+    },
   }).then((result) => {
     if (result.isConfirmed && typeof onGoToFees === "function") onGoToFees();
   });
@@ -332,11 +370,12 @@ export default function StudentUnitsCard({ student }) {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/units/student/available", {
-        headers: studentAuthHeaders(),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.success) {
+      const { ok, data } = await cachedFetchJson(
+        "/api/units/student/available",
+        { headers: studentAuthHeaders() },
+        { ttlMs: 30_000 }
+      );
+      if (!ok || !data.success) {
         throw new Error(data.message || "Could not load your units");
       }
       setUnits(Array.isArray(data.data) ? data.data : []);
@@ -383,6 +422,7 @@ export default function StudentUnitsCard({ student }) {
         }
         throw new Error(data.message || "Registration failed");
       }
+      invalidateApiCache("/api/units/student/available");
       setUnits((prev) =>
         prev.map((row) => (row.id === unit.id ? { ...row, is_registered: true } : row))
       );

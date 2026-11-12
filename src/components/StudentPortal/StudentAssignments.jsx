@@ -19,6 +19,7 @@ import EventRoundedIcon from "@mui/icons-material/EventRounded";
 import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
 import ScheduleRoundedIcon from "@mui/icons-material/ScheduleRounded";
 import { HOME, fadeUp, studentAuthHeaders } from "./studentPortalShared";
+import { cachedFetchJson } from "../../lib/cachedFetch";
 
 function formatWhen(value) {
   if (!value) return null;
@@ -247,11 +248,12 @@ export default function StudentAssignments({ student }) {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/assignments/me", {
-        headers: studentAuthHeaders(),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.success) {
+      const { ok, data } = await cachedFetchJson(
+        "/api/assignments/me",
+        { headers: studentAuthHeaders() },
+        { ttlMs: 30_000 }
+      );
+      if (!ok || !data.success) {
         throw new Error(data.message || "Could not load assignments");
       }
       setItems(Array.isArray(data.data) ? data.data : []);

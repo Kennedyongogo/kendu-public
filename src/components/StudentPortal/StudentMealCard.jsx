@@ -20,6 +20,7 @@ import RestaurantRoundedIcon from "@mui/icons-material/RestaurantRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import SyncRoundedIcon from "@mui/icons-material/SyncRounded";
 import { HOME, fadeUp, studentAuthHeaders } from "./studentPortalShared";
+import { cachedFetchJson, invalidateApiCache } from "../../lib/cachedFetch";
 
 const CR80_RATIO = 85.6 / 53.98;
 
@@ -724,13 +725,18 @@ export default function StudentMealCard() {
   const [downloading, setDownloading] = useState(false);
 
   const load = useCallback(async ({ soft = false } = {}) => {
-    if (soft) setRefreshing(true);
-    else setLoading(true);
+    if (soft) {
+      invalidateApiCache("/api/meals/card");
+      setRefreshing(true);
+    } else setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/meals/card", { headers: studentAuthHeaders() });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.success) throw new Error(data.message || "Could not load meal card");
+      const { ok, data } = await cachedFetchJson(
+        "/api/meals/card",
+        { headers: studentAuthHeaders() },
+        { ttlMs: 20_000 }
+      );
+      if (!ok || !data.success) throw new Error(data.message || "Could not load meal card");
       setAccess(data.data?.access || null);
       setCard(data.data?.card || null);
       setLockedCard(data.data?.locked_card || null);

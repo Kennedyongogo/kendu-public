@@ -7,6 +7,7 @@ import HistoryEduRoundedIcon from "@mui/icons-material/HistoryEduRounded";
 import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
 import PushPinRoundedIcon from "@mui/icons-material/PushPinRounded";
 import { HOME, fadeUp, studentAuthHeaders } from "./studentPortalShared";
+import { cachedFetchJson } from "../../lib/cachedFetch";
 
 const CATEGORY_META = {
   news: { label: "News", color: HOME.green, icon: CampaignRoundedIcon },
@@ -343,11 +344,12 @@ export default function StudentNoticesCard() {
     let active = true;
     (async () => {
       try {
-        const res = await fetch("/api/announcements/student?limit=10", {
-          headers: studentAuthHeaders(),
-        });
-        const json = await res.json();
-        if (active && res.ok && json.success) {
+        const { ok, data: json } = await cachedFetchJson(
+          "/api/announcements/student?limit=10",
+          { headers: studentAuthHeaders() },
+          { ttlMs: 45_000 }
+        );
+        if (active && ok && json.success) {
           setItems(Array.isArray(json.data) ? json.data : []);
         }
       } catch {

@@ -6,6 +6,7 @@ import { HOME, fadeUp, firstName } from "./studentPortalShared";
 import StudentUnitsCard from "./StudentUnitsCard";
 import StudentMealCard from "./StudentMealCard";
 import StudentNoticesCard from "./StudentNoticesCard";
+import { cachedFetchJson } from "../../lib/cachedFetch";
 
 export default function StudentHome({ student }) {
   const [programmeName, setProgrammeName] = useState(student?.programme?.name || "");
@@ -17,9 +18,8 @@ export default function StudentHome({ student }) {
     let active = true;
     (async () => {
       try {
-        const res = await fetch(`/api/programmes/${pid}`);
-        const json = await res.json();
-        if (active && res.ok && json.success && json.data?.name) {
+        const { ok, data: json } = await cachedFetchJson(`/api/programmes/${pid}`);
+        if (active && ok && json.success && json.data?.name) {
           setProgrammeName(json.data.name);
         }
       } catch {

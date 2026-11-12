@@ -27,6 +27,7 @@ import Footer from "../components/Footer/Footer";
 import BrandPageLoader from "../components/common/BrandPageLoader";
 import useBrandImageSrc from "../hooks/useBrandImageSrc";
 import useAdmissionWindow from "../hooks/useAdmissionWindow";
+import { cachedFetchJson } from "../lib/cachedFetch";
 
 const SECTIONS = [
   { id: "overview", label: "Overview" },
@@ -415,10 +416,9 @@ export default function ProgrammeDetail() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`/api/programmes/${id}`);
-        const json = await res.json();
+        const { ok, data: json } = await cachedFetchJson(`/api/programmes/${id}`);
         if (!active) return;
-        if (!res.ok || !json.success) throw new Error(json.message || "Programme not found");
+        if (!ok || !json.success) throw new Error(json.message || "Programme not found");
         const data = json.data;
         if (data?.is_active === false) {
           throw new Error("This programme is not currently available.");

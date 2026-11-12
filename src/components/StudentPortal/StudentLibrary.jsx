@@ -23,6 +23,7 @@ import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import { HOME, fadeUp, studentAuthHeaders } from "./studentPortalShared";
+import { cachedFetchJson } from "../../lib/cachedFetch";
 
 const navy = HOME.navyDeep || HOME.navy || "#141a3a";
 
@@ -339,9 +340,10 @@ export default function StudentLibrary() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/library/me", { headers: studentAuthHeaders() });
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok || json.success === false) {
+      const { ok, data: json } = await cachedFetchJson("/api/library/me", {
+        headers: studentAuthHeaders(),
+      });
+      if (!ok || json.success === false) {
         throw new Error(json.message || "Could not load library");
       }
       setData(json.data || null);

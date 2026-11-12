@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import VolumeUpRoundedIcon from "@mui/icons-material/VolumeUpRounded";
 import VolumeOffRoundedIcon from "@mui/icons-material/VolumeOffRounded";
+import { cachedFetchJson } from "../../lib/cachedFetch";
 import { HOME } from "../Home/homeShared";
 
 /**
@@ -20,13 +21,13 @@ export default function HomeBackgroundMusic() {
   const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
+    if (!isHome) return undefined;
     let active = true;
     (async () => {
       try {
-        const res = await fetch("/api/music/public");
-        const data = await res.json();
+        const { ok, data } = await cachedFetchJson("/api/music/public", {}, { ttlMs: 120_000 });
         if (!active) return;
-        if (res.ok && data.success && Array.isArray(data.data)) {
+        if (ok && data.success && Array.isArray(data.data)) {
           setTracks(data.data.filter((t) => t?.audio_url));
         }
       } catch {
@@ -36,7 +37,7 @@ export default function HomeBackgroundMusic() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [isHome]);
 
   const applyVolume = useCallback((track) => {
     const el = audioRef.current;

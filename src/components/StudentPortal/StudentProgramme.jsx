@@ -17,6 +17,7 @@ import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import ScheduleRoundedIcon from "@mui/icons-material/ScheduleRounded";
 import { HOME, fadeUp } from "./studentPortalShared";
+import { cachedFetchJson } from "../../lib/cachedFetch";
 
 function formatLabel(value) {
   if (!value) return "—";
@@ -244,14 +245,13 @@ export default function StudentProgramme() {
     setError("");
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("/api/programmes/me", {
+      const { ok, data } = await cachedFetchJson("/api/programmes/me", {
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.success) {
+      if (!ok || !data.success) {
         throw new Error(data.message || "Could not load your programme");
       }
       setProgramme(data.data);

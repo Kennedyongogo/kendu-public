@@ -33,6 +33,7 @@ import {
 import Footer from "../components/Footer/Footer";
 import { meetsMinimumKcseGrade } from "../utils/kcseGrade";
 import useAdmissionWindow from "../hooks/useAdmissionWindow";
+import { cachedFetchJson } from "../lib/cachedFetch";
 
 const emptyForm = () => ({
   full_name: "",
@@ -428,9 +429,8 @@ export default function AdmissionApplication() {
     setLoadingProgrammes(true);
     setProgrammeError("");
     try {
-      const res = await fetch("/api/programmes?is_active=true&limit=100");
-      const json = await res.json();
-      if (!res.ok || !json.success) {
+      const { ok, data: json } = await cachedFetchJson("/api/programmes?is_active=true&limit=100");
+      if (!ok || !json.success) {
         throw new Error(json.message || "Could not load programmes");
       }
       setProgrammes(Array.isArray(json.data) ? json.data : []);

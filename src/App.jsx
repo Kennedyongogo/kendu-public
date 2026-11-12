@@ -11,11 +11,11 @@ import { theme } from "./theme";
 import "./App.css";
 import React, { useEffect, Suspense, lazy } from "react";
 import PublicHeader from "./components/Header/PublicHeader";
-import Footer from "./components/Footer/Footer";
 import BrandPageLoader from "./components/common/BrandPageLoader";
 import HomeBackgroundMusic from "./components/common/HomeBackgroundMusic";
 import { initStudentSessionSecurity } from "./auth/sessionSecurity";
 
+const Footer = lazy(() => import("./components/Footer/Footer"));
 const Home = lazy(() => import("./pages/Home"));
 const Team = lazy(() => import("./pages/Team"));
 const MarketplaceLogin = lazy(() => import("./pages/MarketplaceLogin"));

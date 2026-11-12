@@ -9,6 +9,7 @@ import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import { HOME } from "./homeShared";
 import { HomeSectionShell, HomePrimaryButton } from "./homeUi";
 import useBrandImageSrc from "../../hooks/useBrandImageSrc";
+import { cachedFetchJson } from "../../lib/cachedFetch";
 
 const fadeUp = keyframes`
   from { opacity: 0; transform: translateY(18px); }
@@ -289,10 +290,9 @@ export default function ProgrammesSection() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch("/api/programmes?is_active=true&limit=100");
-        const json = await res.json();
+        const { ok, data: json } = await cachedFetchJson("/api/programmes?is_active=true&limit=100");
         if (!active) return;
-        if (!res.ok || !json.success) {
+        if (!ok || !json.success) {
           throw new Error(json.message || "Could not load programmes");
         }
         setProgrammes(Array.isArray(json.data) ? json.data : []);

@@ -10,6 +10,7 @@ import FactCheckRoundedIcon from "@mui/icons-material/FactCheckRounded";
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
 import ScheduleRoundedIcon from "@mui/icons-material/ScheduleRounded";
 import { HOME, studentAuthHeaders } from "./studentPortalShared";
+import { cachedFetchJson } from "../../lib/cachedFetch";
 
 const cardSx = {
   bgcolor: "#fff",
@@ -315,11 +316,12 @@ export default function StudentExamTimetable() {
     setAccess(null);
     setEmptyMessage(null);
     try {
-      const res = await fetch("/api/exam-timetables/me", {
-        headers: studentAuthHeaders(),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.success) throw new Error(data.message || "Failed to load exam timetable");
+      const { ok, data } = await cachedFetchJson(
+        "/api/exam-timetables/me",
+        { headers: studentAuthHeaders() },
+        { ttlMs: 30_000 }
+      );
+      if (!ok || !data.success) throw new Error(data.message || "Failed to load exam timetable");
 
       const payload = data.data || {};
       // API returns { access, period, locked_period }; older clients may get a bare period

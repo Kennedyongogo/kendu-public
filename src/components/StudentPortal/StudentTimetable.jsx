@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Box, Button, IconButton, MenuItem, Stack, TextField, Tooltip, Typography } from "@mui/material";
 import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
@@ -8,8 +8,10 @@ import TodayRoundedIcon from "@mui/icons-material/TodayRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import QuizRoundedIcon from "@mui/icons-material/QuizRounded";
 import FactCheckRoundedIcon from "@mui/icons-material/FactCheckRounded";
+import BrandPageLoader from "../common/BrandPageLoader";
 import { HOME, fadeUp } from "./studentPortalShared";
-import StudentExamTimetable from "./StudentExamTimetable";
+
+const StudentExamTimetable = lazy(() => import("./StudentExamTimetable"));
 
 const GAP_PX = 16;
 
@@ -515,7 +517,9 @@ export default function StudentTimetable() {
       </Stack>
 
       {isExamTab ? (
-        <StudentExamTimetable />
+        <Suspense fallback={<BrandPageLoader message="Loading exam timetable…" />}>
+          <StudentExamTimetable />
+        </Suspense>
       ) : (
       <Box
         sx={{

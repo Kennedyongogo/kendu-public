@@ -7,6 +7,7 @@ import { HOME } from "../components/Home/homeShared";
 import Footer from "../components/Footer/Footer";
 import BrandPageLoader from "../components/common/BrandPageLoader";
 import useBrandImageSrc from "../hooks/useBrandImageSrc";
+import { cachedFetchJson } from "../lib/cachedFetch";
 
 const fadeUp = keyframes`
   from { opacity: 0; transform: translateY(22px); }
@@ -604,9 +605,8 @@ export default function MeetOurTeam() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch("/api/users/public/staff");
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || !data.success) {
+        const { ok, data } = await cachedFetchJson("/api/users/public/staff", {}, { ttlMs: 90_000 });
+        if (!ok || !data.success) {
           throw new Error(data.message || "Could not load staff directory");
         }
         if (!cancelled) setStaff(Array.isArray(data.data) ? data.data : []);

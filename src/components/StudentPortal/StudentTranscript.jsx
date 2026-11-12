@@ -26,6 +26,7 @@ import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import { HOME, fadeUp, studentAuthHeaders } from "./studentPortalShared";
+import { cachedFetchJson } from "../../lib/cachedFetch";
 
 const cardSx = {
   bgcolor: "#fff",
@@ -152,9 +153,12 @@ export default function StudentTranscript() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/transcripts/me", { headers: studentAuthHeaders() });
-      const data = await res.json();
-      if (!res.ok || !data.success) {
+      const { ok, data } = await cachedFetchJson(
+        "/api/transcripts/me",
+        { headers: studentAuthHeaders() },
+        { ttlMs: 45_000 }
+      );
+      if (!ok || !data.success) {
         throw new Error(data.message || "Failed to load transcripts");
       }
       setRows(Array.isArray(data.data) ? data.data : []);

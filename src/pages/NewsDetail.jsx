@@ -11,6 +11,7 @@ import {
   formatNewsDate,
   formatEventRange,
 } from "../components/News/newsShared";
+import { cachedFetchJson } from "../lib/cachedFetch";
 
 const fadeUp = keyframes`
   from { opacity: 0; transform: translateY(18px); }
@@ -42,10 +43,9 @@ export default function NewsDetail() {
       setLoading(true);
       setNotFound(false);
       try {
-        const res = await fetch(`/api/announcements/public/${slug}`);
-        const json = await res.json();
+        const { ok, data: json } = await cachedFetchJson(`/api/announcements/public/${slug}`);
         if (!active) return;
-        if (res.ok && json.success && json.data) {
+        if (ok && json.success && json.data) {
           setItem(json.data);
         } else {
           setNotFound(true);

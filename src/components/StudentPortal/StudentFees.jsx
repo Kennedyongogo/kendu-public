@@ -34,6 +34,7 @@ import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import { BRAND_LOGO_SRC } from "../../brand";
+import { cachedFetchJson, invalidateApiCache } from "../../lib/cachedFetch";
 import { HOME, fadeUp } from "./studentPortalShared";
 
 const formatMoney = (amount, currency = "KES") =>
@@ -450,11 +451,12 @@ export default function StudentFees({ student }) {
     setError("");
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("/api/accounting/me", {
-        headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
-      });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok || !data.success) throw new Error(data.message || "Could not load your fee account");
+      const { ok, data } = await cachedFetchJson(
+        "/api/accounting/me",
+        { headers: { Authorization: `Bearer ${token}`, Accept: "application/json" } },
+        { ttlMs: 20_000 }
+      );
+      if (!ok || !data.success) throw new Error(data.message || "Could not load your fee account");
       setLedger(data.data);
     } catch (requestError) {
       setError(requestError.message);
@@ -582,8 +584,12 @@ export default function StudentFees({ student }) {
         confirmButtonText: "I have paid",
         confirmButtonColor: HOME.green,
       });
+      invalidateApiCache("/api/accounting/me");
       await loadLedger();
-      window.setTimeout(() => loadLedger({ silent: true }), 6000);
+      window.setTimeout(() => {
+        invalidateApiCache("/api/accounting/me");
+        loadLedger({ silent: true });
+      }, 6000);
     } catch (requestError) {
       Swal.fire({
         icon: "error",
@@ -613,7 +619,14 @@ export default function StudentFees({ student }) {
         <Alert
           severity="error"
           action={
-            <Button color="inherit" startIcon={<RefreshRoundedIcon />} onClick={() => loadLedger()}>
+            <Button
+              color="inherit"
+              startIcon={<RefreshRoundedIcon />}
+              onClick={() => {
+                invalidateApiCache("/api/accounting/me");
+                loadLedger();
+              }}
+            >
               Retry
             </Button>
           }
