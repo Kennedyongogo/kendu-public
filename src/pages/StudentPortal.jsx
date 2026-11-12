@@ -13,11 +13,16 @@ import StudentProgramme from "../components/StudentPortal/StudentProgramme";
 import StudentChurch from "../components/StudentPortal/StudentChurch";
 import StudentAssignments from "../components/StudentPortal/StudentAssignments";
 import { HOME, readStoredStudent } from "../components/StudentPortal/studentPortalShared";
+import { armStudentIdleTimer } from "../auth/sessionSecurity";
 
 export default function StudentPortal() {
   const navigate = useNavigate();
   const location = useLocation();
   const [student, setStudent] = useState(() => readStoredStudent());
+
+  useEffect(() => {
+    if (student) armStudentIdleTimer();
+  }, [student]);
   const isTimetableDay = location.pathname.includes("/timetable/day/");
   const activePage = location.pathname.endsWith("/settings")
     ? "settings"

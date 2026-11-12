@@ -14,6 +14,7 @@ import PublicHeader from "./components/Header/PublicHeader";
 import Footer from "./components/Footer/Footer";
 import BrandPageLoader from "./components/common/BrandPageLoader";
 import HomeBackgroundMusic from "./components/common/HomeBackgroundMusic";
+import { initStudentSessionSecurity } from "./auth/sessionSecurity";
 
 const Home = lazy(() => import("./pages/Home"));
 const Team = lazy(() => import("./pages/Team"));
@@ -117,6 +118,10 @@ function AppLayout() {
 }
 
 function App() {
+  useEffect(() => {
+    initStudentSessionSecurity();
+  }, []);
+
   return (
     <HelmetProvider>
       <ThemeProvider theme={theme}>

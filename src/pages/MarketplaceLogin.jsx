@@ -130,6 +130,12 @@ export default function MarketplaceLogin() {
 
       localStorage.setItem("token", data.data.token);
       localStorage.setItem("user", JSON.stringify(data.data.user));
+      try {
+        const { armStudentIdleTimer } = await import("../auth/sessionSecurity");
+        armStudentIdleTimer();
+      } catch {
+        /* idle arm is best-effort */
+      }
 
       Swal.fire({
         icon: "success",
